@@ -1,17 +1,17 @@
 import { Renderer } from "@freelensapp/extensions";
 import { observer } from "mobx-react";
-import { ExamplePreferencesStore } from "../../common/store";
+import { KamajiPreferencesStore } from "../../common/store";
 
 const {
   Component: { Checkbox },
 } = Renderer;
 
-const preferences = ExamplePreferencesStore.getInstanceOrCreate();
+const preferences = KamajiPreferencesStore.getInstanceOrCreate();
 
-export const ExamplePreferenceInput = observer(() => {
+export const KamajiPreferenceInput = observer(() => {
   return (
     <Checkbox
-      label="Example checkbox"
+      label="Kamaji checkbox"
       value={preferences.enabled}
       onChange={(v) => {
         console.log(`[EXAMPLE-PREFERENCES-STORE] onChange ${v}`);
@@ -21,4 +21,4 @@ export const ExamplePreferenceInput = observer(() => {
   );
 });
 
-export const ExamplePreferenceHint = () => <span>This is an example of an preference for extensions.</span>;
+export const KamajiPreferenceHint = () => <span>This is an kamaji of an preference for extensions.</span>;

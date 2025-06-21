@@ -1,8 +1,8 @@
 import { Main } from "@freelensapp/extensions";
-import { ExamplePreferencesStore } from "../common/store";
+import { KamajiPreferencesStore } from "../common/store";
 
-export default class ExampleMain extends Main.LensExtension {
+export default class KamajiMain extends Main.LensExtension {
   async onActivate() {
-    await ExamplePreferencesStore.getInstanceOrCreate().loadExtension(this);
+    await KamajiPreferencesStore.getInstanceOrCreate().loadExtension(this);
   }
 }

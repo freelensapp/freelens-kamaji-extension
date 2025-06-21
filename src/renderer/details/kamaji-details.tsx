@@ -1,22 +1,22 @@
 import { Renderer } from "@freelensapp/extensions";
 import React from "react";
-import { Example } from "../k8s/example";
+import { Kamaji } from "../k8s/kamaji";
 
-import styleInline from "./example-details.scss?inline";
+import styleInline from "./kamaji-details.scss?inline";
 
 const {
   Component: { DrawerItem, MarkdownViewer },
 } = Renderer;
 
-interface ExampleDetailsState {
+interface KamajiDetailsState {
   crds: Renderer.K8sApi.CustomResourceDefinition[];
 }
 
-export class ExampleDetails extends React.Component<
-  Renderer.Component.KubeObjectDetailsProps<Example>,
-  ExampleDetailsState
+export class KamajiDetails extends React.Component<
+  Renderer.Component.KubeObjectDetailsProps<Kamaji>,
+  KamajiDetailsState
 > {
-  public readonly state: Readonly<ExampleDetailsState> = {
+  public readonly state: Readonly<KamajiDetailsState> = {
     crds: [],
   };
 
@@ -26,7 +26,7 @@ export class ExampleDetails extends React.Component<
     return (
       <>
         <style>{styleInline}</style>
-        <div className="ExampleDetails">
+        <div className="KamajiDetails">
           <DrawerItem name="Description">
             <MarkdownViewer markdown={object.spec.description ?? ""} />
           </DrawerItem>

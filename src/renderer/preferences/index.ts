@@ -1,1 +1,1 @@
-export * from "./example-preference";
+export * from "./kamaji-preference";

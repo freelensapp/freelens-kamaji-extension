@@ -1,16 +1,16 @@
 import { Common } from "@freelensapp/extensions";
 import { makeObservable, observable } from "mobx";
 
-export interface ExamplePreferencesModel {
+export interface KamajiPreferencesModel {
   enabled: boolean;
 }
 
-export class ExamplePreferencesStore extends Common.Store.ExtensionStore<ExamplePreferencesModel> {
+export class KamajiPreferencesStore extends Common.Store.ExtensionStore<KamajiPreferencesModel> {
   @observable accessor enabled = false;
 
   constructor() {
     super({
-      configName: "example-preferences-store",
+      configName: "kamaji-preferences-store",
       defaults: {
         enabled: false,
       },
@@ -31,13 +31,13 @@ export class ExamplePreferencesStore extends Common.Store.ExtensionStore<Example
     }
   }
 
-  fromStore({ enabled }: ExamplePreferencesModel): void {
+  fromStore({ enabled }: KamajiPreferencesModel): void {
     console.log(`[EXAMPLE-PREFERENCES-STORE] set ${enabled}`);
 
     this.enabled = enabled;
   }
 
-  toJSON(): ExamplePreferencesModel {
+  toJSON(): KamajiPreferencesModel {
     const enabled = this.enabled;
     console.log(`[EXAMPLE-PREFERENCES-STORE] get ${enabled}`);
     return {

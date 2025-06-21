@@ -8,35 +8,35 @@
 import React from "react";
 
 import { Renderer } from "@freelensapp/extensions";
-import { ExamplePreferencesStore } from "../common/store";
-import { ExampleDetails } from "./details/example-details";
-import { ExampleIcon } from "./icons";
-import { Example } from "./k8s/example";
-import { ExamplesPage } from "./pages";
-import { ExamplePreferenceHint, ExamplePreferenceInput } from "./preferences";
+import { KamajiPreferencesStore } from "../common/store";
+import { KamajiDetails } from "./details/kamaji-details";
+import { KamajiIcon } from "./icons";
+import { Kamaji } from "./k8s/kamaji";
+import { KamajisPage } from "./pages";
+import { KamajiPreferenceHint, KamajiPreferenceInput } from "./preferences";
 
-export default class ExampleRenderer extends Renderer.LensExtension {
+export default class KamajiRenderer extends Renderer.LensExtension {
   async onActivate() {
-    await ExamplePreferencesStore.getInstanceOrCreate().loadExtension(this);
+    await KamajiPreferencesStore.getInstanceOrCreate().loadExtension(this);
   }
 
   appPreferences = [
     {
-      title: "Example Preferences",
+      title: "Kamaji Preferences",
       components: {
-        Input: () => <ExamplePreferenceInput />,
-        Hint: () => <ExamplePreferenceHint />,
+        Input: () => <KamajiPreferenceInput />,
+        Hint: () => <KamajiPreferenceHint />,
       },
     },
   ];
 
   kubeObjectDetailItems = [
     {
-      kind: "Example",
-      apiVersions: ["example.freelens.app/v1alpha1"],
+      kind: "Kamaji",
+      apiVersions: ["kamaji.freelens.app/v1alpha1"],
       priority: 10,
       components: {
-        Details: (props: Renderer.Component.KubeObjectDetailsProps<Example>) => <ExampleDetails {...props} />,
+        Details: (props: Renderer.Component.KubeObjectDetailsProps<Kamaji>) => <KamajiDetails {...props} />,
       },
     },
   ];
@@ -45,18 +45,18 @@ export default class ExampleRenderer extends Renderer.LensExtension {
     {
       id: "examples-page",
       components: {
-        Page: () => <ExamplesPage extension={this} />,
+        Page: () => <KamajisPage extension={this} />,
       },
     },
   ];
 
   clusterPageMenus = [
     {
-      id: "example",
-      title: "Example",
+      id: "kamaji",
+      title: "Kamaji",
       target: { pageId: "examples-page" },
       components: {
-        Icon: ExampleIcon,
+        Icon: KamajiIcon,
       },
     },
   ];

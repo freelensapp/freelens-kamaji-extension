@@ -4,12 +4,12 @@
  */
 
 import { Renderer } from "@freelensapp/extensions";
-import svgIcon from "./example.svg?raw";
+import svgIcon from "./kamaji.svg?raw";
 
 const {
   Component: { Icon },
 } = Renderer;
 
-export function ExampleIcon(props: Renderer.Component.IconProps) {
+export function KamajiIcon(props: Renderer.Component.IconProps) {
   return <Icon {...props} svg={svgIcon} />;
 }
