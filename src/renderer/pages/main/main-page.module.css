@@ -1,0 +1,43 @@
+.container {
+  margin: 16px;
+  height: 100%;
+  padding-bottom: 32px;
+}
+
+.kamajiCrds {
+  .TableCell {
+    &.name {
+      flex-grow: 0.2;
+    }
+
+    &.namespace {
+      flex-grow: 0.2;
+    }
+
+    &.status {
+      flex-grow: 0.2;
+    }
+
+    &.pods {
+      flex-grow: 0.2;
+      justify-content: right;
+    }
+
+    &.endpoint {
+      flex-grow: 0.2;
+      justify-content: right;
+    }
+
+    &.version {
+      flex-grow: 0.2;
+    }
+
+    &.datastore {
+      flex-grow: 0.2;
+    }
+
+    &.age {
+      flex-grow: 0.2;
+    }
+  }
+}
