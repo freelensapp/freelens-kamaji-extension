@@ -6,13 +6,11 @@
 // @ts-ignore
 
 import { Renderer } from "@freelensapp/extensions";
-import { KamajiPreferencesStore } from "../common/store";
 import { KamajiIcon } from "./icons/kamaji";
 import {MainPage} from "./pages/main/main-page";
 
 export default class KamajiRenderer extends Renderer.LensExtension {
   async onActivate() {
-    await KamajiPreferencesStore.getInstanceOrCreate().loadExtension(this);
   }
 
   clusterPageMenus = [
