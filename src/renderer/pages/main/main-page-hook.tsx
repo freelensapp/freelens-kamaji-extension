@@ -51,6 +51,7 @@ const useMainPageHook = () => {
   const loadTenants = (selectedNamespaces: readonly string[] = []): Promise<void> => {
     setFailedLoading(false);
     setIsLoaded(false);
+    setTenantData([]);
 
     return new Promise((resolve, reject) => {
       let kubeCtlCommand = `${kubectlPath} get tenantcontrolplanes.kamaji.clastix.io -A -o json`;
