@@ -3,10 +3,10 @@ import {exec} from "child_process";
 import {Common, Renderer} from "@freelensapp/extensions";
 import {Tenant} from "../../objects/Tenant";
 import {createTenant} from "../../../factory/TenantFactory";
+import useNameSpaceHook from "../../hooks/nameSpaceHook";
 
 const {
   Component: {WithTooltip},
-  K8sApi: {namespaceStore}
 } = Renderer;
 
 const {App} = Common;
@@ -16,13 +16,14 @@ const useMainPageHook = () => {
   const kubectlPath = App.Preferences.getKubectlPath() || "kubectl";
   const [isLoaded, setIsLoaded] = useState(false);
   const [failedLoading, setFailedLoading] = useState(false);
+  const nameSpaceHook = useNameSpaceHook();
 
   useEffect(() => {
-    // TODO: Get current namespace
-    console.log(`namespace: ${namespaceStore}`);
-    console.log(`namespace: ${Renderer.K8sApi.namespaceStore}`);
-    // console.log(namespaceStore.selectNamespaces());
-  }, [namespaceStore]);
+    if (nameSpaceHook.selectedNamespace && "" !== nameSpaceHook.selectedNamespace) {
+      loadTenants([nameSpaceHook.selectedNamespace])
+        .then();
+    }
+  }, [nameSpaceHook.selectedNamespace]);
 
   const tableHeaders = [
     {title: "Name", className: "name", sortBy: "name", id: "name"},
@@ -47,12 +48,17 @@ const useMainPageHook = () => {
     (tenant) => tenant.getAge(),
   ]
 
-  const loadTenants = (selectedNamespaces: readonly string[] = []) : Promise<void> => {
+  const loadTenants = (selectedNamespaces: readonly string[] = []): Promise<void> => {
+    setFailedLoading(false);
+    setIsLoaded(false);
+
     return new Promise((resolve, reject) => {
       let kubeCtlCommand = `${kubectlPath} get tenantcontrolplanes.kamaji.clastix.io -A -o json`;
       if (selectedNamespaces.length > 0) {
         const namespace = selectedNamespaces[0];
-        kubeCtlCommand = `${kubectlPath} get tenantcontrolplanes.kamaji.clastix.io -n ${namespace} -o json`;
+        if (namespace && "" !== namespace) {
+          kubeCtlCommand = `${kubectlPath} get tenantcontrolplanes.kamaji.clastix.io -n ${namespace} -o json`;
+        }
       }
 
       exec(kubeCtlCommand, (error, stdout, stderr) => {
@@ -65,16 +71,16 @@ const useMainPageHook = () => {
           return;
         }
 
-        setFailedLoading(false);
-        setIsLoaded(false);
         try {
           const parsed = JSON.parse(stdout);
+          console.log(parsed);
           const newTenantData = parsed.items.map(tenant => createTenant(tenant))
           setTenantData(newTenantData);
           setIsLoaded(true);
           resolve();
         } catch (e) {
           setFailedLoading(true);
+          setIsLoaded(true);
           console.error("Error while parsing JSON:", e);
           reject();
         }

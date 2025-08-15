@@ -3,7 +3,7 @@ import {randomUUID} from "node:crypto";
 import {Tenant} from "../objects/Tenant";
 
 const {
-  Component: {MenuActions, MenuItem}
+  Component: {MenuActions, MenuItem, Icon},
 } = Renderer;
 
 interface KamajiMenuItemProperties {
@@ -11,15 +11,13 @@ interface KamajiMenuItemProperties {
 }
 
 // @ts-ignore
-const KamajiMenuItem = ({ item }: KamajiMenuItemProperties) => {
+const KamajiMenuItem = ({item}: KamajiMenuItemProperties) => {
   return (
     <MenuActions
       id={`menu-actions-test-${randomUUID()}`}
-      // className={cssNames("KubeObjectMenu", className)}
-      // onOpen={object ? () => this.emitOnContextMenuOpen(object) : undefined}
-      // {...menuProps}
     >
       <MenuItem>
+        <Icon material="download" tooltip="Download kubeconfig" />
         <span>Download kubeconfig</span>
       </MenuItem>
     </MenuActions>
