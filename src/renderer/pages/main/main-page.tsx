@@ -58,7 +58,6 @@ export const MainPage = () => {
               return Promise.resolve();
             },
             loadAll: (selectedNamespaces: readonly string[]) => {
-              console.log("loadAll");
               return mainPageHook.loadTenants(selectedNamespaces);
             }
           }

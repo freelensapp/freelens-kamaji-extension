@@ -3,8 +3,6 @@
  * Licensed under MIT License. See LICENSE in root directory for more information.
  */
 
-// @ts-ignore
-
 import { Renderer } from "@freelensapp/extensions";
 import { KamajiIcon } from "./icons/kamaji";
 import {MainPage} from "./pages/main/main-page";
