@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import pluginExternal from "vite-plugin-external";
+import type { PluginOption } from "vite";
 
 export default defineConfig({
   // main process has full access to Node.js APIs
@@ -34,7 +35,7 @@ export default defineConfig({
           "@freelensapp/extensions": "global.LensExtensions",
           mobx: "global.Mobx",
         },
-      }),
+      }) as PluginOption,
       react({
         babel: {
           plugins: [
@@ -114,7 +115,7 @@ export default defineConfig({
           "react-dom": "global.ReactDom",
           "react-router-dom": "global.ReactRouterDom",
         },
-      }),
+      }) as PluginOption,
     ],
   },
 });
