@@ -4,21 +4,19 @@
   "entry": ["out/{main,preload}/index.js!", "src/main/index.ts", "src/renderer/index.tsx"],
   "project": ["*.{js,mjs,ts}", "out/**/*.js!", "src/**/*.{ts,tsx}"],
 
-  "ignoreBinaries": ["build:.*", "electron-rebuild"],
+  "ignoreBinaries": ["build:.*"],
   "ignoreDependencies": [
     // used as vite plugin
     "@babel/plugin-proposal-decorators",
     // provided by the application
-    "@freelensapp/extensions",
-    // When we upgrade @freelensapp/extensions we can delete this ignore
-    "react", "@types/react", "@types/react-router-dom"
+    "@freelensapp/extensions"
   ],
 
   "typescript": {
     "config": ["tsconfig.json"]
   },
   "vite": {
-    "config": ["electron.vite.config.js"]
+    "config": ["electron.vite.config.ts"]
   },
 
   "exclude": ["exports"]
