@@ -5,11 +5,24 @@
 
 import { Renderer } from "@freelensapp/extensions";
 import { KamajiIcon } from "./icons/kamaji";
-import {MainPage} from "./pages/main/main-page";
+import { MainPage } from "./pages/main/main-page";
+import { PreferencesPage } from "./pages/preferences/preferences-page";
+import { PreferencesStore } from "../store/preferences-store";
 
 export default class KamajiRenderer extends Renderer.LensExtension {
   async onActivate() {
+    // @ts-ignore
+    PreferencesStore.getInstanceOrCreate<PreferencesStore>().loadExtension(this);
   }
+
+  clusterPages = [
+    {
+      id: "kamaji-main-page",
+      components: {
+        Page: () => <MainPage />,
+      },
+    },
+  ];
 
   clusterPageMenus = [
     {
@@ -22,11 +35,12 @@ export default class KamajiRenderer extends Renderer.LensExtension {
     },
   ];
 
-  clusterPages = [
+  appPreferences = [
     {
-      id: "kamaji-main-page",
+      title: "Kamaji settings",
       components: {
-        Page: () => <MainPage />,
+        Input: () => <PreferencesPage />,
+        Hint: () => <span></span>,
       },
     },
   ];
