@@ -1,11 +1,12 @@
 import axios from "axios";
+import {PreferencesStore} from "../store/preferences-store";
 
 const useKamajiApi = () => {
-  // TODO: Read from settings
-  const kamajiBaseUrl = "http://localhost:53919/ui";
+  // @ts-ignore
+  const preferencesStore: PreferencesStore = PreferencesStore.getInstanceOrCreate<PreferencesStore>();
 
   const login = (username: string, password: string) => {
-    axios.post(`${kamajiBaseUrl}/api/trpc/auth.login`, {
+    axios.post(`${preferencesStore.kamajiBaseUrl}/auth.login`, {
       json: {
         email: username,
         password: password
@@ -14,7 +15,7 @@ const useKamajiApi = () => {
   }
 
   const refreshToken = (refreshToken: string) => {
-    return axios.post(`${kamajiBaseUrl}/api/trpc/auth.refreshToken`, {
+    return axios.post(`${preferencesStore.kamajiBaseUrl}/auth.refreshToken`, {
       json: {
         refreshToken: refreshToken
       }
@@ -23,7 +24,7 @@ const useKamajiApi = () => {
 
   const downloadKubeConfig = (name: string, namespace: string) => {
     return axios.get(
-      `${kamajiBaseUrl}/api/trpc/k8s.getClastixTPCKubeConfig`,
+      `${preferencesStore.kamajiBaseUrl}/k8s.getClastixTPCKubeConfig`,
       {
         params: {
           input: JSON.stringify({
