@@ -16,10 +16,7 @@ export const PreferencesPage = observer(() => {
       <Input
         placeholder="Write here the base url of your kamaji console"
         value={preferencesStore.kamajiBaseUrl}
-        onChange={(value: string) => {
-          console.log(`value: ${value}`);
-          preferencesStore.kamajiBaseUrl = value;
-        }}
+        onChange={(value: string) => preferencesStore.kamajiBaseUrl = value}
       />
     </div>
   )
