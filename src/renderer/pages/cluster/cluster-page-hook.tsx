@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
-import {exec} from "child_process";
-import {Common, Renderer} from "@freelensapp/extensions";
-import {Tenant} from "../../objects/Tenant";
-import {createTenant} from "../../../factory/TenantFactory";
+import { useEffect, useState } from "react";
+import { exec} from "child_process";
+import { Common, Renderer } from "@freelensapp/extensions";
+import { Tenant } from "../../objects/tenant";
+import { createTenant } from "../../../factory/tenant-factory";
 import useNameSpaceHook from "../../hooks/nameSpaceHook";
 
 const {
@@ -11,7 +11,7 @@ const {
 
 const {App} = Common;
 
-const useMainPageHook = () => {
+const useClusterPageHook = () => {
   const [tenantData, setTenantData] = useState<Tenant[]>([]);
   const kubectlPath = App.Preferences.getKubectlPath() || "kubectl";
   const [isLoaded, setIsLoaded] = useState(false);
@@ -143,4 +143,4 @@ const useMainPageHook = () => {
   }
 }
 
-export default useMainPageHook;
+export default useClusterPageHook;

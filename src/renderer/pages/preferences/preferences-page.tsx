@@ -1,14 +1,13 @@
 import { Renderer } from "@freelensapp/extensions";
 import { observer } from "mobx-react";
-import {PreferencesStore} from "../../../store/preferences-store";
+import { usePreferencesStore } from "../../../store/use-preference-store";
 
 const {
-  Component: {Input},
+  Component: { Input },
 } = Renderer;
 
-export const PreferencesPage = observer(() => {
-  // @ts-ignore
-  const preferencesStore: PreferencesStore = PreferencesStore.getInstanceOrCreate<PreferencesStore>();
+export const PreferencesPage = observer((): any => {
+  const preferencesStore = usePreferencesStore();
 
   return (
     <div>

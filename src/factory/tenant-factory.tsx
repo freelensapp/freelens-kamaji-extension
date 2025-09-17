@@ -1,4 +1,4 @@
-import {Tenant} from "../renderer/objects/Tenant";
+import { Tenant } from "../renderer/objects/tenant";
 
 export function createTenant(tenantRaw: TenantControlPlaneResponse): Tenant {
   return {
