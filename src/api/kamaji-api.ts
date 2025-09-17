@@ -1,17 +1,20 @@
 import axios from "axios";
-import {PreferencesStore} from "../store/preferences-store";
+import { usePreferencesStore } from "../store/use-preference-store";
+import { PreferencesStore } from "../store/preferences-store";
 
 const useKamajiApi = () => {
-  // @ts-ignore
-  const preferencesStore: PreferencesStore = PreferencesStore.getInstanceOrCreate<PreferencesStore>();
+  const preferencesStore: PreferencesStore = usePreferencesStore();
 
   const login = (username: string, password: string) => {
-    axios.post(`${preferencesStore.kamajiBaseUrl}/auth.login`, {
+    return axios.post(`${preferencesStore.kamajiBaseUrl}/auth.login`, {
       json: {
         email: username,
         password: password
       }
-    }).then(result => console.log(result))
+    }).then(response => {
+      const { accessToken, refreshToken } = response.data.result.data.json;
+      return { accessToken, refreshToken };
+    });
   }
 
   const refreshToken = (refreshToken: string) => {
