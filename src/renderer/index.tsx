@@ -5,9 +5,9 @@
 
 import { Renderer } from "@freelensapp/extensions";
 import { KamajiIcon } from "./icons/kamaji";
-import { MainPage } from "./pages/main/main-page";
 import { PreferencesPage } from "./pages/preferences/preferences-page";
 import { PreferencesStore } from "../store/preferences-store";
+import MainPage from "./pages/main/main-page";
 
 export default class KamajiRenderer extends Renderer.LensExtension {
   async onActivate() {

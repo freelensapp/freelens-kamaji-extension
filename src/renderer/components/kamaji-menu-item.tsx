@@ -1,7 +1,7 @@
-import {Renderer} from "@freelensapp/extensions";
-import {randomUUID} from "node:crypto";
-import {Tenant} from "../objects/Tenant";
-import useKamajiApi from "../../api/kamajiApi";
+import { Renderer } from "@freelensapp/extensions";
+import { randomUUID } from "node:crypto";
+import { Tenant } from "../objects/tenant";
+import useKamajiApi from "../../api/kamaji-api";
 
 const {
   Component: {MenuActions, MenuItem, Icon},
