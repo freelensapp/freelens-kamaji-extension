@@ -12,7 +12,8 @@
 
 This is the repository for the [Freelens](https://freelens.app) extension for [Kamaji](https://kamaji.clastix.io).
 
-## **[ WARNING: This repository has just been initialized and is a work in progress. ]**
+## **[ WARNING! ]**
+This repository has just been initialized and is a work in progress.
 
 ## Requirements
 
