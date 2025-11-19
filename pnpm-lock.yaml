@@ -28,10 +28,10 @@ importers:
         version: 5.3.3
       '@vitejs/plugin-react':
         specifier: ^4.5.2
-        version: 4.5.2(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))
+        version: 4.5.2(vite@6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))
       electron-vite:
         specifier: ^3.1.0
-        version: 3.1.0(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))
+        version: 3.1.0(vite@6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))
       mobx:
         specifier: ^6.13.7
         version: 6.13.7
@@ -48,8 +48,8 @@ importers:
         specifier: 5.8.3
         version: 5.8.3
       vite:
-        specifier: ^6.3.5
-        version: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
+        specifier: ^6.4.1
+        version: 6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
       vite-plugin-external:
         specifier: ^6.2.2
         version: 6.2.2
@@ -2757,8 +2757,8 @@ packages:
     resolution: {integrity: sha512-OpdFlWgVfWyZgx9nym3LAQp4DciutbqwSKzbA1l2Bg7CNzlDd3jnHfv1uWTY4y5h2gRfgT60ZtOgF5+W95i+3A==}
     engines: {node: '>=14.18.0', vite: '>=3.1.0'}
 
-  vite@6.3.5:
-    resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
+  vite@6.4.1:
+    resolution: {integrity: sha512-+Oxm7q9hDoLMyJOYfUYBuHQo+dkAloi33apOPP56pzj+vsdJDzr+j1NISE5pyaAuKL4A3UD34qd0lx5+kfKp2g==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -4227,7 +4227,7 @@ snapshots:
       '@types/node': 22.15.31
     optional: true
 
-  '@vitejs/plugin-react@4.5.2(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))':
+  '@vitejs/plugin-react@4.5.2(vite@6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))':
     dependencies:
       '@babel/core': 7.27.4
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.27.4)
@@ -4235,7 +4235,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.11
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
+      vite: 6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -4600,7 +4600,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-vite@3.1.0(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)):
+  electron-vite@3.1.0(vite@6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)):
     dependencies:
       '@babel/core': 7.27.4
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.27.4)
@@ -4608,7 +4608,7 @@ snapshots:
       esbuild: 0.25.4
       magic-string: 0.30.17
       picocolors: 1.1.1
-      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
+      vite: 6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -5949,7 +5949,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0):
+  vite@6.4.1(@types/node@22.15.31)(less@4.3.0)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0):
     dependencies:
       esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
