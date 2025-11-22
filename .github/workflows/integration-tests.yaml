@@ -17,7 +17,7 @@ env:
 
 jobs:
   test-integration:
-    name: "integration tests on ${{ matrix.os }} update ${{ matrix.update }}"
+    name: "integration tests on ${{ matrix.os }}"
 
     strategy:
       fail-fast: false
