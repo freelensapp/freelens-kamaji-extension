@@ -58,5 +58,5 @@
     "vite-plugin-external": "^6.2.2"
   },
   "keywords": ["extension", "freelensapp", "lens", "openlens", "freelens"],
-  "packageManager": "pnpm@10.12.1"
+  "packageManager": "pnpm@10.24.0"
 }
