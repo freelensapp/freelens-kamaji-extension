@@ -23,7 +23,7 @@ lint:
   enabled:
     - yamlfmt@0.20.0
     - actionlint@1.7.9
-    - biome@2.3.7
+    - biome@2.3.8
     - git-diff-check
     - markdownlint@0.46.0
     - svgo@4.0.0
