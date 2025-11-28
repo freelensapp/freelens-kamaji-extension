@@ -1,10 +1,14 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
-  "include": ["*.ts", "src/**/*"],
+  "include": ["*.ts", "src/**/*", "electron.vite.config.js"],
   "compilerOptions": {
     "composite": true,
     "esModuleInterop": true,
+    "moduleResolution": "node10",
     "jsx": "react-jsx",
-    "types": ["vite/client", "electron-vite/node"]
+    "types": ["vite/client", "electron-vite/node"],
+    "paths": {
+      "@vitejs/plugin-react": ["./node_modules/@vitejs/plugin-react/dist/index.d.ts"]
+    }
   }
 }

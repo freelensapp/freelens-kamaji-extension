@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import pluginExternal from "vite-plugin-external";
+import sassDts from "vite-plugin-sass-dts";
 
 export default defineConfig({
   // main process has full access to Node.js APIs
@@ -24,17 +25,6 @@ export default defineConfig({
       sourcemap: true,
     },
     plugins: [
-      externalizeDepsPlugin({
-        // do not bundle modules provided by the host app
-        include: ["@freelensapp/extensions", "mobx"],
-      }),
-      pluginExternal({
-        // the modules are provided by the host app as a global variable
-        externals: {
-          "@freelensapp/extensions": "global.LensExtensions",
-          mobx: "global.Mobx",
-        },
-      }),
       react({
         babel: {
           plugins: [
@@ -45,6 +35,17 @@ export default defineConfig({
               },
             ],
           ],
+        },
+      }),
+      externalizeDepsPlugin({
+        // do not bundle modules provided by the host app
+        include: ["@freelensapp/extensions", "mobx"],
+      }),
+      pluginExternal({
+        // the modules are provided by the host app as a global variable
+        externals: {
+          "@freelensapp/extensions": "global.LensExtensions",
+          mobx: "global.Mobx",
         },
       }),
     ],
@@ -76,6 +77,9 @@ export default defineConfig({
       },
     },
     plugins: [
+      sassDts({
+        enabledMode: ["development", "production"],
+      }),
       react({
         babel: {
           plugins: [
@@ -87,8 +91,6 @@ export default defineConfig({
             ],
           ],
         },
-        // do not use `react/jsx-runtime` module in transpiled code
-        jsxRuntime: "classic",
       }),
       externalizeDepsPlugin({
         // do not bundle modules provided by the host app
@@ -113,6 +115,7 @@ export default defineConfig({
           react: "global.React",
           "react-dom": "global.ReactDom",
           "react-router-dom": "global.ReactRouterDom",
+          "react/jsx-runtime": "global.ReactJsxRuntime",
         },
       }),
     ],
