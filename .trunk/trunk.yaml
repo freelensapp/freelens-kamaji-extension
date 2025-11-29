@@ -21,6 +21,7 @@ runtimes:
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
   enabled:
+    - oxipng@9.1.5
     - yamlfmt@0.20.0
     - actionlint@1.7.9
     - biome@2.3.8
