@@ -28,10 +28,10 @@ importers:
         version: 5.3.3
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))
+        version: 5.1.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0))
       electron-vite:
         specifier: ^4.0.1
-        version: 4.0.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))
+        version: 4.0.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0))
       mobx:
         specifier: ^6.15.0
         version: 6.15.0
@@ -40,19 +40,19 @@ importers:
         version: 17.0.2
       sass:
         specifier: ^1.89.2
-        version: 1.89.2
+        version: 1.93.3
       typescript:
         specifier: 5.8.3
         version: 5.8.3
       vite:
         specifier: ^6.3.5
-        version: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
+        version: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0)
       vite-plugin-external:
         specifier: ^6.2.2
         version: 6.2.2
       vite-plugin-sass-dts:
         specifier: ^1.3.34
-        version: 1.3.34(postcss@8.5.3)(prettier@3.7.1)(sass-embedded@1.93.3)(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))
+        version: 1.3.34(postcss@8.5.3)(prettier@3.7.1)(sass-embedded@1.93.3)(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0))
 
 packages:
 
@@ -2585,11 +2585,6 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  sass@1.89.2:
-    resolution: {integrity: sha512-xCmtksBKd/jdJ9Bt9p7nPKiuqrlBMBuuGkQlkhZjjQk3Ty48lv93k5Dq6OPkKt4XwxDJ7tvlfrTa1MPA9bf+QA==}
-    engines: {node: '>=14.0.0'}
-    hasBin: true
-
   sass@1.93.3:
     resolution: {integrity: sha512-elOcIZRTM76dvxNAjqYrucTSI0teAF/L2Lv0s6f6b7FOwcwIuA357bIE871580AjHJuSvLIRUosgV+lIWx6Rgg==}
     engines: {node: '>=14.0.0'}
@@ -4383,7 +4378,7 @@ snapshots:
       '@types/node': 22.15.31
     optional: true
 
-  '@vitejs/plugin-react@5.1.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0))':
+  '@vitejs/plugin-react@5.1.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -4391,7 +4386,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.47
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
+      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -4762,7 +4757,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-vite@4.0.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)):
+  electron-vite@4.0.1(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0)):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.5)
@@ -4770,7 +4765,7 @@ snapshots:
       esbuild: 0.25.12
       magic-string: 0.30.17
       picocolors: 1.1.1
-      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
+      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -5886,14 +5881,6 @@ snapshots:
       sass-embedded-win32-arm64: 1.93.3
       sass-embedded-win32-x64: 1.93.3
 
-  sass@1.89.2:
-    dependencies:
-      chokidar: 4.0.3
-      immutable: 5.1.1
-      source-map-js: 1.2.1
-    optionalDependencies:
-      '@parcel/watcher': 2.5.1
-
   sass@1.93.3:
     dependencies:
       chokidar: 4.0.3
@@ -5901,7 +5888,6 @@ snapshots:
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
-    optional: true
 
   sax@1.3.0: {}
 
@@ -6150,7 +6136,7 @@ snapshots:
       postcss-modules-local-by-default: 4.2.0(postcss@8.5.3)
       postcss-modules-scope: 3.2.1(postcss@8.5.3)
       reserved-words: 0.1.2
-      sass: 1.89.2
+      sass: 1.93.3
       source-map-js: 1.2.1
       stylus: 0.62.0
       tsconfig-paths: 4.2.0
@@ -6222,15 +6208,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-sass-dts@1.3.34(postcss@8.5.3)(prettier@3.7.1)(sass-embedded@1.93.3)(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)):
+  vite-plugin-sass-dts@1.3.34(postcss@8.5.3)(prettier@3.7.1)(sass-embedded@1.93.3)(vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0)):
     dependencies:
       postcss: 8.5.3
       postcss-js: 4.1.0(postcss@8.5.3)
       prettier: 3.7.1
       sass-embedded: 1.93.3
-      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0)
+      vite: 6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0)
 
-  vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.89.2)(stylus@0.62.0)(terser@5.39.0):
+  vite@6.3.5(@types/node@22.15.31)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.93.3)(stylus@0.62.0)(terser@5.39.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.4.4(picomatch@4.0.2)
@@ -6242,7 +6228,7 @@ snapshots:
       '@types/node': 22.15.31
       fsevents: 2.3.3
       less: 4.3.0
-      sass: 1.89.2
+      sass: 1.93.3
       sass-embedded: 1.93.3
       stylus: 0.62.0
       terser: 5.39.0
