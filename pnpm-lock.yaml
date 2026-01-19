@@ -30,8 +30,8 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1(vite@7.2.6(@types/node@22.19.1)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.94.2)(stylus@0.62.0)(terser@5.39.0))
       electron-vite:
-        specifier: ^4.0.1
-        version: 4.0.1(vite@7.2.6(@types/node@22.19.1)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.94.2)(stylus@0.62.0)(terser@5.39.0))
+        specifier: ^5.0.0
+        version: 5.0.0(vite@7.2.6(@types/node@22.19.1)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.94.2)(stylus@0.62.0)(terser@5.39.0))
       mobx:
         specifier: ^6.15.0
         version: 6.15.0
@@ -607,8 +607,8 @@ packages:
   '@jridgewell/source-map@0.3.6':
     resolution: {integrity: sha512-1ZJTZebgqllO79ue2bm3rIGud/bOe0pP5BjSRCRxxYkEZS8STV7zN84UBbiYu7jy+eCKSnVIUgoWWE/tt+shMQ==}
 
-  '@jridgewell/sourcemap-codec@1.5.0':
-    resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
+  '@jridgewell/sourcemap-codec@1.5.5':
+    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
@@ -616,7 +616,7 @@ packages:
   '@mui/base@5.0.0-beta.13':
     resolution: {integrity: sha512-uC0l97pBspfDAp+iz2cJq8YZ8Sd9i73V77+WzUiOAckIVEyCm5dyVDZCCO2/phmzckVEeZCGcytybkjMQuhPQw==}
     engines: {node: '>=12.0.0'}
-    deprecated: This package has been replaced by @base-ui-components/react
+    deprecated: This package has been replaced by @base-ui/react
     peerDependencies:
       '@types/react': ^17.0.0 || ^18.0.0
       react: ^17.0.0 || ^18.0.0
@@ -1452,8 +1452,8 @@ packages:
   electron-updater@6.6.2:
     resolution: {integrity: sha512-Cr4GDOkbAUqRHP5/oeOmH/L2Bn6+FQPxVLZtPbcmKZC63a1F3uu5EefYOssgZXG3u/zBlubbJ5PJdITdMVggbw==}
 
-  electron-vite@4.0.1:
-    resolution: {integrity: sha512-QqacJbA8f1pmwUTqki1qLL5vIBaOQmeq13CZZefZ3r3vKVaIoC7cpoTgE+KPKxJDFTax+iFZV0VYvLVWPiQ8Aw==}
+  electron-vite@5.0.0:
+    resolution: {integrity: sha512-OHp/vjdlubNlhNkPkL/+3JD34ii5ov7M0GpuXEVdQeqdQ3ulvVR7Dg/rNBLfS5XPIFwgoBLDf9sjjrL+CuDyRQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -1933,8 +1933,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  magic-string@0.30.17:
-    resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
+  magic-string@0.30.21:
+    resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
   make-dir@1.3.0:
     resolution: {integrity: sha512-2w31R7SJtieJJnQtGc7RVL2StM2vGYVfqUOvUDxH6bC6aJTxPxTF0GnIgCyu7tjockiUWAYQRbxa7vKn34s5sQ==}
@@ -2764,6 +2764,7 @@ packages:
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   tcp-port-used@1.0.2:
     resolution: {integrity: sha512-l7ar8lLUD3XS1V2lfoJlCBaeoaWo/2xfYt81hM7VlvR4RrMVFqfmzfhLVk40hAb368uitje5gPtBRL1m/DGvLA==}
@@ -3955,7 +3956,7 @@ snapshots:
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/remapping@2.3.5':
@@ -3971,12 +3972,12 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
     optional: true
 
-  '@jridgewell/sourcemap-codec@1.5.0': {}
+  '@jridgewell/sourcemap-codec@1.5.5': {}
 
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
 
   '@mui/base@5.0.0-beta.13(@types/react@17.0.90)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
@@ -4779,13 +4780,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-vite@4.0.1(vite@7.2.6(@types/node@22.19.1)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.94.2)(stylus@0.62.0)(terser@5.39.0)):
+  electron-vite@5.0.0(vite@7.2.6(@types/node@22.19.1)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.94.2)(stylus@0.62.0)(terser@5.39.0)):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.5)
       cac: 6.7.14
       esbuild: 0.25.12
-      magic-string: 0.30.17
+      magic-string: 0.30.21
       picocolors: 1.1.1
       vite: 7.2.6(@types/node@22.19.1)(less@4.3.0)(sass-embedded@1.93.3)(sass@1.94.2)(stylus@0.62.0)(terser@5.39.0)
     transitivePeerDependencies:
@@ -5282,9 +5283,9 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  magic-string@0.30.17:
+  magic-string@0.30.21:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.5
 
   make-dir@1.3.0:
     dependencies:
