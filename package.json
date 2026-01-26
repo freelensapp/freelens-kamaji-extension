@@ -27,7 +27,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "biome": "corepack pnpm dlx @biomejs/biome@2.3.8",
+    "biome": "corepack pnpm dlx @biomejs/biome@2.3.13",
     "biome:check": "corepack pnpm biome check",
     "biome:fix": "corepack pnpm biome check --fix",
     "prebuild": "corepack pnpm typecheck",
