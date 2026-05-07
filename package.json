@@ -1,7 +1,7 @@
 {
   "name": "@freelensapp/kamaji-extension",
   "version": "0.1.0",
-  "description": "Kamaji of a Freelens extension",
+  "description": "Kamaji extension",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/freelensapp/freelens-kamaji-extension.git",
@@ -16,7 +16,7 @@
     "node": ">= 22.15.1",
     "freelens": "^1.3.2"
   },
-  "copyright": "© 2025 Freelens Authors",
+  "copyright": "© 2025-2026 Freelens Authors",
   "license": "MIT",
   "author": {
     "name": "Freelens Authors",
