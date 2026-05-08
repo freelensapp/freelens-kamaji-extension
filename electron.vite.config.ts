@@ -27,27 +27,15 @@ export default defineConfig({
     plugins: [
       externalizeDepsPlugin({
         // do not bundle modules provided by the host app
-        include: ["@freelensapp/extensions", "mobx"],
+        include: ["@freelensapp/extensions"],
       }),
       pluginExternal({
         // the modules are provided by the host app as a global variable
         externals: {
           "@freelensapp/extensions": "global.LensExtensions",
-          mobx: "global.Mobx",
         },
       }) as PluginOption,
-      react({
-        babel: {
-          plugins: [
-            [
-              "@babel/plugin-proposal-decorators",
-              {
-                version: "2023-05",
-              },
-            ],
-          ],
-        },
-      }),
+      react(),
     ],
   },
   // renderer process in Freelens can use Node.js modules then it is configured
@@ -78,16 +66,6 @@ export default defineConfig({
     },
     plugins: [
       react({
-        babel: {
-          plugins: [
-            [
-              "@babel/plugin-proposal-decorators",
-              {
-                version: "2023-05",
-              },
-            ],
-          ],
-        },
         // do not use `react/jsx-runtime` module in transpiled code
         jsxRuntime: "classic",
       }),
@@ -96,8 +74,6 @@ export default defineConfig({
         include: [
           "@freelensapp/extensions",
           "electron",
-          "mobx",
-          "mobx-react",
           "react",
           "react-dom",
           "react-router-dom",
@@ -109,8 +85,6 @@ export default defineConfig({
         // the modules are provided by the host app as a global variable
         externals: {
           "@freelensapp/extensions": "global.LensExtensions",
-          mobx: "global.Mobx",
-          "mobx-react": "global.MobxReact",
           react: "global.React",
           "react-dom": "global.ReactDom",
           "react-router-dom": "global.ReactRouterDom",

@@ -6,8 +6,6 @@
 
   "ignoreBinaries": ["build:.*"],
   "ignoreDependencies": [
-    // used as vite plugin
-    "@babel/plugin-proposal-decorators",
     // provided by the application
     "@freelensapp/extensions"
   ],
