@@ -43,16 +43,12 @@
     "typecheck": "tsc --noEmit -p tsconfig.json --composite false"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.28.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@freelensapp/extensions": "^1.5.3",
     "@types/node": "^24.5.0",
     "@types/react": "^19.1.13",
     "@vitejs/plugin-react": "^5.0.2",
-    "axios": "^1.12.2",
     "electron-vite": "4.0.0",
-    "mobx": "^6.13.7",
-    "mobx-react": "^9.2.0",
     "react": "^19.1.1",
     "sass": "^1.92.1",
     "typescript": "5.9.2",
