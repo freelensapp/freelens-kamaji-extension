@@ -43,7 +43,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json --composite false"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.28.0",
+    "@babel/plugin-proposal-decorators": "^7.29.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@freelensapp/extensions": "^1.5.3",
     "@types/node": "^24.5.0",
