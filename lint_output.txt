@@ -1,0 +1,436 @@
+ WARN  Unsupported engine: wanted: {"node":">= 22.15.1"} (current: {"node":"v20.18.1","pnpm":"10.12.4"})
+
+> @freelensapp/kamaji-extension@0.1.0 lint /home/robb/repo/github-rb/freelensapp/freelens-kamaji-extension
+> corepack pnpm biome:check
+
+ WARN  Unsupported engine: wanted: {"node":">= 22.15.1"} (current: {"node":"v20.18.1","pnpm":"10.12.4"})
+
+> @freelensapp/kamaji-extension@0.1.0 biome:check /home/robb/repo/github-rb/freelensapp/freelens-kamaji-extension
+> corepack pnpm biome check
+
+ WARN  Unsupported engine: wanted: {"node":">= 22.15.1"} (current: {"node":"v20.18.1","pnpm":"10.12.4"})
+
+> @freelensapp/kamaji-extension@0.1.0 biome /home/robb/repo/github-rb/freelensapp/freelens-kamaji-extension
+> corepack pnpm dlx @biomejs/biome@1.9.4 check
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/dustilock/test_data/package.json format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+     1  1 │   {
+     2    │ - ····"private":·true,
+     3    │ - ····"scripts":·{
+     4    │ - ······"parse":·"ts-node·tests/parse/index.ts",
+     5    │ - ······"test":·"jest",
+     6    │ - ······"trunk":·"trunk"
+     7    │ - ····},
+     8    │ - ····"devDependencies":·{
+     9    │ - ······"corporateInternalTool":·"^2.2.0",
+    10    │ - ······"someDefinitelyNotPublicUtility":·"^13.37"
+    11    │ - ····},
+    12    │ - ····"bundleDependencies":·[
+    13    │ - ······"tests"
+    14    │ - ····],
+    15    │ - ····"engines":·{
+    16    │ - ······"node":·">=16"
+    17    │ - ····}
+    18    │ - ··}
+        2 │ + ··"private":·true,
+        3 │ + ··"scripts":·{
+        4 │ + ····"parse":·"ts-node·tests/parse/index.ts",
+        5 │ + ····"test":·"jest",
+        6 │ + ····"trunk":·"trunk"
+        7 │ + ··},
+        8 │ + ··"devDependencies":·{
+        9 │ + ····"corporateInternalTool":·"^2.2.0",
+       10 │ + ····"someDefinitelyNotPublicUtility":·"^13.37"
+       11 │ + ··},
+       12 │ + ··"bundleDependencies":·["tests"],
+       13 │ + ··"engines":·{
+       14 │ + ····"node":·">=16"
+       15 │ + ··}
+       16 │ + }
+    19 17 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/sort-package-json/test_data/package.json format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    37 37 │       "node": ">=16"
+    38 38 │     },
+    39    │ - ··"bundleDependencies":·[
+    40    │ - ····"tests"
+    41    │ - ··]
+       39 │ + ··"bundleDependencies":·["tests"]
+    42 40 │   }
+    43 41 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/package.json format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    43 43 │       "yaml": "^2.8.0"
+    44 44 │     },
+    45    │ - ··"bundleDependencies":·[
+    46    │ - ····"tests"
+    47    │ - ··],
+       45 │ + ··"bundleDependencies":·["tests"],
+    48 46 │     "engines": {
+    49 47 │       "node": ">=22"
+  
+
+/home/robb/repo/github-rb/freelensapp/freelens-kamaji-extension/package.json format ━━━━━━━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    10 10 │     "main": "out/main/index.js",
+    11 11 │     "renderer": "out/renderer/index.js",
+    12    │ - ··"files":·[
+    13    │ - ····"out/**/*"
+    14    │ - ··],
+       12 │ + ··"files":·["out/**/*"],
+    15 13 │     "engines": {
+    16 14 │       "node": ">= 22.15.1",
+    ····· │ 
+    56 54 │       "vite-plugin-external": "^6.2.2"
+    57 55 │     },
+    58    │ - ··"keywords":·[
+    59    │ - ····"kamaji",
+    60    │ - ····"control-plane",
+    61    │ - ····"tenant",
+    62    │ - ····"extension",
+    63    │ - ····"freelensapp",
+    64    │ - ····"lens",
+    65    │ - ····"openlens",
+    66    │ - ····"freelens"
+    67    │ - ··],
+       56 │ + ··"keywords":·["kamaji",·"control-plane",·"tenant",·"extension",·"freelensapp",·"lens",·"openlens",·"freelens"],
+    68 57 │     "packageManager": "pnpm@10.12.4"
+    69 58 │   }
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/biome/test_data/basic_json.in.json format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    1   │ - {"a":
+    2   │ - "foo",
+    3   │ - "b":·1,
+    4   │ - "a":·true}
+      1 │ + {·"a":·"foo",·"b":·1,·"a":·true·}
+    5 2 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/ansible-lint/ansible_lint.test.ts organizeImports ━━━━━━━━━━
+
+  × Import statements could be sorted:
+  
+     2  2 │   import { customLinterCheckTest } from "tests";
+     3  3 │   import { TrunkLintDriver } from "tests/driver";
+     4    │ - import·{·skipOS,·TEST_DATA·}·from·"tests/utils";
+        4 │ + import·{·TEST_DATA,·skipOS·}·from·"tests/utils";
+     5  5 │   
+     6  6 │   // ansible-lint's trunk invokations are trigger-based, so we need to add this to the trunk.yaml.
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/biome/test_data/basic_check.in.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+     1    │ - const·foobar·=·()·=>·{·}
+     2    │ - const·barfoo·=·()·=>·{·}
+        1 │ + const·foobar·=·()·=>·{};
+        2 │ + const·barfoo·=·()·=>·{};
+     3  3 │   
+     4    │ - enum·Bar·{·Baz·};
+        4 │ + enum·Bar·{
+        5 │ + ··Baz,
+        6 │ + }
+     5  7 │   
+     6  8 │   const foo = (bar: Bar) => {
+    ····· │ 
+    11 13 │         break;
+    12 14 │     }
+    13    │ - ··{·!foo·?·null·:·1·}
+    14    │ - }
+       15 │ + ··{
+       16 │ + ····!foo·?·null·:·1;
+       17 │ + ··}
+       18 │ + };
+    15 19 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/biome/test_data/basic_fmt.in.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+     1    │ - const·foobar·=·()·=>·{·}
+     2    │ - const·barfoo·=·()·=>·{·}
+        1 │ + const·foobar·=·()·=>·{};
+        2 │ + const·barfoo·=·()·=>·{};
+     3  3 │   
+     4    │ - enum·Bar·{·Baz·};
+        4 │ + enum·Bar·{
+        5 │ + ··Baz,
+        6 │ + }
+     5  7 │   
+     6  8 │   const foo = (bar: Bar) => {
+    ····· │ 
+    11 13 │         break;
+    12 14 │     }
+    13    │ - ··{·!foo·?·null·:·1·}
+    14    │ - }
+       15 │ + ··{
+       16 │ + ····!foo·?·null·:·1;
+       17 │ + ··}
+       18 │ + };
+    15 19 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/codespell/test_data/basic_ts.in.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+     1    │ - const·foobar·=·()·=>·{·}
+     2    │ - const·barfoo·=·()·=>·{·}
+        1 │ + const·foobar·=·()·=>·{};
+        2 │ + const·barfoo·=·()·=>·{};
+     3  3 │   
+     4    │ - enum·Bar·{·Baz·};
+        4 │ + enum·Bar·{
+        5 │ + ··Baz,
+        6 │ + }
+     5  7 │   
+     6  8 │   const foo = (bar: Bar) => {
+    ····· │ 
+    11 13 │         break;
+    12 14 │     }
+    13    │ - ··{·!foo·?·null·:·1·}
+    14    │ - }
+       15 │ + ··{
+       16 │ + ····!foo·?·null·:·1;
+       17 │ + ··}
+       18 │ + };
+    15 19 │   
+    16 20 │   const callback = "callback";
+    17    │ - const·callbakc·=·"callbakc"
+    18    │ - const·callbakk·=·"callbak"
+    19    │ - const·asnyc·=·"awiat"
+       21 │ + const·callbakc·=·"callbakc";
+       22 │ + const·callbakk·=·"callbak";
+       23 │ + const·asnyc·=·"awiat";
+    20 24 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/brakeman/brakeman.test.ts organizeImports ━━━━━━━━━━
+
+  × Import statements could be sorted:
+  
+     1  1 │   import { customLinterCheckTest } from "tests";
+     2    │ - import·{·osTimeoutMultiplier,·skipOS,·TEST_DATA·}·from·"tests/utils";
+        2 │ + import·{·TEST_DATA,·osTimeoutMultiplier,·skipOS·}·from·"tests/utils";
+     3  3 │   
+     4  4 │   // Note that the ruby setup can sometimes take a while.
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/deno/test_data/basic.in.js format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    1   │ - export·const·identity·=·[
+    2   │ - ····1,·0,·0,
+    3   │ - ····0,·1,·0,
+    4   │ - ····0,·0,·1,
+    5   │ - ];
+      1 │ + export·const·identity·=·[1,·0,·0,·0,·1,·0,·0,·0,·1];
+    6 2 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/actions/uv/uv.test.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    38 38 │   const checkTestCallback = async (driver: TrunkActionDriver) => {
+    39 39 │     try {
+    40    │ - ····await·driver.gitDriver?.commit(
+    41    │ - ······"Test·commit",
+    42    │ - ······[],
+    43    │ - ······{·"--allow-empty":·null·},
+    44    │ - ······(error,·result)·=>·{
+    45    │ - ········//·uv·check·should·pass·for·a·valid·pyproject.toml
+    46    │ - ········expect(error).toBeFalsy();
+    47    │ - ········expect(result).toBeTruthy();
+    48    │ - ······},
+    49    │ - ····);
+       40 │ + ····await·driver.gitDriver?.commit("Test·commit",·[],·{·"--allow-empty":·null·},·(error,·result)·=>·{
+       41 │ + ······//·uv·check·should·pass·for·a·valid·pyproject.toml
+       42 │ + ······expect(error).toBeFalsy();
+       43 │ + ······expect(result).toBeTruthy();
+       44 │ + ····});
+    50 45 │     } catch {
+    51 46 │       // Intentionally empty
+    ····· │ 
+    55 50 │   const fileExistsCallback = (filename: string) => async (driver: TrunkActionDriver) => {
+    56 51 │     try {
+    57    │ - ····await·driver.gitDriver?.commit(
+    58    │ - ······"Test·commit",
+    59    │ - ······[],
+    60    │ - ······{·"--allow-empty":·null·},
+    61    │ - ······(_error,·result)·=>·{
+    62    │ - ········expect(_error).toBeFalsy();
+    63    │ - ········expect(result).toBeTruthy();
+    64    │ - ······},
+    65    │ - ····);
+       52 │ + ····await·driver.gitDriver?.commit("Test·commit",·[],·{·"--allow-empty":·null·},·(_error,·result)·=>·{
+       53 │ + ······expect(_error).toBeFalsy();
+       54 │ + ······expect(result).toBeTruthy();
+       55 │ + ····});
+    66 56 │   
+    67 57 │       expect(fs.existsSync(path.resolve(driver.getSandbox(), filename))).toBeTruthy();
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/clang-tidy/clang_tidy.test.ts organizeImports ━━━━━━━━━━
+
+  × Import statements could be sorted:
+  
+     2  2 │   import { customLinterCheckTest } from "tests";
+     3  3 │   import { TrunkLintDriver } from "tests/driver";
+     4    │ - import·{·skipOS,·TEST_DATA·}·from·"tests/utils";
+        4 │ + import·{·TEST_DATA,·skipOS·}·from·"tests/utils";
+     5  5 │   
+     6  6 │   const preCheck = (copyConfig: boolean) => (driver: TrunkLintDriver) => {
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/ansible-lint/ansible_lint.test.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    26 26 │       if (!fqcn) {
+    27 27 │         const configFile = "jboss-standalone/demo-aws-launch.yml";
+    28    │ - ······driver.writeFile(
+    29    │ - ········configFile,
+    30    │ - ········driver.readFile(configFile).replace("amazon.aws.ec2_instance",·"ec2"),
+    31    │ - ······);
+       28 │ + ······driver.writeFile(configFile,·driver.readFile(configFile).replace("amazon.aws.ec2_instance",·"ec2"));
+    32 29 │       }
+    33 30 │     };
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/cspell/cspell.test.ts organizeImports ━━━━━━━━━━
+
+  × Import statements could be sorted:
+  
+     4  4 │   import { TrunkLintDriver } from "tests/driver";
+     5  5 │   import { FileIssue, LandingState } from "tests/types";
+     6    │ - import·{·skipOS,·TEST_DATA·}·from·"tests/utils";
+        6 │ + import·{·TEST_DATA,·skipOS·}·from·"tests/utils";
+     7  7 │   import { createFuzzyMatcher } from "tests/utils/landing_state";
+     8  8 │   
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/eslint/test_data/eof_autofix.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    1 1 │   /* eslint "eol-last": "error" */
+    2   │ - "perfectly·normal·ascii·string";
+      2 │ + "perfectly·normal·ascii·string";
+      3 │ + 
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/actions/commitlint/commitlint.test.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+     3  3 │   
+     4  4 │   const preCheck = (driver: TrunkActionDriver) => {
+     5    │ - ··driver.writeFile(
+     6    │ - ····"commitlint.config.mjs",
+     7    │ - ····"export·default·{extends:·['@commitlint/config-conventional']}",
+     8    │ - ··);
+        5 │ + ··driver.writeFile("commitlint.config.mjs",·"export·default·{extends:·['@commitlint/config-conventional']}");
+     9  6 │   };
+    10  7 │   
+    11  8 │   const testCallback = async (driver: TrunkActionDriver) => {
+    12  9 │     try {
+    13    │ - ····await·driver.gitDriver?.commit(
+    14    │ - ······"Test·commit",
+    15    │ - ······[],
+    16    │ - ······{·"--allow-empty":·null·},
+    17    │ - ······(error,·result)·=>·{
+    18    │ - ········expect(error?.message).toContain("subject·may·not·be·empty·[subject-empty]");
+    19    │ - ········expect(error?.message).toContain("type·may·not·be·empty·[type-empty]");
+    20    │ - ········expect(result).toBeUndefined();
+    21    │ - ······},
+    22    │ - ····);
+       10 │ + ····await·driver.gitDriver?.commit("Test·commit",·[],·{·"--allow-empty":·null·},·(error,·result)·=>·{
+       11 │ + ······expect(error?.message).toContain("subject·may·not·be·empty·[subject-empty]");
+       12 │ + ······expect(error?.message).toContain("type·may·not·be·empty·[type-empty]");
+       13 │ + ······expect(result).toBeUndefined();
+       14 │ + ····});
+    23 15 │   
+    24 16 │       // Commit step should throw
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/dotnet-format/dotnet_format.test.ts organizeImports ━━━━━━━━━━
+
+  × Import statements could be sorted:
+  
+     1  1 │   import path from "path";
+     2  2 │   import { customLinterFmtTest } from "tests";
+     3    │ - import·{·skipOS,·TEST_DATA·}·from·"tests/utils";
+        3 │ + import·{·TEST_DATA,·skipOS·}·from·"tests/utils";
+     4  4 │   
+     5  5 │   // TODO(Tyler): We will eventually need to add a couple more test cases involving failure modes.
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/detekt/detekt.test.ts organizeImports ━━━━━━━━━━
+
+  × Import statements could be sorted:
+  
+     1  1 │   import * as fs from "fs";
+     2  2 │   import path from "path";
+     3    │ - import·{·customLinterCheckTest,·linterCheckTest,·TestCallback·}·from·"tests";
+        3 │ + import·{·TestCallback,·customLinterCheckTest,·linterCheckTest·}·from·"tests";
+     4  4 │   import { TrunkLintDriver } from "tests/driver";
+     5    │ - import·{·DOWNLOAD_CACHE,·osTimeoutMultiplier,·recurseLevels,·skipOS,·TEST_DATA·}·from·"tests/utils";
+        5 │ + import·{·DOWNLOAD_CACHE,·TEST_DATA,·osTimeoutMultiplier,·recurseLevels,·skipOS·}·from·"tests/utils";
+     6  6 │   
+     7  7 │   // detekt tests can sometimes take a while.
+  
+
+/home/robb/.cache/trunk/plugins/https---github-com-trunk-io-plugins/v1.7.4-4ebadccd80b22638/linters/eslint/test_data/null_rule_id.ts format ━━━━━━━━━━
+
+  × Formatter would have printed the following content:
+  
+    13 13 │    */
+    14 14 │   
+    15    │ - declare·module·'react-dom'·{
+    16    │ - ··export·function·render(element·:·any,·container·:·any)·:·any
+    17    │ - ··export·function·unmountComponentAtNode(container·:·any)·:·void
+    18    │ - ··export·function·findDOMNode(instance·:·any)·:·any
+       15 │ + declare·module·"react-dom"·{
+       16 │ + ··export·function·render(element:·any,·container:·any):·any;
+       17 │ + ··export·function·unmountComponentAtNode(container:·any):·void;
+       18 │ + ··export·function·findDOMNode(instance:·any):·any;
+    19 19 │   }
+    20 20 │   
+  
+
+Skipped 36 suggested fixes.
+If you wish to apply the suggested (unsafe) fixes, use the command biome check --fix --unsafe
+
+The number of diagnostics exceeds the number allowed by Biome.
+Diagnostics not shown: 2216.
+Checked 270 files in 29ms. No fixes applied.
+Found 2236 errors.
+check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while running checks.
+  
+
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

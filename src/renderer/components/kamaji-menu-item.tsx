@@ -1,55 +1,73 @@
-import { Common, Renderer } from "@freelensapp/extensions";
-import { exec } from "child_process";
-import { writeFileSync } from "fs";
-import { randomUUID } from "node:crypto";
-import { homedir } from "os";
-import { join } from "path";
-import { Tenant } from "../objects/tenant";
+import { Renderer } from "@freelensapp/extensions";
+import { TenantControlPlane } from "../k8s/tenant-control-plane-v1alpha1";
 
 const {
-  Component: { MenuActions, MenuItem, Icon },
+  Component: { Icon, MenuItem },
 } = Renderer;
 
-const { App } = Common;
-
-interface KamajiMenuItemProperties {
-  item: Tenant;
+export interface KamajiMenuItemProps {
+  object?: TenantControlPlane;
+  toolbar?: boolean;
 }
 
-// @ts-ignore
-const KamajiMenuItem = ({ item }: KamajiMenuItemProperties) => {
-  const downloadKubeConfig = () => {
-    const kubectlPath = App.Preferences.getKubectlPath() || "kubectl";
-    const name = item.getName();
-    const namespace = item.getNamespace();
+export const KamajiMenuItem = ({ object, toolbar }: KamajiMenuItemProps) => {
+  if (!object) {
+    return <></>;
+  }
 
-    exec(
-      `${kubectlPath} get secret ${name}-admin-kubeconfig -n ${namespace} -o jsonpath='{.data.admin\\.conf}'`,
-      (err, stdout) => {
-        if (err) {
-          console.error("Failed to get kubeconfig secret:", err);
-          return;
-        }
-        const decoded = Buffer.from(stdout.replace(/^'|'$/g, ""), "base64").toString("utf-8");
-        const filePath = join(homedir(), ".kube", `kamaji-${name}.yaml`);
-        try {
-          writeFileSync(filePath, decoded);
-          console.info(`Kubeconfig saved to ${filePath}`);
-        } catch (writeErr) {
-          console.error("Failed to write kubeconfig:", writeErr);
-        }
-      },
-    );
+  const downloadTextFile = (filename: string, contents: string, type: string) => {
+    const data = new Blob([contents], { type });
+    const url = URL.createObjectURL(data);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadKubeConfig = async () => {
+    const name = object.getName();
+    const namespace = object.getNs();
+
+    if (!namespace) {
+      return;
+    }
+
+    try {
+      const secretApi = Renderer.K8sApi.apiManager.getApiByKind("Secret", "v1") as Renderer.K8sApi.KubeApi<any> | undefined;
+
+      if (!secretApi) {
+        throw new Error("Secret API is not available");
+      }
+
+      const secret = await secretApi.get({
+        namespace,
+        name: `${name}-admin-kubeconfig`,
+      }) as { data?: Record<string, string> } | null;
+
+      const encoded = secret?.data?.["admin.conf"];
+
+      if (!encoded) {
+        throw new Error("Secret data key admin.conf not found");
+      }
+
+      const decoded = atob(encoded);
+
+      downloadTextFile(`kamaji-${name}-kubeconfig.yaml`, decoded, "text/yaml");
+      console.info(`Kubeconfig downloaded for ${namespace}/${name}`);
+    } catch (error) {
+      console.error("Failed to download kubeconfig:", error);
+    }
   };
 
   return (
-    <MenuActions id={`menu-actions-test-${randomUUID()}`}>
-      <MenuItem onClick={downloadKubeConfig}>
-        <Icon material="download" tooltip="Download kubeconfig" />
-        <span>Download kubeconfig</span>
-      </MenuItem>
-    </MenuActions>
+    <MenuItem onClick={() => void downloadKubeConfig()}>
+      <Icon material="download" interactive={toolbar} title="Download kubeconfig" />
+      <span className="title">Download kubeconfig</span>
+    </MenuItem>
   );
 };
-
-export default KamajiMenuItem;

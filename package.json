@@ -49,11 +49,14 @@
     "@types/react": "^19.1.13",
     "@vitejs/plugin-react": "^5.0.2",
     "electron-vite": "4.0.0",
+    "mobx": "6.13.7",
+    "mobx-react": "7.6.0",
     "react": "^19.1.1",
     "sass": "^1.92.1",
     "typescript": "5.9.2",
     "vite": "^7.1.5",
-    "vite-plugin-external": "^6.2.2"
+    "vite-plugin-external": "^6.2.2",
+    "yaml": "^2.8.4"
   },
   "keywords": [
     "kamaji",
