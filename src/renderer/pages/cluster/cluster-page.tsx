@@ -1,5 +1,7 @@
 import { Renderer } from "@freelensapp/extensions";
 import { observer } from "mobx-react";
+import { useState } from "react";
+import { CreateTenantDialog } from "../../dialogs/create-tenant-dialog";
 import { TenantControlPlane, type TenantControlPlaneApi } from "../../k8s/tenant-control-plane-v1alpha1";
 import styles from "./cluster-page.module.css";
 import styleInline from "./cluster-page.module.css?inline";
@@ -66,39 +68,60 @@ const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks;
 
 export const ClusterPage = observer(() => {
   const store = (KubeObject as any).getStore() as Renderer.K8sApi.KubeObjectStore<KubeObject>;
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   return (
-    <div className={styles.container}>
-      <style>{styleInline}</style>
-      <KubeObjectListLayout<KubeObject, KubeObjectApi>
-        className={styles.kamajiCrds}
-        tableId={`${KubeObject.crd.plural}Table`}
-        store={store}
-        renderHeaderTitle={KubeObject.crd.title}
-        sortingCallbacks={sortingCallbacks}
-        searchFilters={[
-          (object: KubeObject) => [
-            object.getName(),
-            object.getNs(),
-            getStatusText(object),
-            getPodReplicasText(object),
-            getEndpoint(object),
-            getKubernetesVersion(object),
-            getDatastoreText(object),
-          ],
-        ]}
-        renderTableHeader={renderTableHeader}
-        renderTableContents={(object: KubeObject) => [
-          <WithTooltip>{object.getName()}</WithTooltip>,
-          <NamespaceSelectBadge namespace={object.getNs() ?? ""} />,
-          <WithTooltip>{getStatusText(object)}</WithTooltip>,
-          <WithTooltip>{getPodReplicasText(object)}</WithTooltip>,
-          <WithTooltip>{getEndpoint(object)}</WithTooltip>,
-          <WithTooltip>{getKubernetesVersion(object)}</WithTooltip>,
-          <WithTooltip>{getDatastoreText(object)}</WithTooltip>,
-          <KubeObjectAge object={object} key="age" />,
-        ]}
-      />
-    </div>
+    <>
+      <div className={styles.container}>
+        <style>{styleInline}</style>
+        <KubeObjectListLayout<KubeObject, KubeObjectApi>
+          className={styles.kamajiCrds}
+          tableId={`${KubeObject.crd.plural}Table`}
+          store={store}
+          renderHeaderTitle={KubeObject.crd.title}
+          toolbarItems={[
+            {
+              actionId: "create-tenant",
+              title: "Create",
+              icon: "add",
+              onClick: () => setIsCreateDialogOpen(true),
+            },
+          ]}
+          sortingCallbacks={sortingCallbacks}
+          searchFilters={[
+            (object: KubeObject) => [
+              object.getName(),
+              object.getNs(),
+              getStatusText(object),
+              getPodReplicasText(object),
+              getEndpoint(object),
+              getKubernetesVersion(object),
+              getDatastoreText(object),
+            ],
+          ]}
+          renderTableHeader={renderTableHeader}
+          renderTableContents={(object: KubeObject) => [
+            <WithTooltip>{object.getName()}</WithTooltip>,
+            <NamespaceSelectBadge namespace={object.getNs() ?? ""} />,
+            <WithTooltip>{getStatusText(object)}</WithTooltip>,
+            <WithTooltip>{getPodReplicasText(object)}</WithTooltip>,
+            <WithTooltip>{getEndpoint(object)}</WithTooltip>,
+            <WithTooltip>{getKubernetesVersion(object)}</WithTooltip>,
+            <WithTooltip>{getDatastoreText(object)}</WithTooltip>,
+            <KubeObjectAge object={object} key="age" />,
+          ]}
+        />
+      </div>
+      {isCreateDialogOpen && (
+        <CreateTenantDialog
+          store={store}
+          onClose={() => {
+            setIsCreateDialogOpen(false);
+            // Refresh store to see new tenant
+            store.loadAll();
+          }}
+        />
+      )}
+    </>
   );
 });
