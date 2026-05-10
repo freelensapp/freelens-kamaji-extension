@@ -22,8 +22,37 @@ interface TenantStorageStatus {
 }
 
 export interface TenantControlPlaneSpec {
+  dataStore?: string;
+  networkProfile?: {
+    port?: number;
+    serviceCidr?: string;
+    podCidr?: string;
+    dnsServiceIPs?: string[];
+  };
   kubernetes?: {
     version?: string;
+    kubelet?: {
+      cgroupfs?: string;
+    };
+  };
+  controlPlane?: {
+    deployment?: {
+      replicas?: number;
+    };
+    service?: {
+      serviceType?: string;
+    };
+  };
+  addons?: {
+    coreDNS?: Record<string, unknown>;
+    kubeProxy?: Record<string, unknown>;
+    konnectivity?: {
+      server?: {
+        port?: number;
+        resources?: Record<string, unknown>;
+      };
+      agent?: Record<string, unknown>;
+    };
   };
 }
 

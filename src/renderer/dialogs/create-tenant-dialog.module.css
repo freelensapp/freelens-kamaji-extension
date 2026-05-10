@@ -1,9 +1,11 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  min-width: 400px;
+.createTenantDialog {
+  --flex-gap: 12px;
+
+  :global(.Wizard) {
+    width: min(86vw, 1040px);
+    --wizard-content-height: min(68vh, 820px);
+    --wizard-content-max-height: min(68vh, 820px);
+  }
 }
 
 .field {
@@ -24,25 +26,47 @@
   font-size: 13px;
 }
 
-.loading {
+.formContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.advanced {
+  margin-top: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px 12px 12px;
+}
+
+.advancedGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.advanced > summary {
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+}
+
+.checkboxRow {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  padding: 16px;
-  color: #666;
-  font-size: 13px;
+  margin-top: 14px;
 }
 
-.spinner {
-  animation: spin 1s linear infinite;
+.yamlActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.yamlHint {
+  color: var(--textColorAccent);
+  font-size: 12px;
 }
