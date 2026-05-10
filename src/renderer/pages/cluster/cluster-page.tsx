@@ -12,14 +12,44 @@ const KubeObject = TenantControlPlane;
 type KubeObject = TenantControlPlane;
 type KubeObjectApi = TenantControlPlaneApi;
 
+const getStatusText = (object: KubeObject): string =>
+  (object as any).status?.kubernetesResources?.version?.status ?? "Unknown";
+
+const getPodReplicasText = (object: KubeObject): string => {
+  const deployment = (object as any).status?.kubernetesResources?.deployment;
+  const total = deployment?.replicas ?? 0;
+  const ready = deployment?.availableReplicas ?? deployment?.readyReplicas ?? 0;
+
+  return `${ready}/${total}`;
+};
+
+const getEndpoint = (object: KubeObject): string =>
+  (object as any).status?.controlPlaneEndpoint ?? "-";
+
+const getKubernetesVersion = (object: KubeObject): string =>
+  (object as any).spec?.kubernetes?.version ??
+  (object as any).status?.kubernetesResources?.version?.version ??
+  "-";
+
+const getDatastoreText = (object: KubeObject): string => {
+  const dataStoreName = (object as any).status?.storage?.dataStoreName;
+  const driver = (object as any).status?.storage?.driver;
+
+  if (!dataStoreName && !driver) {
+    return "-";
+  }
+
+  return [dataStoreName, driver].filter(Boolean).join(" ");
+};
+
 const sortingCallbacks = {
   name: (object: KubeObject) => object.getName(),
   namespace: (object: KubeObject) => object.getNs(),
-  status: (object: KubeObject) => object.getStatusText(),
-  pods: (object: KubeObject) => object.getPodReplicasText(),
-  endpoint: (object: KubeObject) => object.getEndpoint(),
-  version: (object: KubeObject) => object.getKubernetesVersion(),
-  datastore: (object: KubeObject) => object.getDatastoreText(),
+  status: (object: KubeObject) => getStatusText(object),
+  pods: (object: KubeObject) => getPodReplicasText(object),
+  endpoint: (object: KubeObject) => getEndpoint(object),
+  version: (object: KubeObject) => getKubernetesVersion(object),
+  datastore: (object: KubeObject) => getDatastoreText(object),
   age: (object: KubeObject) => object.getCreationTimestamp(),
 };
 
@@ -35,7 +65,7 @@ const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks;
 ];
 
 export const ClusterPage = observer(() => {
-  const store = (KubeObject as any).getStore?.();
+  const store = (KubeObject as any).getStore() as Renderer.K8sApi.KubeObjectStore<KubeObject>;
 
   return (
     <div className={styles.container}>
@@ -50,22 +80,22 @@ export const ClusterPage = observer(() => {
           (object: KubeObject) => [
             object.getName(),
             object.getNs(),
-            object.getStatusText(),
-            object.getPodReplicasText(),
-            object.getEndpoint(),
-            object.getKubernetesVersion(),
-            object.getDatastoreText(),
+            getStatusText(object),
+            getPodReplicasText(object),
+            getEndpoint(object),
+            getKubernetesVersion(object),
+            getDatastoreText(object),
           ],
         ]}
         renderTableHeader={renderTableHeader}
         renderTableContents={(object: KubeObject) => [
           <WithTooltip>{object.getName()}</WithTooltip>,
           <NamespaceSelectBadge namespace={object.getNs() ?? ""} />,
-          <WithTooltip>{object.getStatusText()}</WithTooltip>,
-          <WithTooltip>{object.getPodReplicasText()}</WithTooltip>,
-          <WithTooltip>{object.getEndpoint()}</WithTooltip>,
-          <WithTooltip>{object.getKubernetesVersion()}</WithTooltip>,
-          <WithTooltip>{object.getDatastoreText()}</WithTooltip>,
+          <WithTooltip>{getStatusText(object)}</WithTooltip>,
+          <WithTooltip>{getPodReplicasText(object)}</WithTooltip>,
+          <WithTooltip>{getEndpoint(object)}</WithTooltip>,
+          <WithTooltip>{getKubernetesVersion(object)}</WithTooltip>,
+          <WithTooltip>{getDatastoreText(object)}</WithTooltip>,
           <KubeObjectAge object={object} key="age" />,
         ]}
       />
