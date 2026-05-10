@@ -1,55 +1,60 @@
-import { Common, Renderer } from "@freelensapp/extensions";
 import { exec } from "child_process";
 import { writeFileSync } from "fs";
-import { randomUUID } from "node:crypto";
 import { homedir } from "os";
 import { join } from "path";
-import { Tenant } from "../objects/tenant";
+import { Common, Renderer } from "@freelensapp/extensions";
+import { TenantControlPlane } from "../k8s/tenant-control-plane-v1alpha1";
 
 const {
-  Component: { MenuActions, MenuItem, Icon },
+  Component: { Icon, MenuItem },
 } = Renderer;
 
 const { App } = Common;
 
-interface KamajiMenuItemProperties {
-  item: Tenant;
+export interface KamajiMenuItemProps {
+  object?: TenantControlPlane;
+  toolbar?: boolean;
 }
 
-// @ts-ignore
-const KamajiMenuItem = ({ item }: KamajiMenuItemProperties) => {
+export const KamajiMenuItem = ({ object, toolbar }: KamajiMenuItemProps) => {
+  if (!object) {
+    return <></>;
+  }
+
   const downloadKubeConfig = () => {
     const kubectlPath = App.Preferences.getKubectlPath() || "kubectl";
-    const name = item.getName();
-    const namespace = item.getNamespace();
+    const name = object.getName();
+    const namespace = object.getNs();
+
+    if (!namespace) {
+      return;
+    }
 
     exec(
       `${kubectlPath} get secret ${name}-admin-kubeconfig -n ${namespace} -o jsonpath='{.data.admin\\.conf}'`,
-      (err, stdout) => {
-        if (err) {
-          console.error("Failed to get kubeconfig secret:", err);
+      (error, stdout) => {
+        if (error) {
+          console.error("Failed to get kubeconfig secret:", error);
           return;
         }
+
         const decoded = Buffer.from(stdout.replace(/^'|'$/g, ""), "base64").toString("utf-8");
         const filePath = join(homedir(), ".kube", `kamaji-${name}.yaml`);
+
         try {
           writeFileSync(filePath, decoded);
           console.info(`Kubeconfig saved to ${filePath}`);
-        } catch (writeErr) {
-          console.error("Failed to write kubeconfig:", writeErr);
+        } catch (writeError) {
+          console.error("Failed to write kubeconfig:", writeError);
         }
       },
     );
   };
 
   return (
-    <MenuActions id={`menu-actions-test-${randomUUID()}`}>
-      <MenuItem onClick={downloadKubeConfig}>
-        <Icon material="download" tooltip="Download kubeconfig" />
-        <span>Download kubeconfig</span>
-      </MenuItem>
-    </MenuActions>
+    <MenuItem onClick={downloadKubeConfig}>
+      <Icon material="download" interactive={toolbar} title="Download kubeconfig" />
+      <span className="title">Download kubeconfig</span>
+    </MenuItem>
   );
 };
-
-export default KamajiMenuItem;

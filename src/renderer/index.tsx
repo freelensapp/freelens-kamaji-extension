@@ -4,7 +4,9 @@
  */
 
 import { Renderer } from "@freelensapp/extensions";
+import { KamajiMenuItem, type KamajiMenuItemProps } from "./components/kamaji-menu-item";
 import { KamajiIcon } from "./icons/kamaji";
+import { TenantControlPlane } from "./k8s/tenant-control-plane-v1alpha1";
 import { ClusterPage } from "./pages/cluster/cluster-page";
 
 export default class KamajiRenderer extends Renderer.LensExtension {
@@ -24,6 +26,16 @@ export default class KamajiRenderer extends Renderer.LensExtension {
       target: { pageId: "kamaji-main-page" },
       components: {
         Icon: KamajiIcon,
+      },
+    },
+  ];
+
+  kubeObjectMenuItems = [
+    {
+      kind: TenantControlPlane.kind,
+      apiVersions: TenantControlPlane.crd.apiVersions,
+      components: {
+        MenuItem: (props: KamajiMenuItemProps) => <KamajiMenuItem {...props} />,
       },
     },
   ];

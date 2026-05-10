@@ -1,72 +1,74 @@
 import { Renderer } from "@freelensapp/extensions";
+import { observer } from "mobx-react";
+import { TenantControlPlane, type TenantControlPlaneApi } from "../../k8s/tenant-control-plane-v1alpha1";
 import styles from "./cluster-page.module.css";
 import styleInline from "./cluster-page.module.css?inline";
-import useClusterPageHook from "./cluster-page-hook";
-import TenantHeader from "../../components/tenant-header";
-import KamajiMenuItem from "../../components/kamaji-menu-item";
-
 
 const {
-  Component: {ItemListLayout}
+  Component: { KubeObjectAge, KubeObjectListLayout, NamespaceSelectBadge, WithTooltip },
 } = Renderer;
 
-export const ClusterPage = () => {
-  const mainPageHook = useClusterPageHook();
+const KubeObject = TenantControlPlane;
+type KubeObject = TenantControlPlane;
+type KubeObjectApi = TenantControlPlaneApi;
+
+const sortingCallbacks = {
+  name: (object: KubeObject) => object.getName(),
+  namespace: (object: KubeObject) => object.getNs(),
+  status: (object: KubeObject) => object.getStatusText(),
+  pods: (object: KubeObject) => object.getPodReplicasText(),
+  endpoint: (object: KubeObject) => object.getEndpoint(),
+  version: (object: KubeObject) => object.getKubernetesVersion(),
+  datastore: (object: KubeObject) => object.getDatastoreText(),
+  age: (object: KubeObject) => object.getCreationTimestamp(),
+};
+
+const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks; className?: string }[] = [
+  { title: "Name", sortBy: "name", className: "name" },
+  { title: "Namespace", sortBy: "namespace", className: "namespace" },
+  { title: "Status", sortBy: "status", className: "status" },
+  { title: "Pods", sortBy: "pods", className: "pods" },
+  { title: "Endpoint", sortBy: "endpoint", className: "endpoint" },
+  { title: "Version", sortBy: "version", className: "version" },
+  { title: "Datastore", sortBy: "datastore", className: "datastore" },
+  { title: "Age", sortBy: "age", className: "age" },
+];
+
+export const ClusterPage = observer(() => {
+  const store = (KubeObject as any).getStore?.();
 
   return (
     <div className={styles.container}>
       <style>{styleInline}</style>
-      <ItemListLayout
+      <KubeObjectListLayout<KubeObject, KubeObjectApi>
         className={styles.kamajiCrds}
-        renderHeaderTitle="Kamaji"
-        // isConfigurable
-        tableId={"kamaji-crd-table"}
-        customizeHeader={[
-          (props) => TenantHeader(props)
+        tableId={`${KubeObject.crd.plural}Table`}
+        store={store}
+        renderHeaderTitle={KubeObject.crd.title}
+        sortingCallbacks={sortingCallbacks}
+        searchFilters={[
+          (object: KubeObject) => [
+            object.getName(),
+            object.getNs(),
+            object.getStatusText(),
+            object.getPodReplicasText(),
+            object.getEndpoint(),
+            object.getKubernetesVersion(),
+            object.getDatastoreText(),
+          ],
         ]}
-        renderItemMenu={(item) => <KamajiMenuItem item={item}/>}
-        searchFilters={mainPageHook.searchFilters}
-        getItems={() => mainPageHook.tenantData}
-        sortingCallbacks={{
-          "name": (item) => item.getName(),
-          "namespace": (item) => item.getNamespace(),
-          "status": (item) => item.getStatus(),
-          "pods": (item) => item.getPods(),
-          "endpoint": (item) => item.getEndpoint(),
-          "version": (item) => item.getVersion(),
-          "datastore": (item) => item.getDatastore(),
-          "age": (item) => item.getAge()
-        }}
-        store={
-          {
-            get isLoaded() {
-              return mainPageHook.isLoaded;
-            },
-            failedLoading: mainPageHook.failedLoading,
-            getTotalCount: () => mainPageHook.tenantData.length,
-            isSelected: (item) => item && item.isSelected,
-            toggleSelection: (item) => mainPageHook.toggleSelection(item),
-            isSelectedAll: () => mainPageHook.isAllSelected(),
-            toggleSelectionAll: () => mainPageHook.toggleSelectionAll(),
-            pickOnlySelected: () => ["pickOnlySelected"],
-            removeSelectedItems: async () => {
-              // TODO: To implement
-              console.log("removeSelectedItems");
-            },
-            removeItems: (selectedItems) => {
-              // TODO: To implement
-              console.log(selectedItems);
-              console.log("removeItems");
-              return Promise.resolve();
-            },
-            loadAll: (selectedNamespaces: readonly string[]) => {
-              return mainPageHook.loadTenants(selectedNamespaces);
-            }
-          }
-        }
-        renderTableHeader={mainPageHook.tableHeaders}
-        renderTableContents={mainPageHook.renderTableContents}
+        renderTableHeader={renderTableHeader}
+        renderTableContents={(object: KubeObject) => [
+          <WithTooltip>{object.getName()}</WithTooltip>,
+          <NamespaceSelectBadge namespace={object.getNs() ?? ""} />,
+          <WithTooltip>{object.getStatusText()}</WithTooltip>,
+          <WithTooltip>{object.getPodReplicasText()}</WithTooltip>,
+          <WithTooltip>{object.getEndpoint()}</WithTooltip>,
+          <WithTooltip>{object.getKubernetesVersion()}</WithTooltip>,
+          <WithTooltip>{object.getDatastoreText()}</WithTooltip>,
+          <KubeObjectAge object={object} key="age" />,
+        ]}
       />
     </div>
   );
-};
+});
