@@ -1,10 +1,10 @@
 import { Renderer } from "@freelensapp/extensions";
 import { observer } from "mobx-react";
-import { useState } from "react";
 import { CreateTenantDialog } from "../../dialogs/create-tenant-dialog";
 import { TenantControlPlane, type TenantControlPlaneApi } from "../../k8s/tenant-control-plane-v1alpha1";
 import styles from "./cluster-page.module.css";
 import styleInline from "./cluster-page.module.css?inline";
+import { createTenantDialogState } from "../../dialogs/create-tenant-dialog-state";
 
 const {
   Component: { KubeObjectAge, KubeObjectListLayout, NamespaceSelectBadge, WithTooltip },
@@ -68,7 +68,6 @@ const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks;
 
 export const ClusterPage = observer(() => {
   const store = (KubeObject as any).getStore() as Renderer.K8sApi.KubeObjectStore<KubeObject>;
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   return (
     <>
@@ -79,14 +78,10 @@ export const ClusterPage = observer(() => {
           tableId={`${KubeObject.crd.plural}Table`}
           store={store}
           renderHeaderTitle={KubeObject.crd.title}
-          toolbarItems={[
-            {
-              actionId: "create-tenant",
-              title: "Create",
-              icon: "add",
-              onClick: () => setIsCreateDialogOpen(true),
-            },
-          ]}
+          addRemoveButtons={{
+            onAdd: () => createTenantDialogState.open(),
+            addTooltip: "Create new Tenant",
+          }}
           sortingCallbacks={sortingCallbacks}
           searchFilters={[
             (object: KubeObject) => [
@@ -112,16 +107,7 @@ export const ClusterPage = observer(() => {
           ]}
         />
       </div>
-      {isCreateDialogOpen && (
-        <CreateTenantDialog
-          store={store}
-          onClose={() => {
-            setIsCreateDialogOpen(false);
-            // Refresh store to see new tenant
-            store.loadAll();
-          }}
-        />
-      )}
+      <CreateTenantDialog store={store} />
     </>
   );
 });

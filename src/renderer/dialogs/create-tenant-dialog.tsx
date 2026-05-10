@@ -7,6 +7,8 @@ import { Renderer } from "@freelensapp/extensions";
 import { useState } from "react";
 import { TenantControlPlane, type TenantControlPlaneApi } from "../k8s/tenant-control-plane-v1alpha1";
 import styles from "./create-tenant-dialog.module.css";
+import { observer } from "mobx-react";
+import { createTenantDialogState } from "./create-tenant-dialog-state";
 
 const {
   Component: {
@@ -22,7 +24,7 @@ export interface CreateTenantDialogProps {
   onClose?: () => void;
 }
 
-export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) => {
+export const CreateTenantDialog = observer(({ store, onClose }: CreateTenantDialogProps) => {
   const [name, setName] = useState("");
   const [namespace, setNamespace] = useState("default");
   const [kubernetesVersion, setKubernetesVersion] = useState("1.27.0");
@@ -68,6 +70,9 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
       await store.create({ namespace: namespace.trim() }, tenantResource as any);
 
       // Close dialog on success
+      createTenantDialogState.close();
+      // Refresh store to see new tenant
+      store.loadAll();
       onClose?.();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
@@ -80,12 +85,15 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
 
   return (
     <ConfirmDialog
-      isOpen={true}
+      isOpen={createTenantDialogState.isOpen}
       title="Create Tenant Control Plane"
       okButtonText="Create"
       cancelButtonText="Cancel"
       onOk={handleCreate}
-      onCancel={onClose}
+      onCancel={() => {
+        createTenantDialogState.close();
+        onClose?.();
+      }}
       disableOkButton={loading || !name.trim()}
     >
       <div className={styles.container}>
@@ -133,4 +141,4 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
       </div>
     </ConfirmDialog>
   );
-};
+});
