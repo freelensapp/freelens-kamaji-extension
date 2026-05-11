@@ -14,6 +14,54 @@
   gap: 8px;
 }
 
+.textArea {
+  box-sizing: border-box;
+  min-height: 80px;
+  resize: vertical;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--inputControlBackground);
+  color: var(--textColorPrimary);
+  padding: 8px 10px;
+  font-family: var(--font-monospace, monospace);
+  font-size: 12px;
+}
+
+.profileButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profileButton {
+  display: inline-block;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--textColorPrimary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.profileButtonActive {
+  display: inline-block;
+  border: 1px solid var(--colorInfo, #2196f3);
+  border-radius: 4px;
+  background: rgba(33, 150, 243, 0.15);
+  color: var(--textColorPrimary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+}
+
 .error {
   display: flex;
   align-items: center;
@@ -32,18 +80,23 @@
   gap: 12px;
 }
 
-.advanced {
-  margin-top: 4px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  padding: 8px 12px 12px;
+.toggleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .advancedGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 4px;
+  min-width: 0;
+}
+
+.advancedGrid .field {
+  min-width: 0;
 }
 
 .advanced > summary {
@@ -59,14 +112,8 @@
   margin-top: 14px;
 }
 
-.yamlActions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-
 .yamlHint {
   color: var(--textColorAccent);
   font-size: 12px;
+  padding-left: 4px;
 }
