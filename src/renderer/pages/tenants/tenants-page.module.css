@@ -1,0 +1,117 @@
+.container {
+  margin: 16px;
+  height: 100%;
+  padding-bottom: 32px;
+}
+
+.notInstalledState {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 560px);
+  gap: 20px;
+  align-items: center;
+  margin: 64px auto;
+  padding: 28px 32px;
+  max-width: 760px;
+  border: 1px solid color-mix(in srgb, var(--colorInfo) 28%, transparent);
+  border-radius: 20px;
+  background: radial-gradient(
+      circle at top left,
+      color-mix(in srgb, var(--colorInfo) 16%, transparent),
+      transparent 38%
+    ), linear-gradient(180deg, color-mix(in srgb, var(--layoutBackground) 92%, white 8%), var(--layoutBackground));
+  box-shadow: 0 18px 48px rgb(0 0 0 / 18%);
+}
+
+.notInstalledIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--colorInfo) 18%, transparent);
+  color: var(--colorInfo);
+
+  img {
+    width: 48px;
+    height: 48px;
+    filter: none;
+  }
+}
+
+.notInstalledContent {
+  h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--textColorSecondary);
+    line-height: 1.55;
+  }
+
+  p + p {
+    margin-top: 10px;
+  }
+}
+
+.docsLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--colorInfo) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--colorInfo) 26%, transparent);
+  color: var(--colorInfo);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--colorInfo) 24%, transparent);
+    border-color: color-mix(in srgb, var(--colorInfo) 38%, transparent);
+    transform: translateY(-1px);
+  }
+}
+
+.kamajiCrds {
+  .TableCell {
+    &.name {
+      flex-grow: 0.2;
+    }
+
+    &.namespace {
+      flex-grow: 0.2;
+    }
+
+    &.status {
+      flex-grow: 0.2;
+    }
+
+    &.pods {
+      flex-grow: 0.2;
+      justify-content: right;
+    }
+
+    &.endpoint {
+      flex-grow: 0.2;
+      justify-content: right;
+    }
+
+    &.version {
+      flex-grow: 0.2;
+    }
+
+    &.datastore {
+      flex-grow: 0.2;
+    }
+
+    &.age {
+      flex-grow: 0.2;
+    }
+  }
+}

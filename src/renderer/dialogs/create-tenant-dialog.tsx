@@ -9,15 +9,7 @@ import { TenantControlPlane, type TenantControlPlaneApi } from "../k8s/tenant-co
 import styles from "./create-tenant-dialog.module.css";
 
 const {
-  Component: {
-    Dialog,
-    Input,
-    Icon,
-    NamespaceSelect,
-    SubTitle,
-    Wizard,
-    WizardStep,
-  },
+  Component: { Dialog, Input, Icon, NamespaceSelect, SubTitle, Wizard, WizardStep },
 } = Renderer;
 
 export interface CreateTenantDialogProps {
@@ -30,6 +22,7 @@ const generateDefaultTenantName = () => `tenant-${Math.floor(Math.random() * 999
 export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) => {
   const [name, setName] = useState(generateDefaultTenantName);
   const [namespace, setNamespace] = useState("default");
+  const [dataStore, setDataStore] = useState("default");
   const [kubernetesVersion, setKubernetesVersion] = useState("1.33.0");
   const [replicas, setReplicas] = useState("1");
   const [serviceCidr, setServiceCidr] = useState("10.96.0.0/16");
@@ -44,9 +37,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
       ? kubernetesVersion.trim()
       : `v${kubernetesVersion.trim()}`;
     const parsedReplicas = Number.parseInt(replicas.trim(), 10);
-    const safeReplicas = Number.isInteger(parsedReplicas) && parsedReplicas > 0
-      ? parsedReplicas
-      : 1;
+    const safeReplicas = Number.isInteger(parsedReplicas) && parsedReplicas > 0 ? parsedReplicas : 1;
 
     return {
       apiVersion: "kamaji.clastix.io/v1alpha1",
@@ -56,7 +47,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
         namespace: namespace.trim(),
       },
       spec: {
-        dataStore: "default",
+        dataStore: dataStore.trim() || "default",
         networkProfile: {
           port: 6443,
           serviceCidr: serviceCidr.trim(),
@@ -90,7 +81,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
         },
       },
     };
-  }, [dnsServiceIp, kubernetesVersion, name, namespace, podCidr, replicas, serviceCidr]);
+  }, [dataStore, dnsServiceIp, kubernetesVersion, name, namespace, podCidr, replicas, serviceCidr]);
 
   const handleCreate = async () => {
     if (!name.trim()) {
@@ -129,12 +120,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   };
 
   return (
-    <Dialog
-      isOpen={true}
-      className={styles.createTenantDialog}
-      onOpen={reset}
-      close={onClose}
-    >
+    <Dialog isOpen={true} className={styles.createTenantDialog} onOpen={reset} close={onClose}>
       <Wizard header={<h5>Create Tenant Control Plane</h5>} done={onClose}>
         <WizardStep
           contentClass={styles.formContent}
@@ -172,6 +158,16 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
           </div>
 
           <div className={styles.field}>
+            <SubTitle title="Datastore" />
+            <Input
+              value={dataStore}
+              onChange={(value) => setDataStore(value)}
+              placeholder="e.g., default"
+              disabled={loading}
+            />
+          </div>
+
+          <div className={styles.field}>
             <SubTitle title="Kubernetes Version" />
             <Input
               value={kubernetesVersion}
@@ -183,12 +179,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
 
           <div className={styles.field}>
             <SubTitle title="Replicas" />
-            <Input
-              value={replicas}
-              onChange={(value) => setReplicas(value)}
-              placeholder="e.g., 1"
-              disabled={loading}
-            />
+            <Input value={replicas} onChange={(value) => setReplicas(value)} placeholder="e.g., 1" disabled={loading} />
           </div>
 
           <details
