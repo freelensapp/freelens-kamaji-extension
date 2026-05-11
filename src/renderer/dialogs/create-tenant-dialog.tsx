@@ -30,6 +30,7 @@ const generateDefaultTenantName = () => `tenant-${Math.floor(Math.random() * 999
 export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) => {
   const [name, setName] = useState(generateDefaultTenantName);
   const [namespace, setNamespace] = useState("default");
+  const [dataStore, setDataStore] = useState("default");
   const [kubernetesVersion, setKubernetesVersion] = useState("1.33.0");
   const [replicas, setReplicas] = useState("1");
   const [serviceCidr, setServiceCidr] = useState("10.96.0.0/16");
@@ -56,7 +57,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
         namespace: namespace.trim(),
       },
       spec: {
-        dataStore: "default",
+        dataStore: dataStore.trim() || "default",
         networkProfile: {
           port: 6443,
           serviceCidr: serviceCidr.trim(),
@@ -90,7 +91,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
         },
       },
     };
-  }, [dnsServiceIp, kubernetesVersion, name, namespace, podCidr, replicas, serviceCidr]);
+  }, [dataStore, dnsServiceIp, kubernetesVersion, name, namespace, podCidr, replicas, serviceCidr]);
 
   const handleCreate = async () => {
     if (!name.trim()) {
@@ -168,6 +169,16 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
               themeName="light"
               value={namespace}
               onChange={(option) => setNamespace(option?.value ?? "default")}
+            />
+          </div>
+
+          <div className={styles.field}>
+            <SubTitle title="Datastore" />
+            <Input
+              value={dataStore}
+              onChange={(value) => setDataStore(value)}
+              placeholder="e.g., default"
+              disabled={loading}
             />
           </div>
 

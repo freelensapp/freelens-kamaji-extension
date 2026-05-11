@@ -7,6 +7,15 @@ import { TenantControlPlane, type TenantControlPlaneApi } from "../../k8s/tenant
 import styles from "./tenants-page.module.css";
 import styleInline from "./tenants-page.module.css?inline";
 
+const pageInlineStyles = `${styleInline}
+.TabLayout > .Tabs {
+  display: none;
+}
+
+.TabLayout > main {
+  margin: 0;
+}`;
+
 const {
   Component: { KubeObjectAge, KubeObjectListLayout, NamespaceSelectBadge, WithTooltip },
 } = Renderer;
@@ -88,7 +97,7 @@ export const TenantsPage = observer(() => {
   if (missingKamaji || !store) {
     return (
       <div className={styles.container}>
-        <style>{styleInline}</style>
+        <style>{pageInlineStyles}</style>
 
         <div className={styles.notInstalledState}>
           <div className={styles.notInstalledIcon}>
@@ -122,7 +131,7 @@ export const TenantsPage = observer(() => {
   return (
     <>
       <div className={styles.container}>
-        <style>{styleInline}</style>
+        <style>{pageInlineStyles}</style>
         <KubeObjectListLayout<KubeObject, KubeObjectApi>
           className={styles.kamajiCrds}
           tableId={`${KubeObject.crd.plural}Table`}
