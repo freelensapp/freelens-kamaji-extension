@@ -2,9 +2,10 @@ import { Renderer } from "@freelensapp/extensions";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import { CreateTenantDialog } from "../../dialogs/create-tenant-dialog";
+import { KamajiIcon } from "../../icons/kamaji";
 import { TenantControlPlane, type TenantControlPlaneApi } from "../../k8s/tenant-control-plane-v1alpha1";
-import styles from "./cluster-page.module.css";
-import styleInline from "./cluster-page.module.css?inline";
+import styles from "./tenants-page.module.css";
+import styleInline from "./tenants-page.module.css?inline";
 
 const {
   Component: { KubeObjectAge, KubeObjectListLayout, NamespaceSelectBadge, WithTooltip },
@@ -66,9 +67,57 @@ const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks;
   { title: "Age", sortBy: "age", className: "age" },
 ];
 
-export const ClusterPage = observer(() => {
-  const store = (KubeObject as any).getStore() as Renderer.K8sApi.KubeObjectStore<KubeObject>;
+export const TenantsPage = observer(() => {
+  let store: Renderer.K8sApi.KubeObjectStore<KubeObject> | null = null;
+  let missingKamaji = false;
+
+  try {
+    store = (KubeObject as any).getStore() as Renderer.K8sApi.KubeObjectStore<KubeObject>;
+  } catch (error) {
+    const errorMessage = String(error);
+
+    if (errorMessage.includes("not registered") || errorMessage.includes("getStore")) {
+      missingKamaji = true;
+    } else {
+      throw error;
+    }
+  }
+
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+
+  if (missingKamaji || !store) {
+    return (
+      <div className={styles.container}>
+        <style>{styleInline}</style>
+
+        <div className={styles.notInstalledState}>
+          <div className={styles.notInstalledIcon}>
+            <KamajiIcon />
+          </div>
+
+          <div className={styles.notInstalledContent}>
+            <h2>Kamaji was not detected on this cluster</h2>
+            <p>
+              This extension can only be used when Kamaji CRDs are installed on the connected cluster.
+            </p>
+            <p>
+              Install Kamaji on the cluster, then reopen this page to view and manage Tenant Control
+              Planes.
+            </p>
+
+            <a
+              className={styles.docsLink}
+              href="https://kamaji.clastix.io"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open Kamaji documentation
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

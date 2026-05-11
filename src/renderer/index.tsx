@@ -8,14 +8,14 @@ import { KamajiMenuItem, type KamajiMenuItemProps } from "./components/kamaji-me
 import { TenantDetails } from "./details/tenant-details";
 import { KamajiIcon } from "./icons/kamaji";
 import { TenantControlPlane } from "./k8s/tenant-control-plane-v1alpha1";
-import { ClusterPage } from "./pages/cluster/cluster-page";
+import { TenantsPage } from "./pages/tenants/tenants-page";
 
 export default class KamajiRenderer extends Renderer.LensExtension {
   clusterPages = [
     {
       id: "kamaji-main-page",
       components: {
-        Page: () => <ClusterPage />,
+        Page: () => <TenantsPage />,
       },
     },
   ];
