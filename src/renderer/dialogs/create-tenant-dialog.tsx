@@ -9,15 +9,7 @@ import { TenantControlPlane, type TenantControlPlaneApi } from "../k8s/tenant-co
 import styles from "./create-tenant-dialog.module.css";
 
 const {
-  Component: {
-    Dialog,
-    Input,
-    Icon,
-    NamespaceSelect,
-    SubTitle,
-    Wizard,
-    WizardStep,
-  },
+  Component: { Dialog, Input, Icon, NamespaceSelect, SubTitle, Wizard, WizardStep },
 } = Renderer;
 
 export interface CreateTenantDialogProps {
@@ -45,9 +37,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
       ? kubernetesVersion.trim()
       : `v${kubernetesVersion.trim()}`;
     const parsedReplicas = Number.parseInt(replicas.trim(), 10);
-    const safeReplicas = Number.isInteger(parsedReplicas) && parsedReplicas > 0
-      ? parsedReplicas
-      : 1;
+    const safeReplicas = Number.isInteger(parsedReplicas) && parsedReplicas > 0 ? parsedReplicas : 1;
 
     return {
       apiVersion: "kamaji.clastix.io/v1alpha1",
@@ -130,12 +120,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   };
 
   return (
-    <Dialog
-      isOpen={true}
-      className={styles.createTenantDialog}
-      onOpen={reset}
-      close={onClose}
-    >
+    <Dialog isOpen={true} className={styles.createTenantDialog} onOpen={reset} close={onClose}>
       <Wizard header={<h5>Create Tenant Control Plane</h5>} done={onClose}>
         <WizardStep
           contentClass={styles.formContent}
@@ -194,12 +179,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
 
           <div className={styles.field}>
             <SubTitle title="Replicas" />
-            <Input
-              value={replicas}
-              onChange={(value) => setReplicas(value)}
-              placeholder="e.g., 1"
-              disabled={loading}
-            />
+            <Input value={replicas} onChange={(value) => setReplicas(value)} placeholder="e.g., 1" disabled={loading} />
           </div>
 
           <details

@@ -24,11 +24,9 @@ const KubeObject = DataStore;
 type KubeObject = DataStore;
 type KubeObjectApi = DataStoreApi;
 
-const getDriver = (object: KubeObject): string =>
-  (object as any).spec?.driver ?? "-";
+const getDriver = (object: KubeObject): string => (object as any).spec?.driver ?? "-";
 
-const getUsedByCount = (object: KubeObject): number =>
-  (object as any).status?.usedBy?.length ?? 0;
+const getUsedByCount = (object: KubeObject): number => (object as any).status?.usedBy?.length ?? 0;
 
 const sortingCallbacks = {
   name: (object: KubeObject) => object.getName(),

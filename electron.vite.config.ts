@@ -71,7 +71,15 @@ export default defineConfig({
       }),
       externalizeDepsPlugin({
         // do not bundle modules provided by the host app
-        include: ["@freelensapp/extensions", "electron", "mobx", "mobx-react", "react", "react-dom", "react-router-dom"],
+        include: [
+          "@freelensapp/extensions",
+          "electron",
+          "mobx",
+          "mobx-react",
+          "react",
+          "react-dom",
+          "react-router-dom",
+        ],
         // bundle all other modules
         exclude: [],
       }),

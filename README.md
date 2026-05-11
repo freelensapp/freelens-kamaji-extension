@@ -12,7 +12,7 @@
 
 Freelens extension for [Kamaji](https://kamaji.clastix.io).
 
-A visual interface to manage Kamaji resources directly from your cluster view in Freelens.
+Manage Kamaji resources directly from your Freelens cluster view.
 
 ## Compatibility
 
@@ -20,10 +20,10 @@ This extension is intended for clusters where Kamaji CRDs are installed and avai
 
 ## Features
 
-The extension provides complete resource management for Kamaji with the following capabilities:
+The extension provides full CRUD management for Kamaji resources:
 
-- **Tenant Control Planes**: Create, Read, Update, Delete (CRUD) operations with kubeconfig download
-- **Datastores**: Create, Read, Update, Delete (CRUD) operations
+- **Tenant Control Planes**: Create, Edit, Delete + kubeconfig download
+- **Datastores**: Create, Edit, Delete
 - **Admin Access**: Export tenant kubeconfig for external cluster access
 
 ### Tenants list

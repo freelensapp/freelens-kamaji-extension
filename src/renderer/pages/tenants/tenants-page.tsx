@@ -35,13 +35,10 @@ const getPodReplicasText = (object: KubeObject): string => {
   return `${ready}/${total}`;
 };
 
-const getEndpoint = (object: KubeObject): string =>
-  (object as any).status?.controlPlaneEndpoint ?? "-";
+const getEndpoint = (object: KubeObject): string => (object as any).status?.controlPlaneEndpoint ?? "-";
 
 const getKubernetesVersion = (object: KubeObject): string =>
-  (object as any).spec?.kubernetes?.version ??
-  (object as any).status?.kubernetesResources?.version?.version ??
-  "-";
+  (object as any).spec?.kubernetes?.version ?? (object as any).status?.kubernetesResources?.version?.version ?? "-";
 
 const getDatastoreText = (object: KubeObject): string => {
   const dataStoreName = (object as any).status?.storage?.dataStoreName;
@@ -106,20 +103,10 @@ export const TenantsPage = observer(() => {
 
           <div className={styles.notInstalledContent}>
             <h2>Kamaji was not detected on this cluster</h2>
-            <p>
-              This extension can only be used when Kamaji CRDs are installed on the connected cluster.
-            </p>
-            <p>
-              Install Kamaji on the cluster, then reopen this page to view and manage Tenant Control
-              Planes.
-            </p>
+            <p>This extension can only be used when Kamaji CRDs are installed on the connected cluster.</p>
+            <p>Install Kamaji on the cluster, then reopen this page to view and manage Tenant Control Planes.</p>
 
-            <a
-              className={styles.docsLink}
-              href="https://kamaji.clastix.io"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a className={styles.docsLink} href="https://kamaji.clastix.io" target="_blank" rel="noreferrer">
               Open Kamaji documentation
             </a>
           </div>

@@ -38,16 +38,18 @@ export const KamajiMenuItem = ({ object, toolbar }: KamajiMenuItemProps) => {
     }
 
     try {
-      const secretApi = Renderer.K8sApi.apiManager.getApiByKind("Secret", "v1") as Renderer.K8sApi.KubeApi<any> | undefined;
+      const secretApi = Renderer.K8sApi.apiManager.getApiByKind("Secret", "v1") as
+        | Renderer.K8sApi.KubeApi<any>
+        | undefined;
 
       if (!secretApi) {
         throw new Error("Secret API is not available");
       }
 
-      const secret = await secretApi.get({
+      const secret = (await secretApi.get({
         namespace,
         name: `${name}-admin-kubeconfig`,
-      }) as { data?: Record<string, string> } | null;
+      })) as { data?: Record<string, string> } | null;
 
       const encoded = secret?.data?.["admin.conf"];
 

@@ -51,6 +51,11 @@
       }
     }
   },
+  "css": {
+    "parser": {
+      "cssModules": true
+    }
+  },
   "javascript": {
     "formatter": {
       "arrowParentheses": "always",
