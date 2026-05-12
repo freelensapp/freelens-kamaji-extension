@@ -18,6 +18,9 @@ Manage Kamaji resources directly from your Freelens cluster view.
 
 This extension is intended for clusters where Kamaji CRDs are installed and available.
 
+> **Note**: Currently tested and verified on kind clusters. Feedback and reports for other
+> cluster types (AWS, Azure, etc.) are welcome to help improve compatibility.
+
 ## Features
 
 The extension provides full CRUD management for Kamaji resources:
