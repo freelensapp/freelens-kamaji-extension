@@ -54,7 +54,7 @@
     "react": "^19.1.1",
     "sass": "^1.92.1",
     "typescript": "5.9.2",
-    "vite": "^7.1.5",
+    "vite": "^7.3.2",
     "vite-plugin-external": "^6.2.2",
     "yaml": "^2.8.4"
   },
