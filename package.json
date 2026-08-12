@@ -48,7 +48,7 @@
     "@types/node": "^24.5.0",
     "@types/react": "^19.1.13",
     "@vitejs/plugin-react": "^5.0.2",
-    "electron-vite": "4.0.0",
+    "electron-vite": "5.0.0",
     "mobx": "6.13.7",
     "mobx-react": "7.6.0",
     "react": "^19.1.1",
