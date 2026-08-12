@@ -24,8 +24,8 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       electron-vite:
-        specifier: 4.0.0
-        version: 4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
+        specifier: 4.0.1
+        version: 4.0.1(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       mobx:
         specifier: 6.13.7
         version: 6.13.7
@@ -1295,6 +1295,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -1395,8 +1396,8 @@ packages:
   electron-to-chromium@1.5.149:
     resolution: {integrity: sha512-UyiO82eb9dVOx8YO3ajDf9jz2kKyt98DEITRdeLPstOEuTlLzDA4Gyq5K9he71TQziU5jUVu2OAu5N48HmQiyQ==}
 
-  electron-vite@4.0.0:
-    resolution: {integrity: sha512-U3d7GlKjl4BPs1sxYTHn1N8YlMmPvlx1t62UVQ1zouWoBxZs5Hd5yrJcQ+rmMnko/ASbIcx/KFOTXh8YcqLv7w==}
+  electron-vite@4.0.1:
+    resolution: {integrity: sha512-QqacJbA8f1pmwUTqki1qLL5vIBaOQmeq13CZZefZ3r3vKVaIoC7cpoTgE+KPKxJDFTax+iFZV0VYvLVWPiQ8Aw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -4480,7 +4481,7 @@ snapshots:
 
   electron-to-chromium@1.5.149: {}
 
-  electron-vite@4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
+  electron-vite@4.0.1(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.3)
