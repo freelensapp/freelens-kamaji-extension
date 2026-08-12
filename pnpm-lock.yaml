@@ -39,8 +39,8 @@ importers:
         specifier: ^1.92.1
         version: 1.92.1
       typescript:
-        specifier: 5.9.2
-        version: 5.9.2
+        specifier: 5.9.3
+        version: 5.9.3
       vite:
         specifier: ^7.1.5
         version: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
@@ -1295,6 +1295,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -2610,8 +2611,8 @@ packages:
     peerDependencies:
       typescript: '>=4.0.0'
 
-  typescript@5.9.2:
-    resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -3601,8 +3602,8 @@ snapshots:
 
   '@freelensapp/typescript@1.5.3':
     dependencies:
-      typescript: 5.9.2
-      typescript-plugin-css-modules: 5.2.0(typescript@5.9.2)
+      typescript: 5.9.3
+      typescript-plugin-css-modules: 5.2.0(typescript@5.9.3)
     transitivePeerDependencies:
       - supports-color
       - ts-node
@@ -5734,7 +5735,7 @@ snapshots:
 
   typed-regex@0.0.8: {}
 
-  typescript-plugin-css-modules@5.2.0(typescript@5.9.2):
+  typescript-plugin-css-modules@5.2.0(typescript@5.9.3):
     dependencies:
       '@types/postcss-modules-local-by-default': 4.0.2
       '@types/postcss-modules-scope': 3.0.4
@@ -5751,14 +5752,14 @@ snapshots:
       sass: 1.92.1
       source-map-js: 1.2.1
       tsconfig-paths: 4.2.0
-      typescript: 5.9.2
+      typescript: 5.9.3
     optionalDependencies:
       stylus: 0.62.0
     transitivePeerDependencies:
       - supports-color
       - ts-node
 
-  typescript@5.9.2: {}
+  typescript@5.9.3: {}
 
   uglify-js@3.19.3:
     optional: true
