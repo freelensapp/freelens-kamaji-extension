@@ -22,10 +22,10 @@ importers:
         version: 19.1.13
       '@vitejs/plugin-react':
         specifier: ^5.0.2
-        version: 5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
+        version: 5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       electron-vite:
         specifier: 4.0.0
-        version: 4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
+        version: 4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       mobx:
         specifier: 6.13.7
         version: 6.13.7
@@ -36,14 +36,14 @@ importers:
         specifier: ^19.1.1
         version: 19.1.1
       sass:
-        specifier: ^1.92.1
-        version: 1.92.1
+        specifier: ^1.104.1
+        version: 1.104.1
       typescript:
         specifier: 5.9.2
         version: 5.9.2
       vite:
         specifier: ^7.1.5
-        version: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
+        version: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
       vite-plugin-external:
         specifier: ^6.2.2
         version: 6.2.2
@@ -1222,6 +1222,10 @@ packages:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
 
+  chokidar@5.0.0:
+    resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
+    engines: {node: '>= 20.19.0'}
+
   chownr@3.0.0:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
@@ -1295,6 +1299,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -1674,8 +1679,8 @@ packages:
   immer@10.1.3:
     resolution: {integrity: sha512-tmjF/k8QDKydUlm3mZU+tjM6zeq9/fFpPqH9SzWmBnVVKsPBg/V66qsMwb3/Bo90cgUN+ghdVBess+hPsxUyRw==}
 
-  immutable@5.1.1:
-    resolution: {integrity: sha512-3jatXi9ObIsPGr3N5hGw/vWWcTkq6hUYhpQz4k0wLC+owqWi/LiugIw9x0EdNZ2yGedKN/HzePiBvaJRXa0Ujg==}
+  immutable@5.1.9:
+    resolution: {integrity: sha512-m8nVez3rwrgmWxtLMt1ZYXB2Lv7OKYn/disyxAlSDYAlKSlFoPPfIAmAM/M5xqL4m4C/wAPw7S2/CNaUii1Hxg==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -2318,6 +2323,10 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
+  readdirp@5.1.1:
+    resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
+    engines: {node: '>= 20.19.0'}
+
   redux@4.2.1:
     resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
 
@@ -2393,9 +2402,9 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  sass@1.92.1:
-    resolution: {integrity: sha512-ffmsdbwqb3XeyR8jJR6KelIXARM9bFQe8A6Q3W4Klmwy5Ckd5gz7jgUNHo4UOqutU5Sk1DtKLbpDP0nLCg1xqQ==}
-    engines: {node: '>=14.0.0'}
+  sass@1.104.1:
+    resolution: {integrity: sha512-yDA+1aIG3EHgN4V/BvuhCvu61FF6hEd4e+9DxikUm9U0CAGuvdIZ/UYy7qbOxjhbbWQraoyLlMuzdRGOSV5Bmw==}
+    engines: {node: '>=20.19.0'}
     hasBin: true
 
   sax@1.3.0:
@@ -4114,7 +4123,7 @@ snapshots:
       '@types/node': 24.5.0
     optional: true
 
-  '@vitejs/plugin-react@5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))':
+  '@vitejs/plugin-react@5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))':
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.3)
@@ -4122,7 +4131,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.34
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
+      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -4308,6 +4317,10 @@ snapshots:
     dependencies:
       readdirp: 4.1.2
 
+  chokidar@5.0.0:
+    dependencies:
+      readdirp: 5.1.1
+
   chownr@3.0.0: {}
 
   clean-stack@2.2.0: {}
@@ -4480,7 +4493,7 @@ snapshots:
 
   electron-to-chromium@1.5.149: {}
 
-  electron-vite@4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
+  electron-vite@4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.3)
@@ -4488,7 +4501,7 @@ snapshots:
       esbuild: 0.25.9
       magic-string: 0.30.17
       picocolors: 1.1.1
-      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
+      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -4793,7 +4806,7 @@ snapshots:
 
   immer@10.1.3: {}
 
-  immutable@5.1.1: {}
+  immutable@5.1.9: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -5412,6 +5425,8 @@ snapshots:
 
   readdirp@4.1.2: {}
 
+  readdirp@5.1.1: {}
+
   redux@4.2.1:
     dependencies:
       '@babel/runtime': 7.28.4
@@ -5500,10 +5515,10 @@ snapshots:
   safer-buffer@2.1.2:
     optional: true
 
-  sass@1.92.1:
+  sass@1.104.1:
     dependencies:
-      chokidar: 4.0.3
-      immutable: 5.1.1
+      chokidar: 5.0.0
+      immutable: 5.1.9
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
@@ -5748,7 +5763,7 @@ snapshots:
       postcss-modules-local-by-default: 4.2.0(postcss@8.5.6)
       postcss-modules-scope: 3.2.1(postcss@8.5.6)
       reserved-words: 0.1.2
-      sass: 1.92.1
+      sass: 1.104.1
       source-map-js: 1.2.1
       tsconfig-paths: 4.2.0
       typescript: 5.9.2
@@ -5821,7 +5836,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4):
+  vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.104.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4):
     dependencies:
       esbuild: 0.25.9
       fdir: 6.5.0(picomatch@4.0.3)
@@ -5833,7 +5848,7 @@ snapshots:
       '@types/node': 24.5.0
       fsevents: 2.3.3
       less: 4.4.1
-      sass: 1.92.1
+      sass: 1.104.1
       stylus: 0.62.0
       terser: 5.39.0
       yaml: 2.8.4
