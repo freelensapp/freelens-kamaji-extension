@@ -24,8 +24,8 @@ importers:
         specifier: ^5.0.2
         version: 5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       electron-vite:
-        specifier: 4.0.0
-        version: 4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
+        specifier: 4.0.1
+        version: 4.0.1(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       mobx:
         specifier: 6.13.7
         version: 6.13.7
@@ -1295,6 +1295,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -1395,8 +1396,8 @@ packages:
   electron-to-chromium@1.5.149:
     resolution: {integrity: sha512-UyiO82eb9dVOx8YO3ajDf9jz2kKyt98DEITRdeLPstOEuTlLzDA4Gyq5K9he71TQziU5jUVu2OAu5N48HmQiyQ==}
 
-  electron-vite@4.0.0:
-    resolution: {integrity: sha512-U3d7GlKjl4BPs1sxYTHn1N8YlMmPvlx1t62UVQ1zouWoBxZs5Hd5yrJcQ+rmMnko/ASbIcx/KFOTXh8YcqLv7w==}
+  electron-vite@4.0.1:
+    resolution: {integrity: sha512-QqacJbA8f1pmwUTqki1qLL5vIBaOQmeq13CZZefZ3r3vKVaIoC7cpoTgE+KPKxJDFTax+iFZV0VYvLVWPiQ8Aw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -3240,7 +3241,7 @@ snapshots:
       '@freelensapp/utilities': 1.5.3
       '@hapi/call': 9.0.1
       '@hapi/subtext': 8.1.1
-      '@mui/lab': 5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@19.1.1))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@mui/lab': 5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@mui/material': 5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@19.1.1))(react@19.1.1)
       '@ogre-tools/fp': 17.11.1(lodash@4.17.21)
       '@ogre-tools/injectable': 17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(lodash@4.17.21)
@@ -3277,7 +3278,7 @@ snapshots:
       lodash: 4.17.21
       marked: 15.0.12
       mobx: 6.13.7
-      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       mobx-react-lite: 4.1.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       mobx-utils: 6.1.1(mobx@6.13.7)
       moment: 2.30.1
@@ -3335,7 +3336,7 @@ snapshots:
       '@ogre-tools/injectable-react': 17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(@ogre-tools/injectable@17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(lodash@4.17.21))(lodash@4.17.21)(mobx-react@7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@19.1.1))(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       lodash: 4.17.21
       mobx: 6.13.7
-      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     transitivePeerDependencies:
@@ -3378,7 +3379,7 @@ snapshots:
       '@ogre-tools/injectable-react': 17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(@ogre-tools/injectable@17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(lodash@4.17.21))(lodash@4.17.21)(mobx-react@7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@19.1.1))(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       lodash: 4.17.21
       mobx: 6.13.7
-      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
       react-router-dom: 5.3.4(react@17.0.2)
@@ -3505,7 +3506,7 @@ snapshots:
       auto-bind: 4.0.0
       lodash: 4.17.21
       mobx: 6.13.7
-      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     transitivePeerDependencies:
@@ -3543,7 +3544,7 @@ snapshots:
       '@ogre-tools/injectable-extension-for-mobx': 17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(@ogre-tools/injectable@17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(lodash@4.17.21))(lodash@4.17.21)(mobx@6.13.7)
       '@ogre-tools/injectable-react': 17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(@ogre-tools/injectable@17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(lodash@4.17.21))(lodash@4.17.21)(mobx-react@7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@19.1.1))(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       mobx: 6.13.7
-      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     transitivePeerDependencies:
@@ -3556,7 +3557,7 @@ snapshots:
       '@freelensapp/utilities': 1.5.3
       lodash: 4.17.21
       mobx: 6.13.7
-      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
     transitivePeerDependencies:
       - react-dom
@@ -3593,7 +3594,7 @@ snapshots:
       auto-bind: 4.0.0
       lodash: 4.17.21
       mobx: 6.13.7
-      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react: 7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     transitivePeerDependencies:
@@ -3733,7 +3734,7 @@ snapshots:
 
   '@mui/core-downloads-tracker@5.18.0': {}
 
-  '@mui/lab@5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@19.1.1))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
+  '@mui/lab@5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@babel/runtime': 7.28.4
       '@mui/base': 5.0.0-beta.13(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -3765,7 +3766,7 @@ snapshots:
       react: 19.1.1
       react-dom: 17.0.2(react@17.0.2)
       react-is: 19.1.1
-      react-transition-group: 4.4.5(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      react-transition-group: 4.4.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     optionalDependencies:
       '@emotion/react': 11.14.0(@types/react@19.1.13)(react@19.1.1)
       '@types/react': 19.1.13
@@ -4480,7 +4481,7 @@ snapshots:
 
   electron-to-chromium@1.5.149: {}
 
-  electron-vite@4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
+  electron-vite@4.0.1(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.3)
@@ -5029,7 +5030,7 @@ snapshots:
       history: 4.10.1
       mobx: 6.13.7
 
-  mobx-react-lite@3.4.3(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2):
+  mobx-react-lite@3.4.3(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
       mobx: 6.13.7
       react: 17.0.2
@@ -5051,10 +5052,10 @@ snapshots:
     optionalDependencies:
       react-dom: 17.0.2(react@17.0.2)
 
-  mobx-react@7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2):
+  mobx-react@7.6.0(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
       mobx: 6.13.7
-      mobx-react-lite: 3.4.3(mobx@6.13.7)(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      mobx-react-lite: 3.4.3(mobx@6.13.7)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
     optionalDependencies:
       react-dom: 17.0.2(react@17.0.2)
@@ -5356,7 +5357,7 @@ snapshots:
       prop-types: 15.8.1
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      react-transition-group: 4.4.5(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      react-transition-group: 4.4.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       use-isomorphic-layout-effect: 1.2.1(@types/react@19.1.13)(react@17.0.2)
     transitivePeerDependencies:
       - '@types/react'
@@ -5366,7 +5367,7 @@ snapshots:
     dependencies:
       react: 17.0.2
 
-  react-transition-group@4.4.5(react-dom@17.0.2(react@19.1.1))(react@17.0.2):
+  react-transition-group@4.4.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
       '@babel/runtime': 7.28.4
       dom-helpers: 5.2.1
