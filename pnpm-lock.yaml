@@ -1295,6 +1295,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -3240,7 +3241,7 @@ snapshots:
       '@freelensapp/utilities': 1.5.3
       '@hapi/call': 9.0.1
       '@hapi/subtext': 8.1.1
-      '@mui/lab': 5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@19.1.1))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+      '@mui/lab': 5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@mui/material': 5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@19.1.1))(react@19.1.1)
       '@ogre-tools/fp': 17.11.1(lodash@4.17.21)
       '@ogre-tools/injectable': 17.11.1(@ogre-tools/fp@17.11.1(lodash@4.17.21))(lodash@4.17.21)
@@ -3733,7 +3734,7 @@ snapshots:
 
   '@mui/core-downloads-tracker@5.18.0': {}
 
-  '@mui/lab@5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@19.1.1))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
+  '@mui/lab@5.0.0-alpha.142(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@19.1.13)(react@19.1.1))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@babel/runtime': 7.28.4
       '@mui/base': 5.0.0-beta.13(@types/react@19.1.13)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -3765,7 +3766,7 @@ snapshots:
       react: 19.1.1
       react-dom: 17.0.2(react@17.0.2)
       react-is: 19.1.1
-      react-transition-group: 4.4.5(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      react-transition-group: 4.4.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     optionalDependencies:
       '@emotion/react': 11.14.0(@types/react@19.1.13)(react@19.1.1)
       '@types/react': 19.1.13
@@ -5356,7 +5357,7 @@ snapshots:
       prop-types: 15.8.1
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      react-transition-group: 4.4.5(react-dom@17.0.2(react@19.1.1))(react@17.0.2)
+      react-transition-group: 4.4.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       use-isomorphic-layout-effect: 1.2.1(@types/react@19.1.13)(react@17.0.2)
     transitivePeerDependencies:
       - '@types/react'
@@ -5366,7 +5367,7 @@ snapshots:
     dependencies:
       react: 17.0.2
 
-  react-transition-group@4.4.5(react-dom@17.0.2(react@19.1.1))(react@17.0.2):
+  react-transition-group@4.4.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
       '@babel/runtime': 7.28.4
       dom-helpers: 5.2.1
