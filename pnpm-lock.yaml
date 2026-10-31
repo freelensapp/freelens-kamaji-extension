@@ -22,10 +22,10 @@ importers:
         version: 19.1.13
       '@vitejs/plugin-react':
         specifier: ^5.0.2
-        version: 5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
+        version: 5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       electron-vite:
         specifier: 4.0.0
-        version: 4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
+        version: 4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))
       mobx:
         specifier: 6.13.7
         version: 6.13.7
@@ -36,14 +36,14 @@ importers:
         specifier: ^19.1.1
         version: 19.1.1
       sass:
-        specifier: ^1.92.1
-        version: 1.92.1
+        specifier: ^1.107.1
+        version: 1.107.1
       typescript:
         specifier: 5.9.2
         version: 5.9.2
       vite:
         specifier: ^7.1.5
-        version: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
+        version: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
       vite-plugin-external:
         specifier: ^6.2.2
         version: 6.2.2
@@ -389,121 +389,159 @@ packages:
 
   '@freelensapp/animate@1.5.3':
     resolution: {integrity: sha512-gCl+1tHHIbeIwBaRt/UrwFgxFAAB73f2PLV8pL4bGKNF2Awf63MYfcQpYkpyvZlNcjbEo9NFeq973PsamSIWuQ==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/application-for-electron-main@1.5.3':
     resolution: {integrity: sha512-ojqftjcRKCs9jqCOK8JRC93NsBlmf3MdtxgxKoOiuBa3moJK/AipzM0aIU3EOjHWbLq1QI/cMdGqXE8nTgZckg==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/application@1.5.3':
     resolution: {integrity: sha512-uGmZnh349PmV9laOGLtpDgICKv4nr2oqTi4WslM0KDJOTP6sfKhmi7G+GK27J0KCeKXTxrW0Ci22eL4r6sWp0Q==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/button@1.5.3':
     resolution: {integrity: sha512-JLIS4Eh0MvUkDDip4egRaQWgLycPu04EmzLCy2sNbi9vL7ulJddlI5oNwqCdKeQO7k2AMNfnG35zZTw8FVwMxw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/cluster-settings@1.5.3':
     resolution: {integrity: sha512-3In4ZFljpBj4SuxyiYsmQX1K2mhbS/bU3SYpk7xF+Yv7dNi3ES3u0he98kvji/T/k33IY0ImvNE8BsMR5iRgJw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/cluster-sidebar@1.5.3':
     resolution: {integrity: sha512-VKbk0P6BspkU4OaN/JNUYTYHuS5aZXwqfpBVeJ2kZqtE7p1Vk7Td14Ju5XS7+vxrq+T2heKDSxGzR/ijkhpUTA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/core@1.5.3':
     resolution: {integrity: sha512-buckwZWSRpFoRIAix4IQnARi3t+RCkwGST+/k4Y3CfRl9DsLU8V9SPqvOxCxHDKjKEjg8DNQzT85JYQrTHoiiA==}
     engines: {node: ^22.0.0}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/error-boundary@1.5.3':
     resolution: {integrity: sha512-bOFnIF1egs9ZaAjVEgIBVOnjSFa9jOfcMrKf6W32A7V2N/HGrOkipxfJWYex3aNJjagn9dR/9TNJ6sdR+Q/dkQ==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/event-emitter@1.5.3':
     resolution: {integrity: sha512-hqFZlDBJxOeAymNYI6R+vZ8ND2DD1JsWb+0bTOH2Mg3O4T26C0evHTmvckxvfW2gBMMnpA+ELL80qHjc2y4XnQ==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/extensions@1.5.3':
     resolution: {integrity: sha512-0iw0QdLxDZ1yQArNqdgRT81aTmZwbRkbA4sJVwoA6vj0GJHtHZ/OrGvbkDXqc/3GdbRupAhVeBEvOfSwy6wcAg==}
 
   '@freelensapp/feature-core@1.5.3':
     resolution: {integrity: sha512-RMxvLgGOxZB4nGHfE2sGSZiFIvroyj/zbRs+9hxISiCUNymW8Kib8hC1feYAT2bXp478Xex/qUpny454NjuHlw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/icon@1.5.3':
     resolution: {integrity: sha512-2qmVM9rFpqO++Vx7d3HqwQF++TY+pKM6dyWkxxPzzMmvZyCyR8oH3UQlGwgrFx8j1QvxBUN00QBKsvInB/vf3A==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/json-api@1.5.3':
     resolution: {integrity: sha512-IfsuN3wq70loDfgGBwx3VBcGWZJupnkQt+k8xIYx8o/GBwCAddvXhip5yLWhq55fdALS5kGm1sCsQu7xHj96Sg==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/kube-api-specifics@1.5.3':
     resolution: {integrity: sha512-KfuQQVoW9SLqDrnIE4ZzQMkxiLZShxXUEirAgtUsJTG7Neh9pkWK++Hf262K1Aa32wxiWj8zJH0wCm5PAijIeA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/kube-api@1.5.3':
     resolution: {integrity: sha512-FgVYw666Lqpez1xg0Z3EKS7lj0UTdgF1XhZAjvHemTAB5SR3NfbHUfDEpaGSunoWlYrvNuvBZGhz3rmoTZkWZg==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/kube-object@1.5.3':
     resolution: {integrity: sha512-dwBKTIoi5A74J+aVzMirrM24PhoL9SFYJvouN7ZhOikjA7q8n1q9GL+ReskQDKc4Jl3T7SNsGv1fKm4qhGbsiw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/kubectl-versions@1.5.3':
     resolution: {integrity: sha512-KGrjg3XvbaNCnnk5Lh/v7eUK1aTwPrqefcR/FUJwWBlZDEWfATx9ckluf4NKct1jvGnB+lMhJuUzkOHLCZxrBg==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/kubernetes-client-node@1.5.3':
     resolution: {integrity: sha512-Yzh7ooXX1M7E8mFcumbZ1IIJK6C2CKD0Zc3ShaNGSV/zIsC4v6NA4iGdx+m9yr04KgimWSKc02J8Lrxwd4fbNA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/legacy-extensions@1.5.3':
     resolution: {integrity: sha512-tnBGVcehKRFu2yrwQUPAkN5LYE18RmpEWeSHFjVYQ+UxSt1cE+C6yplfm+GiOLm6mA/OhfFM/Rzvhrk1HVWCtA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/legacy-global-di@1.5.3':
     resolution: {integrity: sha512-vGuO4msu42oK2g6xI36+kjCXIs4eHJWjI9USAAiYfhmhiPHARLelh7PdG8Ooz29Gge8KGFLmfkMwo9+A8EgkLw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/list-layout@1.5.3':
     resolution: {integrity: sha512-uLuVZdV09Bx8wKRANwDdHhfxdz/tsWR3HEhiUf/nhRBCJUwcqX3kK6N/tgJnWhbTkYroaxRYSZx3XfhMSdaRrw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/logger@1.5.3':
     resolution: {integrity: sha512-70vQjIFU4kwjskIiFmOkj1CtwjQVsgKyB6aWGPvmhOVcuAvpPPEUHNhDL9XgWkL7rRy5AkbUdgBe92iLXB46KA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/messaging@1.5.3':
     resolution: {integrity: sha512-UYdvhO5sANrYg1gtQGXigw0RkPBWW9Csn7l19PGTpBb6ZGYzJWt86soAa6avFI2Y1paPWiitTsmm/i1JHA0caA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/metrics@1.5.3':
     resolution: {integrity: sha512-Nm2uuJET48iMHz5hfGkRWRXvpeym48NumxczIfmdYQyLGERHKANh8GaZ5+mPEb9IFU+TNP7psmes5uzbJZ9tFQ==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/node-fetch@1.5.3':
     resolution: {integrity: sha512-Ve9fRrE43ij+gG4QhTQrvWAB4DyFpOL7467ZNX3v2w3aHFcKhne4KfDD9q636VD+kU7k1vFrFHTfNWC/Vwy+Fw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/notifications@1.5.3':
     resolution: {integrity: sha512-TaoA4PunR6hYgrGC5KTWKEYkPlVsQQjhM96N6zWJgvC3+Q3EQ8VnJm5AmqLDfZqdFjSpKzghnmGih0rvjExp1w==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/openid-client@1.5.3':
     resolution: {integrity: sha512-NFKzfLKZDqvlVPynk7++NINCKr4JdYIlIx0d4Lp8ThA76v4i2ecUxiC6kGSKpo0kWDEBFLcLEKTa9+5xHN2HKA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/prometheus@1.5.3':
     resolution: {integrity: sha512-sUW0Z6Yo9Ee+lCeJfGQoUdraz53mGMguLjqxlmDyY6exy7X9IV89ZM/cDZA9HgG2gIEc9XhlX7IfTZBjwRHRmg==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/random@1.5.3':
     resolution: {integrity: sha512-fVgjYr1EXZD/RdFmu7LAmyaTWDRqLkEVK2+p24Lg5xNuYN4Kak/zAkStS/w6HLXcgQuOpihTkhVc7ThYrIyoDw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/react-application@1.5.3':
     resolution: {integrity: sha512-C3enToikyjZ5dHLn9RICHwIS2jssQELO284B/+cY9rfgEKlJiNBqW4uv7WEFgPdSYRk+87Z1UwWhnfhb4+Ip5w==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/resizing-anchor@1.5.3':
     resolution: {integrity: sha512-E7J8bNrTakryzg99viXTxIRcDPkZWwL74sTqOxKwLnyyUwC213MJE8xUmTQiGYg7DZ1BznpPF5VoicuhpAX1yQ==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/resource-templates@1.5.3':
     resolution: {integrity: sha512-muCVqwXOl8UYZdx5ps4YkHipRwv+EP1B6n4Ugbu/37Jz5P26D15+L6mdxxEQ7L9hz03MeVNi3RaAQemEJSXHGg==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/routing@1.5.3':
     resolution: {integrity: sha512-Wwzxc/pRrOkt3wc3niYo6vYgOTB7D2bqLKqY0Aj3c2tTQaTFaeg8/MmyMdLewDbSaoEyDdcPoUp1A9WBrrUfbw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/run-many@1.5.3':
     resolution: {integrity: sha512-KF+gdCkHWsp5cYv4+wRMB7IrftTIYPL5sS0OuY8o1yr0y2a9XQEHASsYQrPPDLL685mKt5rYw+ZxdkMy0xSlFg==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/spinner@1.5.3':
     resolution: {integrity: sha512-urOwX/JairHzENeJxbGlcbPCa4dgOwqrKJJ3LfdsD/LxKSwTo/IKX3z3D4Uizqy4o1uvpUlg3lDSixV6Pc8Y0Q==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/startable-stoppable@1.5.3':
     resolution: {integrity: sha512-OtO0Xp/dIW+qGdNYJ+DeSAX/It6ZzZYpY1qYmnymF6yNqjwOjQ8qCZvroZtWGhHR2cuscP8QWLc4oJLnMd6qHA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/tooltip@1.5.3':
     resolution: {integrity: sha512-Sf4DIXW7SJPB1Lqg27ccxH9udfI/YmA/2fusf596LWQuuKCIIJ3/f6fwWZ1FGiG1ViZoPRsR7jqOitQWqqvDuA==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/typescript@1.5.3':
     resolution: {integrity: sha512-behUDWzysawzfgbUKrRB1NlPWVgk2QDT0pgYAwitOcMY5Ynnr0QhXR3jXw7f1mvk+lYrxtMdwXIbKsdPgKYx6g==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@freelensapp/utilities@1.5.3':
     resolution: {integrity: sha512-s6aYE6R2k5xlnswDOZA5RoSNypq5DGKExrWzJ2va7cJzFqIbjDsJvhRfMEnNoV2QErIEP8v1mg96/CGuIzGEAw==}
+    deprecated: No longer published. Freelens v2 extensions depend only on @freelensapp/extensions, see https://github.com/freelensapp/freelens/blob/main/docs/extensions/migrating-from-v1.md
 
   '@hapi/address@5.1.1':
     resolution: {integrity: sha512-A+po2d/dVoY7cYajycYI43ZbYMXukuopIsqCjh5QzsBCipDtdofHntljDlpccMjIfTy6UOkg+5KPriwYch2bXA==}
@@ -1222,6 +1260,10 @@ packages:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
 
+  chokidar@5.0.0:
+    resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
+    engines: {node: '>= 20.19.0'}
+
   chownr@3.0.0:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
@@ -1295,6 +1337,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -1674,8 +1717,8 @@ packages:
   immer@10.1.3:
     resolution: {integrity: sha512-tmjF/k8QDKydUlm3mZU+tjM6zeq9/fFpPqH9SzWmBnVVKsPBg/V66qsMwb3/Bo90cgUN+ghdVBess+hPsxUyRw==}
 
-  immutable@5.1.1:
-    resolution: {integrity: sha512-3jatXi9ObIsPGr3N5hGw/vWWcTkq6hUYhpQz4k0wLC+owqWi/LiugIw9x0EdNZ2yGedKN/HzePiBvaJRXa0Ujg==}
+  immutable@5.1.9:
+    resolution: {integrity: sha512-m8nVez3rwrgmWxtLMt1ZYXB2Lv7OKYn/disyxAlSDYAlKSlFoPPfIAmAM/M5xqL4m4C/wAPw7S2/CNaUii1Hxg==}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -2318,6 +2361,10 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
+  readdirp@5.1.1:
+    resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
+    engines: {node: '>= 20.19.0'}
+
   redux@4.2.1:
     resolution: {integrity: sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==}
 
@@ -2393,9 +2440,9 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  sass@1.92.1:
-    resolution: {integrity: sha512-ffmsdbwqb3XeyR8jJR6KelIXARM9bFQe8A6Q3W4Klmwy5Ckd5gz7jgUNHo4UOqutU5Sk1DtKLbpDP0nLCg1xqQ==}
-    engines: {node: '>=14.0.0'}
+  sass@1.107.1:
+    resolution: {integrity: sha512-aJ1/LvxOOb04YhmiBjzZn3jVwdHKol+OVhoMV6fFl02fF9T3i+5Mg9l/CnzqtM+NX5Jn5o3lAbs/ZJivTCLHfQ==}
+    engines: {node: '>=20.19.0'}
     hasBin: true
 
   sax@1.3.0:
@@ -4114,7 +4161,7 @@ snapshots:
       '@types/node': 24.5.0
     optional: true
 
-  '@vitejs/plugin-react@5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))':
+  '@vitejs/plugin-react@5.0.2(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4))':
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.3)
@@ -4122,7 +4169,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.34
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
+      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -4308,6 +4355,10 @@ snapshots:
     dependencies:
       readdirp: 4.1.2
 
+  chokidar@5.0.0:
+    dependencies:
+      readdirp: 5.1.1
+
   chownr@3.0.0: {}
 
   clean-stack@2.2.0: {}
@@ -4480,7 +4531,7 @@ snapshots:
 
   electron-to-chromium@1.5.149: {}
 
-  electron-vite@4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
+  electron-vite@4.0.0(vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)):
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.3)
@@ -4488,7 +4539,7 @@ snapshots:
       esbuild: 0.25.9
       magic-string: 0.30.17
       picocolors: 1.1.1
-      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
+      vite: 7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -4793,7 +4844,7 @@ snapshots:
 
   immer@10.1.3: {}
 
-  immutable@5.1.1: {}
+  immutable@5.1.9: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -5412,6 +5463,8 @@ snapshots:
 
   readdirp@4.1.2: {}
 
+  readdirp@5.1.1: {}
+
   redux@4.2.1:
     dependencies:
       '@babel/runtime': 7.28.4
@@ -5500,10 +5553,10 @@ snapshots:
   safer-buffer@2.1.2:
     optional: true
 
-  sass@1.92.1:
+  sass@1.107.1:
     dependencies:
-      chokidar: 4.0.3
-      immutable: 5.1.1
+      chokidar: 5.0.0
+      immutable: 5.1.9
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
@@ -5748,7 +5801,7 @@ snapshots:
       postcss-modules-local-by-default: 4.2.0(postcss@8.5.6)
       postcss-modules-scope: 3.2.1(postcss@8.5.6)
       reserved-words: 0.1.2
-      sass: 1.92.1
+      sass: 1.107.1
       source-map-js: 1.2.1
       tsconfig-paths: 4.2.0
       typescript: 5.9.2
@@ -5821,7 +5874,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.92.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4):
+  vite@7.1.5(@types/node@24.5.0)(less@4.4.1)(sass@1.107.1)(stylus@0.62.0)(terser@5.39.0)(yaml@2.8.4):
     dependencies:
       esbuild: 0.25.9
       fdir: 6.5.0(picomatch@4.0.3)
@@ -5833,7 +5886,7 @@ snapshots:
       '@types/node': 24.5.0
       fsevents: 2.3.3
       less: 4.4.1
-      sass: 1.92.1
+      sass: 1.107.1
       stylus: 0.62.0
       terser: 5.39.0
       yaml: 2.8.4
