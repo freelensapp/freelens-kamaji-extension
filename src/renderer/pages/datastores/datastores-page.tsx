@@ -10,47 +10,52 @@ const {
   Component: { KubeObjectAge, KubeObjectListLayout, WithTooltip },
 } = Renderer;
 
-const KubeObject = DataStore;
-type KubeObject = DataStore;
-type KubeObjectApi = DataStoreApi;
+type DataStoreStore = Renderer.K8sApi.KubeObjectStore<DataStore, DataStoreApi>;
 
-const getDriver = (object: KubeObject): string => (object as any).spec?.driver ?? "-";
+/** Whether Kamaji validated the DataStore, or `-` before it reports. */
+const readyText = (object: DataStore) => {
+  const ready = DataStore.isReady(object);
 
-const getUsedByCount = (object: KubeObject): number => (object as any).status?.usedBy?.length ?? 0;
+  return ready === undefined ? "-" : ready ? "Yes" : "No";
+};
 
 const sortingCallbacks = {
-  name: (object: KubeObject) => object.getName(),
-  driver: (object: KubeObject) => getDriver(object),
-  usedBy: (object: KubeObject) => getUsedByCount(object),
-  age: (object: KubeObject) => object.getCreationTimestamp(),
+  name: (object: DataStore) => object.getName(),
+  driver: (object: DataStore) => object.spec.driver,
+  ready: (object: DataStore) => readyText(object),
+  usedBy: (object: DataStore) => DataStore.getUsedBy(object).length,
+  age: (object: DataStore) => object.getCreationTimestamp(),
 };
 
 const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks; className?: string }[] = [
   { title: "Name", sortBy: "name", className: "name" },
   { title: "Driver", sortBy: "driver", className: "driver" },
+  { title: "Ready", sortBy: "ready", className: "ready" },
   { title: "Used By", sortBy: "usedBy", className: "usedBy" },
   { title: "Age", sortBy: "age", className: "age" },
 ];
 
-export const DatastoresPage = observer(() => {
-  let store: Renderer.K8sApi.KubeObjectStore<KubeObject> | null = null;
-  let missingKamaji = false;
-
+/**
+ * The host's store of the DataStores, or `undefined` while the cluster serves none: `getStore()` throws then, with a
+ * message that says that the API or the store is not registered.
+ */
+function getDataStoreStore(): DataStoreStore | undefined {
   try {
-    store = (KubeObject as any).getStore() as Renderer.K8sApi.KubeObjectStore<KubeObject>;
+    return DataStore.getStore<DataStore, DataStoreStore>();
   } catch (error) {
-    const errorMessage = String(error);
-
-    if (errorMessage.includes("not registered") || errorMessage.includes("getStore")) {
-      missingKamaji = true;
-    } else {
-      throw error;
+    if (String(error).includes("not registered")) {
+      return undefined;
     }
-  }
 
+    throw error;
+  }
+}
+
+export const DatastoresPage = observer(() => {
+  const store = getDataStoreStore();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  if (missingKamaji || !store) {
+  if (!store) {
     return (
       <div className={styles.container}>
         <div className={styles.notInstalledState}>
@@ -75,24 +80,25 @@ export const DatastoresPage = observer(() => {
   return (
     <>
       <div className={styles.container}>
-        <KubeObjectListLayout<KubeObject, KubeObjectApi>
+        <KubeObjectListLayout<DataStore, DataStoreApi>
           className={styles.datastoresCrds}
-          tableId={`${KubeObject.crd.plural}Table`}
+          tableId={`${DataStore.crd.plural}Table`}
           store={store}
-          renderHeaderTitle={KubeObject.crd.title}
+          renderHeaderTitle={DataStore.crd.title}
           addRemoveButtons={{
             onAdd: () => setIsCreateDialogOpen(true),
             addTooltip: "Create new Datastore",
           }}
           sortingCallbacks={sortingCallbacks}
           searchFilters={[
-            (object: KubeObject) => [object.getName(), getDriver(object), String(getUsedByCount(object))],
+            (object: DataStore) => [object.getName(), object.spec.driver, ...DataStore.getUsedBy(object)],
           ]}
           renderTableHeader={renderTableHeader}
-          renderTableContents={(object: KubeObject) => [
+          renderTableContents={(object: DataStore) => [
             <WithTooltip>{object.getName()}</WithTooltip>,
-            <WithTooltip>{getDriver(object)}</WithTooltip>,
-            <WithTooltip>{String(getUsedByCount(object))}</WithTooltip>,
+            <WithTooltip>{object.spec.driver}</WithTooltip>,
+            <WithTooltip>{readyText(object)}</WithTooltip>,
+            <WithTooltip>{String(DataStore.getUsedBy(object).length)}</WithTooltip>,
             <KubeObjectAge object={object} key="age" />,
           ]}
         />

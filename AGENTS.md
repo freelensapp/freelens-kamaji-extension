@@ -203,7 +203,9 @@ detected, with a link to its documentation; any other error of `getStore()`
 goes to the error boundary. The page is an `observer`, so it renders the list
 once the host registers the API ("CRD KubeObject Pattern"). The Tenants page
 takes its columns from the static helpers of `TenantControlPlane`, and shows
-`-` for a value that Kamaji has not reported yet.
+`-` for a value that Kamaji has not reported yet; the Datastores page does the
+same with those of `DataStore`, with whether Kamaji validated each DataStore
+and how many tenants use it.
 The list has an add button, which opens the create dialog of the page; the
 dialog posts the object with `store.create()`, and the page loads the store
 again when the dialog closes.
