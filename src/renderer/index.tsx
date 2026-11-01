@@ -78,16 +78,10 @@ export default class KamajiRenderer extends Renderer.LensExtension {
   ].map((registration) => withMenuItemErrorBoundary(this, registration));
 
   kubeObjectDetailItems: Renderer.LensExtension["kubeObjectDetailItems"] = [
-    {
-      kind: TenantControlPlane.kind,
-      apiVersions: TenantControlPlane.crd.apiVersions,
+    Renderer.K8sApi.detailsFor(TenantControlPlane, {
       priority: 10,
-      components: {
-        Details: (props: Renderer.Component.KubeObjectDetailsProps<any>) => (
-          <TenantDetails {...props} extension={this} />
-        ),
-      },
-    },
+      Details: TenantDetails,
+    }),
     {
       kind: DataStore.kind,
       apiVersions: DataStore.crd.apiVersions,

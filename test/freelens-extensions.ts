@@ -63,8 +63,23 @@ const WithTooltip = ({ children }: { children?: React.ReactNode }) => React.crea
 const NamespaceSelectBadge = ({ namespace }: { namespace: string }) => React.createElement("span", null, namespace);
 const KubeObjectAge = () => null;
 
+// A row of a details panel: its name and value, or nothing when it is hidden;
+// a badge: its label.
+const DrawerItem = ({
+  name,
+  hidden,
+  children,
+}: {
+  name?: React.ReactNode;
+  hidden?: boolean;
+  children?: React.ReactNode;
+}) => (hidden ? null : React.createElement("div", { role: "row" }, React.createElement("span", null, name), children));
+const Badge = ({ label }: { label?: React.ReactNode }) => React.createElement("span", null, label);
+
 export const Renderer = {
   Component: {
+    Badge,
+    DrawerItem,
     KubeObjectAge,
     KubeObjectListLayout,
     NamespaceSelectBadge,

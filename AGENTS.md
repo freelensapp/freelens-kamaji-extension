@@ -182,8 +182,13 @@ source maps. `main` and `renderer` in `package.json` point at the two entries.
   ("Tenants") and `kamaji-datastores-menu` ("Datastores");
 - `customResources`: `TenantControlPlane` and `DataStore`, which the two pages
   list, so the Custom Resources tree of the cluster sidebar leaves them out;
-- the details panel of each kind, and the "Download kubeconfig" menu item of a
-  tenant.
+- the details panel of each kind, the tenant's with
+  `Renderer.K8sApi.detailsFor(TenantControlPlane, ...)`, and the "Download
+  kubeconfig" menu item of a tenant.
+
+The details panel of a tenant shows its spec and what Kamaji reports, partly
+through the model's helpers. A row of the status is hidden until Kamaji reports
+its value, and a row of the spec shows `-` for a field the spec leaves out.
 
 Each page reads its store from its model's `getStore()`, which throws while the
 cluster serves no such kind, with a message that says the API or the store is
