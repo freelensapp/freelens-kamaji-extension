@@ -4,12 +4,14 @@
  */
 
 import { Renderer } from "@freelensapp/extensions";
-import { useMemo, useState } from "react";
-import { DataStore, type DataStoreApi } from "../k8s/datastore-v1alpha1";
+import { useState } from "react";
 import styles from "./create-datastore-dialog.module.css";
+import { buildDataStoreResource, type DataStoreForm, drivers, validateDataStoreForm } from "./datastore-resource";
+
+import type { DataStore, DataStoreApi, Driver } from "../k8s/datastore-v1alpha1";
 
 const {
-  Component: { Dialog, Input, Icon, SubTitle, Wizard, WizardStep },
+  Component: { Dialog, Input, Icon, Select, SubTitle, Wizard, WizardStep },
 } = Renderer;
 
 const generateDefaultDatastoreName = () => `datastore-${Math.floor(Math.random() * 9999) + 1}`;
@@ -21,7 +23,7 @@ export interface CreateDatastoreDialogProps {
 
 export const CreateDatastoreDialog = ({ store, onClose }: CreateDatastoreDialogProps) => {
   const [name, setName] = useState(generateDefaultDatastoreName);
-  const [driver, setDriver] = useState("etcd");
+  const [driver, setDriver] = useState<Driver>("etcd");
   const [endpoints, setEndpoints] = useState(
     "etcd-0.etcd.kamaji-system.svc.cluster.local:2379,etcd-1.etcd.kamaji-system.svc.cluster.local:2379,etcd-2.etcd.kamaji-system.svc.cluster.local:2379",
   );
@@ -32,85 +34,23 @@ export const CreateDatastoreDialog = ({ store, onClose }: CreateDatastoreDialogP
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const datastoreResourceFromForm = useMemo(() => {
-    const normalizedEndpoints = endpoints
-      .split(",")
-      .map((endpoint) => endpoint.trim())
-      .filter(Boolean);
-
-    return {
-      apiVersion: "kamaji.clastix.io/v1alpha1",
-      kind: "DataStore",
-      metadata: {
-        name: name.trim(),
-      },
-      spec: {
-        driver: driver.trim() || "etcd",
-        endpoints: normalizedEndpoints,
-        tlsConfig: {
-          certificateAuthority: {
-            certificate: {
-              secretReference: {
-                keyPath: "ca.crt",
-                name: caSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-            privateKey: {
-              secretReference: {
-                keyPath: "ca.key",
-                name: caSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-          },
-          clientCertificate: {
-            certificate: {
-              secretReference: {
-                keyPath: "tls.crt",
-                name: clientSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-            privateKey: {
-              secretReference: {
-                keyPath: "tls.key",
-                name: clientSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-          },
-        },
-      },
-    };
-  }, [caSecretName, clientSecretName, driver, endpoints, name, secretsNamespace]);
+  const form: DataStoreForm = { name, driver, endpoints, secretsNamespace, caSecretName, clientSecretName };
 
   const handleCreate = async () => {
-    if (!name.trim()) {
-      setError("Datastore name is required");
+    const invalid = validateDataStoreForm(form);
+
+    if (invalid) {
+      setError(invalid);
       return;
     }
 
-    const normalizedEndpoints = endpoints
-      .split(",")
-      .map((endpoint) => endpoint.trim())
-      .filter(Boolean);
-
-    if (!normalizedEndpoints.length) {
-      setError("At least one endpoint is required");
-      return;
-    }
-
-    if (!secretsNamespace.trim() || !caSecretName.trim() || !clientSecretName.trim()) {
-      setError("Secrets namespace and secret names are required");
-      return;
-    }
+    const resource = buildDataStoreResource(form);
 
     setLoading(true);
     setError(null);
 
     try {
-      await store.create({ name: name.trim() }, datastoreResourceFromForm as any);
+      await store.create({ name: resource.metadata.name }, resource);
       onClose?.();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
@@ -156,7 +96,14 @@ export const CreateDatastoreDialog = ({ store, onClose }: CreateDatastoreDialogP
 
           <div className={styles.field}>
             <SubTitle title="Driver" />
-            <Input value={driver} onChange={(value) => setDriver(value)} placeholder="e.g., etcd" disabled={loading} />
+            <Select
+              id="datastore-driver-input"
+              themeName="light"
+              value={driver}
+              options={drivers.map((value) => ({ value, label: value }))}
+              onChange={(option) => option && setDriver(option.value)}
+              isDisabled={loading}
+            />
           </div>
 
           <div className={styles.field}>

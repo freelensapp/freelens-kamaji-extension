@@ -220,7 +220,8 @@ wrong with a field, `buildTenantResource` returns the typed resource or throws
 an error with a message for the user, and `parseTenantResourceYaml` reads the
 YAML editor, with the namespace of the YAML or else the one of the form. The
 store posts the resource with no cast, and its tests cover what the form and
-the YAML editor produce.
+the YAML editor produce. The DataStore dialog works the same way, with
+`dialogs/datastore-resource.ts`.
 
 The form follows the CRD of Kamaji 26.10.5-edge, and refuses before the request
 what Kamaji refuses:
