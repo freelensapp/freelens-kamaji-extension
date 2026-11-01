@@ -117,3 +117,9 @@
   font-size: 12px;
   padding-left: 4px;
 }
+
+.help {
+  color: var(--textColorSecondary);
+  font-size: 12px;
+  line-height: 1.45;
+}

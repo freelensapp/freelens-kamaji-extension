@@ -12,5 +12,6 @@ declare const classNames: {
   readonly advanced: "advanced";
   readonly checkboxRow: "checkboxRow";
   readonly yamlHint: "yamlHint";
+  readonly help: "help";
 };
 export = classNames;

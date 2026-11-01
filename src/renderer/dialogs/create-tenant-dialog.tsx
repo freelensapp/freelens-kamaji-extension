@@ -422,6 +422,10 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
                   placeholder="e.g., IPv4,IPv6"
                   disabled={loading}
                 />
+                <span className={styles.help}>
+                  The policy and the families are those of the Service of the control plane in this cluster, which must
+                  serve them; leave them empty for its default. The CIDRs above are those of the tenant cluster.
+                </span>
               </div>
 
               {serviceType === "LoadBalancer" && (
