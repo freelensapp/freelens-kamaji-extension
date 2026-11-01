@@ -6,9 +6,20 @@
 [![Integration tests](https://github.com/freelensapp/freelens-kamaji-extension/actions/workflows/integration-tests.yaml/badge.svg?branch=main)](https://github.com/freelensapp/freelens-kamaji-extension/actions/workflows/integration-tests.yaml)
 [![npm](https://img.shields.io/npm/v/@freelensapp/kamaji-extension.svg)](https://www.npmjs.com/package/@freelensapp/kamaji-extension)
 
-Freelens extension for [Kamaji](https://kamaji.clastix.io).
+Freelens extension for [Kamaji](https://kamaji.clastix.io), which runs the
+control planes of tenant Kubernetes clusters as pods of a management cluster.
 
-Manage Kamaji resources directly from your Freelens cluster view.
+The extension adds a **Kamaji** entry to the cluster sidebar, with two pages:
+**Tenants**, the Tenant Control Planes of the namespaces that the namespace
+filter selects, and **Datastores**, the DataStores of the cluster that hold
+their state, of every driver of Kamaji: etcd, PostgreSQL, MySQL and NATS.
+Each page creates its objects from a form, the menu of a row edits or deletes
+one, and the details show what Kamaji reports about it. A tenant's menu also
+downloads its admin kubeconfig, to open the tenant cluster in Freelens. The
+forms follow the CRDs of Kamaji 26.10.5-edge, and say what is wrong with a
+field before Kamaji refuses it.
+
+[Video Demo](https://github.com/user-attachments/assets/5a0872b6-e70e-418f-a398-8c3ffa147d24)
 
 ## Requirements
 
@@ -18,62 +29,95 @@ Manage Kamaji resources directly from your Freelens cluster view.
   (`kamaji.clastix.io/v1alpha1`). On a cluster without them, the pages of the
   extension say that Kamaji was not detected.
 
-> **Note**: Tested on kind. Feedback on other cluster types is welcome.
+> **Note**: Tested on kind, with Kamaji 26.10.5-edge. Feedback on other cluster
+> types is welcome.
 
 ## Features
 
-The extension provides full CRUD management for Kamaji resources:
+### Tenants
 
-- **Tenant Control Planes**: Create, Edit, Delete + kubeconfig download
-- **Datastores**: Create, Edit, Delete
-- **Admin Access**: Export tenant kubeconfig for external cluster access
+![The Tenants page with four tenants of two namespaces, their status, ready pods, endpoint, version and datastore, dark theme](assets/screenshots/tenants-dark.png)
 
-### Tenants list
+For each Tenant Control Plane of the selected namespaces:
 
-![Kamaji Tenants List](assets/screenshots/1-tenants-list.png)
+- its name and namespace
+- its status, as Kamaji reports it
+- its ready pods
+- the endpoint of its API server
+- its Kubernetes version and its datastore
 
-Displays Kamaji Tenant Control Planes with key runtime details:
-- Tenant name and namespace
-- Provisioning status
-- Pod readiness
-- Control plane endpoint
-- Kubernetes version and datastore info
+### Create a tenant
 
-### Create tenant
+![The dialog that creates a tenant, with the AWS preset, dark theme](assets/screenshots/tenant-dialog-dark.png)
 
-![Kamaji Tenant Create Dialog](assets/screenshots/2-tenant-create.png)
+- **Name**, namespace, datastore, replicas and **Kubernetes version**, up to
+  v1.37, the newest minor that Kamaji 26.10.5-edge accepts
+- **Provider presets**: Generic, kind, AWS (NLB) and Azure (internal load
+  balancer), which fill in the annotations of the Service of the control plane
+- **Service type**: LoadBalancer, ClusterIP or NodePort
+- **Advanced section**: the API and Konnectivity ports, the API and advertise
+  addresses, the Service and Pod CIDRs (one, or two of different families for
+  a dual-stack tenant), the DNS Service IPs (which Kamaji computes when left
+  empty), the IP family policy and families of the Service, node ports for a
+  load balancer, a headless Service, certificate SANs, admission controllers,
+  the annotations and labels of the Service, and the node selector of the
+  Deployment
+- **Edit YAML**: the tenant as YAML, filled in from the form and applied as
+  it is, for what the form does not expose
 
-Create Tenant Control Planes through a guided form:
+### Tenant details
 
-- **Name**, namespace, and replicas
-- **Kubernetes version** selection
-- **Datastore** selection
-- **Provider profile** presets: Generic, kind, AWS (NLB), Azure (internal LB),
-  which pre-fill the service annotations for each provider
-- **Service type** (LoadBalancer, ClusterIP, NodePort)
-- **Advanced section**: API port, Konnectivity port, API address,
-  advertise address, Service CIDR, Pod CIDR, DNS IPs,
-  Certificate SANs, admission controllers,
-  service annotations / labels, deployment node selector
-- **Edit YAML**: toggle a raw YAML editor pre-populated from the form;
-  the YAML is applied as-is when confirmed, allowing full customization
-  beyond what the form exposes
+![The details of a dual-stack tenant: its status, the conditions of its Deployment, its CIDR lists and its datastore, dark theme](assets/screenshots/tenant-details-dark.png)
 
-### Download tenant kubeconfig
+- status, Kubernetes version, endpoint, replicas and ready pods
+- the conditions of the Deployment of the control plane
+- the type of the Service of the control plane, and its IP family policy and
+  families when the tenant sets them
+- the Pod and Service CIDRs, and the DNS Service IPs
+- the datastore, with its driver, the schema and user of the tenant in it,
+  and the writes to it that the API server of the tenant refuses
+- whether Konnectivity is enabled
 
-![Kamaji Download Kubeconfig Action](assets/screenshots/3-download-kubeconfig.png)
+### Download the kubeconfig of a tenant
 
-Download the tenant admin kubeconfig directly from the tenant context menu.  
-Use this kubeconfig to connect Freelens to tenant clusters generated by Kamaji.
+![The menu of a tenant with Download kubeconfig, dark theme](assets/screenshots/tenant-menu-dark.png)
+
+**Download kubeconfig** in the menu of a tenant saves its admin kubeconfig.
+Saved in a folder of Preferences > Kubernetes > Kubeconfig Syncs, it adds the
+tenant cluster to the catalog of Freelens.
+
+### Datastores
+
+![The Datastores page with a DataStore of each driver, their endpoints, whether Kamaji validated them and their tenants, dark theme](assets/screenshots/datastores-dark.png)
+
+For each DataStore:
+
+- its name, driver and endpoints
+- whether Kamaji validated it
+- the tenants that use it
+
+### Create a datastore
+
+![The dialog that creates a DataStore, with the PostgreSQL driver and basic auth, dark theme](assets/screenshots/datastore-dialog-dark.png)
+
+- **etcd**, with TLS: the certificate authority with its private key, and a
+  client certificate. The form proposes the etcd that the chart of Kamaji
+  deploys.
+- **PostgreSQL**, **MySQL** and **NATS**, with basic auth, TLS or both
+- every value from a key of a Secret, with the key of each value in its own
+  field, as the samples of Kamaji name them differently from one datastore to
+  another
 
 ### Datastore details
 
-![Kamaji Datastore Details](assets/screenshots/4-datastore-detail.png)
+![The details of an etcd DataStore: its endpoints, the source of each value of its TLS configuration, and its two tenants, dark theme](assets/screenshots/datastore-details-dark.png)
 
-Inspect datastore configuration and usage details:
-- Driver type
-- Endpoints
-- Number of tenants using the datastore
+- driver and endpoints
+- whether Kamaji validated it, with its conditions
+- how Kamaji authenticates to it, and where each value of its TLS
+  configuration and basic auth comes from: inline, or a key of a Secret. The
+  values themselves are never shown.
+- the tenants that use it
 
 ## Install
 
