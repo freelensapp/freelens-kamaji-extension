@@ -268,11 +268,12 @@ A model is a subclass of `Renderer.K8sApi.LensExtensionKubeObject`, one file
 per kind and API version in `src/renderer/k8s/`:
 `tenant-control-plane-v1alpha1.ts` exports `TenantControlPlane` and
 `datastore-v1alpha1.ts` exports `DataStore`. Kamaji serves both kinds as
-`kamaji.clastix.io/v1alpha1` only. The types of `TenantControlPlane` follow the
-Go types of Kamaji 26.10.5-edge (`api/v1alpha1/tenantcontrolplane_types.go` and
-`tenantcontrolplane_status.go`), with the host's types for the structs of
-Kubernetes itself, such as `Renderer.K8sApi.Toleration`; `types.ts` has the
-type of `crd` that the models share, with the title of the list page.
+`kamaji.clastix.io/v1alpha1` only. The types of both models follow the Go types
+of Kamaji 26.10.5-edge (`api/v1alpha1/tenantcontrolplane_types.go`,
+`tenantcontrolplane_status.go` and `datastore_types.go`), with the host's types
+for the structs of Kubernetes itself, such as `Renderer.K8sApi.Toleration`;
+`types.ts` has the type of `crd` that the models share, with the title of the
+list page.
 
 The host reads the model's metadata from the class, through `static readonly`
 properties. The objects it hands to the extension, in a list, a details panel
