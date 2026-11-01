@@ -2,6 +2,9 @@ import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 
 import type {
   AdmissionController,
+  IPFamily,
+  IPFamilyPolicy,
+  ServiceSpec,
   ServiceType,
   TenantControlPlane,
   TenantControlPlaneSpec,
@@ -36,6 +39,11 @@ export const profileAnnotations: Record<ProviderProfile, string> = {
 };
 
 export const serviceTypes: ServiceType[] = ["LoadBalancer", "ClusterIP", "NodePort"];
+
+export const ipFamilyPolicies: IPFamilyPolicy[] = ["SingleStack", "PreferDualStack", "RequireDualStack"];
+
+/** The newest Kubernetes version that Kamaji 26.10.5-edge runs a tenant at; its webhook refuses a newer minor. */
+export const newestKubernetesVersion = { major: 1, minor: 37 };
 
 /** The values of the `AdmissionController` enum of Kamaji, which the CRD accepts. */
 export const admissionControllers: AdmissionController[] = [
@@ -95,9 +103,19 @@ export interface TenantForm {
   serviceAnnotations: string;
   serviceLabels: string;
   nodeSelector: string;
-  serviceCidr: string;
-  podCidr: string;
-  dnsServiceIp: string;
+  /** One CIDR, or two of different IP families for a dual-stack tenant, comma separated. */
+  serviceCidrs: string;
+  podCidrs: string;
+  /** Empty to let Kamaji compute them from the Service CIDRs. */
+  dnsServiceIps: string;
+  /** Empty for the default of the management cluster. */
+  ipFamilyPolicy: IPFamilyPolicy | "";
+  /** Comma separated, the primary family first; empty for the default of the management cluster. */
+  ipFamilies: string;
+  /** For a LoadBalancer Service: empty for the default of Kubernetes, which allocates them. */
+  allocateLoadBalancerNodePorts: "" | "true" | "false";
+  /** For a ClusterIP Service, with the API address set. */
+  headless: boolean;
 }
 
 const parseCsvList = (value: string): string[] =>
@@ -135,6 +153,83 @@ export const parseKeyValueLines = (value: string): Record<string, string> => {
   return parsed;
 };
 
+/** The IP family of a CIDR, or `undefined` when the value is not one. */
+export function cidrFamily(value: string): IPFamily | undefined {
+  const slash = value.lastIndexOf("/");
+  const address = value.slice(0, slash);
+  const prefix = value.slice(slash + 1);
+
+  if (slash === -1 || !/^\d{1,3}$/.test(prefix)) {
+    return undefined;
+  }
+
+  const octets = address.split(".");
+
+  if (octets.length === 4) {
+    const valid = octets.every((octet) => /^\d{1,3}$/.test(octet) && Number(octet) <= 255);
+
+    return valid && Number(prefix) <= 32 ? "IPv4" : undefined;
+  }
+
+  if (!address.includes(":") || Number(prefix) > 128) {
+    return undefined;
+  }
+
+  try {
+    new URL(`http://[${address}]`);
+    return "IPv6";
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * The CIDRs of a field, which Kamaji takes as one, or two of different IP families. Returns an error message for the
+ * user in place of the list when the field is not such a list.
+ */
+function parseCidrList(value: string, field: string): string[] | string {
+  const cidrs = parseCsvList(value);
+  const families = cidrs.map(cidrFamily);
+
+  if (cidrs.length < 1 || cidrs.length > 2) {
+    return `${field} must have one CIDR, or two for a dual-stack tenant`;
+  }
+
+  const invalid = cidrs.find((_, index) => !families[index]);
+
+  if (invalid) {
+    return `${field}: "${invalid}" is not a valid CIDR`;
+  }
+
+  if (families.length === 2 && families[0] === families[1]) {
+    return `${field} must not have two CIDRs of the same IP family`;
+  }
+
+  return cidrs;
+}
+
+/** The IP families of the form, or an error message for the user. */
+function parseIpFamilies(form: TenantForm): IPFamily[] | string {
+  const families = parseCsvList(form.ipFamilies);
+  const known = families.filter((family): family is IPFamily => family === "IPv4" || family === "IPv6");
+
+  if (known.length !== families.length) {
+    return "IP families must be IPv4, IPv6, or both";
+  }
+
+  if (families.length > 2 || (families.length === 2 && families[0] === families[1])) {
+    return "IP families must not repeat a family";
+  }
+
+  if (form.ipFamilyPolicy === "SingleStack" && families.length > 1) {
+    return "A SingleStack IP family policy takes one IP family";
+  }
+
+  return known;
+}
+
+const kubernetesVersionPattern = /^v?(\d+)\.(\d+)\.(\d+)(-[0-9A-Za-z.-]+)?$/;
+
 const parsePort = (value: string): number | undefined => {
   const port = Number(value.trim());
 
@@ -161,6 +256,40 @@ export function validateTenantForm(form: TenantForm): string | undefined {
     return "Konnectivity port must be an integer between 1 and 65535";
   }
 
+  const version = kubernetesVersionPattern.exec(form.kubernetesVersion.trim());
+
+  if (!version) {
+    return "Kubernetes version must be a version such as v1.36.3";
+  }
+
+  const [major, minor] = [Number(version[1]), Number(version[2])];
+  const newest = newestKubernetesVersion;
+
+  if (major > newest.major || (major === newest.major && minor > newest.minor)) {
+    return `Kamaji runs tenants up to Kubernetes v${newest.major}.${newest.minor}`;
+  }
+
+  for (const [value, field] of [
+    [form.serviceCidrs, "Service CIDRs"],
+    [form.podCidrs, "Pod CIDRs"],
+  ]) {
+    const cidrs = parseCidrList(value, field);
+
+    if (typeof cidrs === "string") {
+      return cidrs;
+    }
+  }
+
+  const families = parseIpFamilies(form);
+
+  if (typeof families === "string") {
+    return families;
+  }
+
+  if (form.headless && form.serviceType === "ClusterIP" && !form.apiAddress.trim()) {
+    return "A headless Service needs the API address, which it announces in place of a Service IP";
+  }
+
   return undefined;
 }
 
@@ -171,7 +300,10 @@ export function validateTenantForm(form: TenantForm): string | undefined {
 export function buildTenantResource(form: TenantForm): TenantControlPlaneResource {
   const version = form.kubernetesVersion.trim();
   const parsedReplicas = Number(form.replicas.trim());
-  const dnsServiceIPs = parseCsvList(form.dnsServiceIp);
+  const dnsServiceIPs = parseCsvList(form.dnsServiceIps);
+  const serviceCidrs = parseCidrList(form.serviceCidrs, "Service CIDRs");
+  const podCidrs = parseCidrList(form.podCidrs, "Pod CIDRs");
+  const ipFamilies = parseIpFamilies(form);
   const certSANs = parseCsvList(form.certSans);
   const annotations = parseKeyValueLines(form.serviceAnnotations);
   const labels = parseKeyValueLines(form.serviceLabels);
@@ -190,6 +322,28 @@ export function buildTenantResource(form: TenantForm): TenantControlPlaneResourc
     throw new Error(`Unknown service type: "${form.serviceType}".`);
   }
 
+  if (typeof serviceCidrs === "string") {
+    throw new Error(serviceCidrs);
+  }
+
+  if (typeof podCidrs === "string") {
+    throw new Error(podCidrs);
+  }
+
+  if (typeof ipFamilies === "string") {
+    throw new Error(ipFamilies);
+  }
+
+  const service: ServiceSpec = {
+    serviceType: form.serviceType,
+    ...(form.ipFamilyPolicy ? { ipFamilyPolicy: form.ipFamilyPolicy } : {}),
+    ...(ipFamilies.length ? { ipFamilies } : {}),
+    ...(form.serviceType === "LoadBalancer" && form.allocateLoadBalancerNodePorts
+      ? { allocateLoadBalancerNodePorts: form.allocateLoadBalancerNodePorts === "true" }
+      : {}),
+    ...(form.serviceType === "ClusterIP" && form.headless ? { headless: true } : {}),
+  };
+
   return {
     apiVersion: "kamaji.clastix.io/v1alpha1",
     kind: "TenantControlPlane",
@@ -201,9 +355,9 @@ export function buildTenantResource(form: TenantForm): TenantControlPlaneResourc
       dataStore: form.dataStore.trim() || "default",
       networkProfile: {
         port: parsePort(form.apiPort) ?? 6443,
-        serviceCidr: form.serviceCidr.trim(),
-        podCidr: form.podCidr.trim(),
-        dnsServiceIPs: dnsServiceIPs.length ? dnsServiceIPs : ["10.96.0.10"],
+        serviceCidrs,
+        podCidrs,
+        ...(dnsServiceIPs.length ? { dnsServiceIPs } : {}),
         ...(form.apiAddress.trim() ? { address: form.apiAddress.trim() } : {}),
         ...(form.advertiseAddress.trim() ? { advertiseAddress: form.advertiseAddress.trim() } : {}),
         ...(certSANs.length ? { certSANs } : {}),
@@ -211,7 +365,7 @@ export function buildTenantResource(form: TenantForm): TenantControlPlaneResourc
       kubernetes: {
         version: version.startsWith("v") ? version : `v${version}`,
         kubelet: {
-          cgroupfs: "systemd",
+          configurationJSONPatches: [{ op: "add", path: "/cgroupDriver", value: "systemd" }],
         },
         ...(enabledAdmissionControllers.length ? { admissionControllers: enabledAdmissionControllers } : {}),
       },
@@ -221,7 +375,7 @@ export function buildTenantResource(form: TenantForm): TenantControlPlaneResourc
           ...(Object.keys(nodeSelector).length ? { nodeSelector } : {}),
         },
         service: {
-          serviceType: form.serviceType,
+          ...service,
           ...(Object.keys(annotations).length || Object.keys(labels).length
             ? {
                 additionalMetadata: {

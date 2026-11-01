@@ -64,7 +64,7 @@ const NamespaceSelectBadge = ({ namespace }: { namespace: string }) => React.cre
 const KubeObjectAge = () => null;
 
 // A row of a details panel: its name and value, or nothing when it is hidden;
-// a badge: its label.
+// a badge: its label, with its title.
 const DrawerItem = ({
   name,
   hidden,
@@ -74,7 +74,8 @@ const DrawerItem = ({
   hidden?: boolean;
   children?: React.ReactNode;
 }) => (hidden ? null : React.createElement("div", { role: "row" }, React.createElement("span", null, name), children));
-const Badge = ({ label }: { label?: React.ReactNode }) => React.createElement("span", null, label);
+const Badge = ({ label, title }: { label?: React.ReactNode; title?: string }) =>
+  React.createElement("span", { title }, label);
 
 // A menu item: a list item that takes the click; an icon renders nothing.
 const MenuItem = ({ onClick, children }: { onClick?: () => void; children?: React.ReactNode }) =>

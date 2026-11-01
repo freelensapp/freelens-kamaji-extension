@@ -501,6 +501,57 @@ export class TenantControlPlane extends Renderer.K8sApi.LensExtensionKubeObject<
     return object.status?.kubeconfig?.admin?.secretName || `${object.getName()}-admin-kubeconfig`;
   }
 
+  /**
+   * The Pod CIDRs of the tenant cluster: the list, which takes precedence in Kamaji, else the deprecated single CIDR.
+   * The CRD defaults the single CIDR, so an object with the list has it too.
+   */
+  static getPodCIDRs(object: TenantControlPlane): string[] {
+    const networkProfile = object.spec?.networkProfile;
+
+    if (networkProfile?.podCidrs?.length) {
+      return networkProfile.podCidrs;
+    }
+
+    return networkProfile?.podCidr ? [networkProfile.podCidr] : [];
+  }
+
+  /** The Service CIDRs of the tenant cluster, as `getPodCIDRs` reads the Pod CIDRs. */
+  static getServiceCIDRs(object: TenantControlPlane): string[] {
+    const networkProfile = object.spec?.networkProfile;
+
+    if (networkProfile?.serviceCidrs?.length) {
+      return networkProfile.serviceCidrs;
+    }
+
+    return networkProfile?.serviceCidr ? [networkProfile.serviceCidr] : [];
+  }
+
+  /** The writes to its DataStore that the API server of the tenant refuses: `create`, `update` and `delete`. */
+  static getBlockedWrites(object: TenantControlPlane): string[] {
+    const permissions = object.spec?.writePermissions;
+
+    return [
+      permissions?.blockCreation ? "create" : "",
+      permissions?.blockUpdate ? "update" : "",
+      permissions?.blockDeletion ? "delete" : "",
+    ].filter(Boolean);
+  }
+
+  /** The database or key prefix of the tenant in its DataStore: the one of the spec, else the one Kamaji set up. */
+  static getDataStoreSchema(object: TenantControlPlane): string | undefined {
+    return object.spec?.dataStoreSchema || object.status?.storage?.setup?.schema || undefined;
+  }
+
+  /** The user of the tenant in a relational DataStore: the one of the spec, else the one Kamaji set up. */
+  static getDataStoreUsername(object: TenantControlPlane): string | undefined {
+    return object.spec?.dataStoreUsername || object.status?.storage?.setup?.user || undefined;
+  }
+
+  /** The conditions of the Deployment of the control plane, as Kamaji reports them. */
+  static getConditions(object: TenantControlPlane): DeploymentCondition[] {
+    return object.status?.kubernetesResources?.deployment?.conditions ?? [];
+  }
+
   /** The DataStore that holds the state of the control plane, and its driver, as Kamaji reports them. */
   static getDataStore(object: TenantControlPlane): string | undefined {
     const storage = object.status?.storage;

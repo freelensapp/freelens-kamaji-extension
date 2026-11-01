@@ -91,6 +91,71 @@ describe("TenantControlPlane", () => {
     });
   });
 
+  describe("getPodCIDRs and getServiceCIDRs", () => {
+    it("return the lists, which take precedence over the single CIDRs that the CRD defaults", () => {
+      const tenant = buildTenant(undefined, {
+        networkProfile: {
+          podCidr: "10.244.0.0/16",
+          podCidrs: ["10.250.0.0/16", "fd00:10:250::/56"],
+          serviceCidr: "10.96.0.0/16",
+          serviceCidrs: ["10.100.0.0/16"],
+        },
+      });
+
+      expect(TenantControlPlane.getPodCIDRs(tenant)).toEqual(["10.250.0.0/16", "fd00:10:250::/56"]);
+      expect(TenantControlPlane.getServiceCIDRs(tenant)).toEqual(["10.100.0.0/16"]);
+    });
+
+    it("return the deprecated single CIDRs of a tenant without the lists", () => {
+      const tenant = buildTenant(undefined, {
+        networkProfile: { podCidr: "10.244.0.0/16", serviceCidr: "10.96.0.0/16" },
+      });
+
+      expect(TenantControlPlane.getPodCIDRs(tenant)).toEqual(["10.244.0.0/16"]);
+      expect(TenantControlPlane.getServiceCIDRs(tenant)).toEqual(["10.96.0.0/16"]);
+    });
+
+    it("return nothing without a network profile", () => {
+      expect(TenantControlPlane.getPodCIDRs(buildTenant())).toEqual([]);
+      expect(TenantControlPlane.getServiceCIDRs(buildTenant())).toEqual([]);
+    });
+  });
+
+  describe("getBlockedWrites", () => {
+    it("names the writes that the write permissions block", () => {
+      const tenant = buildTenant(undefined, { writePermissions: { blockCreation: true, blockDeletion: true } });
+
+      expect(TenantControlPlane.getBlockedWrites(tenant)).toEqual(["create", "delete"]);
+      expect(TenantControlPlane.getBlockedWrites(buildTenant())).toEqual([]);
+    });
+  });
+
+  describe("getDataStoreSchema and getDataStoreUsername", () => {
+    it("return the values of the spec, else the ones that Kamaji set up", () => {
+      const setUp = { storage: { setup: { schema: "kamaji_tenants_shop", user: "kamaji_tenants_shop" } } };
+
+      expect(TenantControlPlane.getDataStoreSchema(buildTenant(setUp))).toBe("kamaji_tenants_shop");
+      expect(TenantControlPlane.getDataStoreUsername(buildTenant(setUp))).toBe("kamaji_tenants_shop");
+      expect(
+        TenantControlPlane.getDataStoreSchema(
+          buildTenant(setUp, { dataStoreSchema: "shop", dataStoreUsername: "app" }),
+        ),
+      ).toBe("shop");
+      expect(TenantControlPlane.getDataStoreUsername(buildTenant(setUp, { dataStoreUsername: "app" }))).toBe("app");
+      expect(TenantControlPlane.getDataStoreSchema(buildTenant())).toBeUndefined();
+    });
+  });
+
+  describe("getConditions", () => {
+    it("returns the conditions of the Deployment of the control plane", () => {
+      const conditions = [{ type: "Available", status: "True" as const, reason: "MinimumReplicasAvailable" }];
+      const tenant = buildTenant({ kubernetesResources: { deployment: { ...deployment, conditions } } });
+
+      expect(TenantControlPlane.getConditions(tenant)).toEqual(conditions);
+      expect(TenantControlPlane.getConditions(buildTenant())).toEqual([]);
+    });
+  });
+
   describe("getDataStore", () => {
     it("returns the DataStore and its driver", () => {
       const tenant = buildTenant({ storage: { dataStoreName: "etcd-test", driver: "etcd" } });

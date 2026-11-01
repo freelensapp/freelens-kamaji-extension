@@ -189,7 +189,12 @@ source maps. `main` and `renderer` in `package.json` point at the two entries.
 
 The details panel of a tenant shows its spec and what Kamaji reports, partly
 through the model's helpers. A row of the status is hidden until Kamaji reports
-its value, and a row of the spec shows `-` for a field the spec leaves out.
+its value, and a row of the spec shows `-` for a field the spec leaves out. The
+CIDRs are read from the lists, which take precedence in Kamaji, and from the
+deprecated single CIDR of an older tenant without them; the CRD defaults the
+single CIDRs, so a tenant with the lists has those too. The conditions are
+those of the Deployment of the control plane, the only ones that Kamaji reports,
+as badges with their message as title.
 
 Each page reads its store from its model's `getStore()`, which throws while the
 cluster serves no such kind, with a message that says the API or the store is
@@ -213,7 +218,32 @@ wrong with a field, `buildTenantResource` returns the typed resource or throws
 an error with a message for the user, and `parseTenantResourceYaml` reads the
 YAML editor, with the namespace of the YAML or else the one of the form. The
 store posts the resource with no cast, and its tests cover what the form and
-the YAML editor produce. The DataStore dialog
+the YAML editor produce.
+
+The form follows the CRD of Kamaji 26.10.5-edge, and refuses before the request
+what Kamaji refuses:
+
+- the CIDRs are the lists `podCidrs` and `serviceCidrs`, one CIDR or two of
+  different IP families for a dual-stack tenant, never the deprecated
+  `podCidr` and `serviceCidr`;
+- the IP family policy and the IP families of the control plane's Service,
+  at most one family with `SingleStack`;
+- `allocateLoadBalancerNodePorts` for a LoadBalancer Service only, and
+  `headless` for a ClusterIP Service only, with the API address, which the
+  headless Service announces;
+- the Kubernetes version, a semantic version no newer than
+  `newestKubernetesVersion`, v1.37: the webhook of Kamaji refuses a newer
+  minor (`KubeadmVersion` in `internal/upgrade/kubeadm_version.go` of Kamaji),
+  so the constant follows it when the extension moves to a newer Kamaji;
+- the cgroup driver of the kubelet as a JSON patch of its configuration,
+  `configurationJSONPatches`, as the sample of Kamaji sets it, in place of the
+  deprecated `cgroupfs`;
+- the DNS Service IPs only when the user gives them; otherwise Kamaji computes
+  them from the Service CIDRs, one per family.
+
+The rules are those of the `x-kubernetes-validations` of the CRD. A check that
+posts what the form builds with `kubectl apply --dry-run=server` to a cluster
+with the CRD of the same release shows whether they still match. The DataStore dialog
 builds a `DataStore` with its driver, endpoints and TLS Secrets.
 
 The menu item reads the Secret that Kamaji records in

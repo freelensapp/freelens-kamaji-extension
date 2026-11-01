@@ -67,6 +67,74 @@ describe("TenantDetails", () => {
     expect(rowValue("Konnectivity")).toBe("Enabled");
   });
 
+  it("shows the network, the Service and the DataStore of a dual-stack tenant", () => {
+    const tenant = buildTenant(
+      {
+        networkProfile: {
+          podCidr: "10.244.0.0/16",
+          podCidrs: ["10.244.0.0/16", "fd00:10:244::/56"],
+          serviceCidr: "10.96.0.0/16",
+          serviceCidrs: ["10.96.0.0/16", "fd00:10:96::/112"],
+        },
+        controlPlane: {
+          service: {
+            serviceType: "LoadBalancer",
+            ipFamilyPolicy: "PreferDualStack",
+            ipFamilies: ["IPv4", "IPv6"],
+            allocateLoadBalancerNodePorts: false,
+          },
+        },
+        writePermissions: { blockCreation: true, blockUpdate: true },
+      },
+      {
+        storage: {
+          driver: "PostgreSQL",
+          dataStoreName: "postgres-test",
+          setup: { schema: "billing", user: "billing" },
+        },
+        kubernetesResources: {
+          deployment: {
+            name: "billing",
+            namespace: "kamaji-tenants",
+            selector: "app=billing",
+            conditions: [
+              { type: "Available", status: "True", reason: "MinimumReplicasAvailable" },
+              { type: "Progressing", status: "False", message: "ProgressDeadlineExceeded" },
+            ],
+          },
+        },
+      },
+    );
+
+    render(<TenantDetails object={tenant} />);
+
+    expect(rowValue("Pod CIDRs")).toBe("10.244.0.0/16, fd00:10:244::/56");
+    expect(rowValue("Service CIDRs")).toBe("10.96.0.0/16, fd00:10:96::/112");
+    expect(rowValue("IP Family Policy")).toBe("PreferDualStack");
+    expect(rowValue("IP Families")).toBe("IPv4, IPv6");
+    expect(rowValue("Allocate Node Ports")).toBe("No");
+    expect(rowValue("Data Store Schema")).toBe("billing");
+    expect(rowValue("Data Store Username")).toBe("billing");
+    expect(rowValue("Write Permissions")).toBe("Blocked: create, update");
+    expect(rowValue("Conditions")).toBe("AvailableProgressing: False");
+    expect(screen.getByText("Progressing: False").getAttribute("title")).toBe("ProgressDeadlineExceeded");
+    expect(screen.queryByText("Headless Service")).toBeNull();
+  });
+
+  it("shows the deprecated single CIDRs of a tenant without the lists, and a headless Service", () => {
+    const tenant = buildTenant({
+      networkProfile: { podCidr: "10.244.0.0/16", serviceCidr: "10.96.0.0/16", address: "10.0.0.5" },
+      controlPlane: { service: { serviceType: "ClusterIP", headless: true } },
+    });
+
+    render(<TenantDetails object={tenant} />);
+
+    expect(rowValue("Pod CIDRs")).toBe("10.244.0.0/16");
+    expect(rowValue("Service CIDRs")).toBe("10.96.0.0/16");
+    expect(rowValue("Headless Service")).toBe("Yes");
+    expect(rowValue("Write Permissions")).toBe("All allowed");
+  });
+
   it("says that Konnectivity is disabled when Kamaji reports so", () => {
     render(<TenantDetails object={buildTenant({}, { addons: { konnectivity: { enabled: false } } })} />);
 
@@ -80,7 +148,16 @@ describe("TenantDetails", () => {
     expect(rowValue("Control Plane Replicas")).toBe("-");
     expect(rowValue("Ready Pods")).toBe("0/0");
     expect(rowValue("Data Store")).toBe("-");
-    for (const hidden of ["Control Plane Endpoint", "Storage Driver", "Data Store Name (Status)", "Konnectivity"]) {
+    expect(rowValue("Pod CIDRs")).toBe("-");
+    for (const hidden of [
+      "Conditions",
+      "Control Plane Endpoint",
+      "Storage Driver",
+      "Data Store Name (Status)",
+      "Data Store Schema",
+      "IP Families",
+      "Konnectivity",
+    ]) {
       expect(screen.queryByText(hidden)).toBeNull();
     }
   });

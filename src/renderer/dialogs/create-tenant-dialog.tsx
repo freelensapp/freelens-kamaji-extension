@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./create-tenant-dialog.module.css";
 import {
   buildTenantResource,
+  ipFamilyPolicies,
   type ProviderProfile,
   parseTenantResourceYaml,
   profileAnnotations,
@@ -19,10 +20,15 @@ import {
   validateTenantForm,
 } from "./tenant-resource";
 
-import type { ServiceType, TenantControlPlane, TenantControlPlaneApi } from "../k8s/tenant-control-plane-v1alpha1";
+import type {
+  IPFamilyPolicy,
+  ServiceType,
+  TenantControlPlane,
+  TenantControlPlaneApi,
+} from "../k8s/tenant-control-plane-v1alpha1";
 
 const {
-  Component: { Dialog, Input, Icon, NamespaceSelect, Select, SubTitle, Wizard, WizardStep },
+  Component: { Checkbox, Dialog, Input, Icon, NamespaceSelect, Select, SubTitle, Wizard, WizardStep },
 } = Renderer;
 
 export interface CreateTenantDialogProps {
@@ -66,7 +72,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   const [namespace, setNamespace] = useState("default");
   const [providerProfile, setProviderProfile] = useState<ProviderProfile>("generic");
   const [dataStore, setDataStore] = useState("default");
-  const [kubernetesVersion, setKubernetesVersion] = useState("1.33.0");
+  const [kubernetesVersion, setKubernetesVersion] = useState("v1.36.3");
   const [replicas, setReplicas] = useState("1");
   const [serviceType, setServiceType] = useState<ServiceType>("LoadBalancer");
   const [apiPort, setApiPort] = useState("6443");
@@ -78,9 +84,13 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   const [serviceAnnotations, setServiceAnnotations] = useState("");
   const [serviceLabels, setServiceLabels] = useState("");
   const [nodeSelector, setNodeSelector] = useState("");
-  const [serviceCidr, setServiceCidr] = useState("10.96.0.0/16");
-  const [podCidr, setPodCidr] = useState("10.244.0.0/16");
-  const [dnsServiceIp, setDnsServiceIp] = useState("10.96.0.10");
+  const [serviceCidrs, setServiceCidrs] = useState("10.96.0.0/16");
+  const [podCidrs, setPodCidrs] = useState("10.244.0.0/16");
+  const [dnsServiceIps, setDnsServiceIps] = useState("");
+  const [ipFamilyPolicy, setIpFamilyPolicy] = useState<IPFamilyPolicy | "">("");
+  const [ipFamilies, setIpFamilies] = useState("");
+  const [allocateLoadBalancerNodePorts, setAllocateLoadBalancerNodePorts] = useState<"" | "true" | "false">("");
+  const [headless, setHeadless] = useState(false);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [showYaml, setShowYaml] = useState(false);
   const [yamlContent, setYamlContent] = useState("");
@@ -116,9 +126,13 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
     serviceAnnotations,
     serviceLabels,
     nodeSelector,
-    serviceCidr,
-    podCidr,
-    dnsServiceIp,
+    serviceCidrs,
+    podCidrs,
+    dnsServiceIps,
+    ipFamilyPolicy,
+    ipFamilies,
+    allocateLoadBalancerNodePorts,
+    headless,
   };
 
   const handleCreate = async () => {
@@ -274,7 +288,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
             <Input
               value={kubernetesVersion}
               onChange={(value) => setKubernetesVersion(value)}
-              placeholder="e.g., v1.33.0"
+              placeholder="e.g., v1.37.0"
               disabled={loading}
             />
           </div>
@@ -354,34 +368,88 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
               </div>
 
               <div className={styles.field}>
-                <SubTitle title="Service CIDR" />
+                <SubTitle title="Service CIDRs (one, or two for dual-stack)" />
                 <Input
-                  value={serviceCidr}
-                  onChange={(value) => setServiceCidr(value)}
-                  placeholder="e.g., 10.96.0.0/16"
+                  value={serviceCidrs}
+                  onChange={(value) => setServiceCidrs(value)}
+                  placeholder="e.g., 10.96.0.0/16,fd00:10:96::/112"
                   disabled={loading}
                 />
               </div>
 
               <div className={styles.field}>
-                <SubTitle title="Pod CIDR" />
+                <SubTitle title="Pod CIDRs (one, or two for dual-stack)" />
                 <Input
-                  value={podCidr}
-                  onChange={(value) => setPodCidr(value)}
-                  placeholder="e.g., 10.244.0.0/16"
+                  value={podCidrs}
+                  onChange={(value) => setPodCidrs(value)}
+                  placeholder="e.g., 10.244.0.0/16,fd00:10:244::/56"
                   disabled={loading}
                 />
               </div>
 
               <div className={styles.field}>
-                <SubTitle title="DNS Service IPs (comma separated)" />
+                <SubTitle title="DNS Service IPs (empty to compute them from the Service CIDRs)" />
                 <Input
-                  value={dnsServiceIp}
-                  onChange={(value) => setDnsServiceIp(value)}
-                  placeholder="e.g., 10.96.0.10,10.96.0.11"
+                  value={dnsServiceIps}
+                  onChange={(value) => setDnsServiceIps(value)}
+                  placeholder="e.g., 10.96.0.10"
                   disabled={loading}
                 />
               </div>
+
+              <div className={styles.field}>
+                <SubTitle title="IP Family Policy of the Service" />
+                <Select
+                  id="tenant-ip-family-policy-input"
+                  themeName="light"
+                  value={ipFamilyPolicy}
+                  options={[
+                    { value: "" as const, label: "Default of the cluster" },
+                    ...ipFamilyPolicies.map((policy) => ({ value: policy, label: policy })),
+                  ]}
+                  onChange={(option) => option && setIpFamilyPolicy(option.value)}
+                  isDisabled={loading}
+                />
+              </div>
+
+              <div className={styles.field}>
+                <SubTitle title="IP Families of the Service (the primary first)" />
+                <Input
+                  value={ipFamilies}
+                  onChange={(value) => setIpFamilies(value)}
+                  placeholder="e.g., IPv4,IPv6"
+                  disabled={loading}
+                />
+              </div>
+
+              {serviceType === "LoadBalancer" && (
+                <div className={styles.field}>
+                  <SubTitle title="Allocate Node Ports for the Load Balancer" />
+                  <Select
+                    id="tenant-allocate-node-ports-input"
+                    themeName="light"
+                    value={allocateLoadBalancerNodePorts}
+                    options={[
+                      { value: "" as const, label: "Default of Kubernetes (yes)" },
+                      { value: "true" as const, label: "Yes" },
+                      { value: "false" as const, label: "No" },
+                    ]}
+                    onChange={(option) => option && setAllocateLoadBalancerNodePorts(option.value)}
+                    isDisabled={loading}
+                  />
+                </div>
+              )}
+
+              {serviceType === "ClusterIP" && (
+                <div className={styles.field}>
+                  <Checkbox
+                    label="Headless Service (needs the API address; it cannot change later)"
+                    value={headless}
+                    onChange={(value) => setHeadless(value)}
+                    disabled={loading}
+                  />
+                </div>
+              )}
 
               <div className={styles.field}>
                 <SubTitle title="Certificate SANs (comma separated)" />
