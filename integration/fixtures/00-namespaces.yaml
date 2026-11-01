@@ -1,0 +1,16 @@
+# Namespaces of the test objects: two for the tenants, so that the namespace filter has something to filter, and
+# kamaji-system for the Secrets that the DataStores reference.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kamaji-tenants
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kamaji-dev
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kamaji-system

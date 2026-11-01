@@ -4,14 +4,8 @@
  */
 
 import styles from "./kamaji.module.css";
-import styleInline from "./kamaji.module.css?inline";
 import kamajiPng from "./kamaji.png";
 
 export function KamajiIcon() {
-  return (
-    <>
-      <style>{styleInline}</style>
-      <img src={kamajiPng} alt="Kamaji" className={styles.kamajiIcon} />
-    </>
-  );
+  return <img src={kamajiPng} alt="Kamaji" className={styles.kamajiIcon} />;
 }

@@ -4,12 +4,22 @@
  */
 
 import { Renderer } from "@freelensapp/extensions";
-import { useMemo, useState } from "react";
-import { DataStore, type DataStoreApi } from "../k8s/datastore-v1alpha1";
+import { useState } from "react";
 import styles from "./create-datastore-dialog.module.css";
+import {
+  buildDataStoreResource,
+  type DataStoreForm,
+  type DriverFields,
+  driverFields,
+  drivers,
+  switchDriverFields,
+  validateDataStoreForm,
+} from "./datastore-resource";
+
+import type { DataStore, DataStoreApi, Driver } from "../k8s/datastore-v1alpha1";
 
 const {
-  Component: { Dialog, Input, Icon, SubTitle, Wizard, WizardStep },
+  Component: { Checkbox, Dialog, Input, Icon, Select, SubTitle, Wizard, WizardStep },
 } = Renderer;
 
 const generateDefaultDatastoreName = () => `datastore-${Math.floor(Math.random() * 9999) + 1}`;
@@ -21,96 +31,38 @@ export interface CreateDatastoreDialogProps {
 
 export const CreateDatastoreDialog = ({ store, onClose }: CreateDatastoreDialogProps) => {
   const [name, setName] = useState(generateDefaultDatastoreName);
-  const [driver, setDriver] = useState("etcd");
-  const [endpoints, setEndpoints] = useState(
-    "etcd-0.etcd.kamaji-system.svc.cluster.local:2379,etcd-1.etcd.kamaji-system.svc.cluster.local:2379,etcd-2.etcd.kamaji-system.svc.cluster.local:2379",
-  );
+  const [driver, setDriver] = useState<Driver>("etcd");
   const [secretsNamespace, setSecretsNamespace] = useState("kamaji-system");
-  const [caSecretName, setCaSecretName] = useState("etcd-certs");
-  const [clientSecretName, setClientSecretName] = useState("root-client-certs");
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const [fields, setFields] = useState<DriverFields>(() => driverFields("etcd"));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const datastoreResourceFromForm = useMemo(() => {
-    const normalizedEndpoints = endpoints
-      .split(",")
-      .map((endpoint) => endpoint.trim())
-      .filter(Boolean);
+  const form: DataStoreForm = { name, driver, secretsNamespace, ...fields };
+  const withTls = driver === "etcd" || fields.useTls;
+  const withBasicAuth = driver !== "etcd" && fields.useBasicAuth;
+  const setField = <K extends keyof DriverFields>(key: K, value: DriverFields[K]) =>
+    setFields((current) => ({ ...current, [key]: value }));
 
-    return {
-      apiVersion: "kamaji.clastix.io/v1alpha1",
-      kind: "DataStore",
-      metadata: {
-        name: name.trim(),
-      },
-      spec: {
-        driver: driver.trim() || "etcd",
-        endpoints: normalizedEndpoints,
-        tlsConfig: {
-          certificateAuthority: {
-            certificate: {
-              secretReference: {
-                keyPath: "ca.crt",
-                name: caSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-            privateKey: {
-              secretReference: {
-                keyPath: "ca.key",
-                name: caSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-          },
-          clientCertificate: {
-            certificate: {
-              secretReference: {
-                keyPath: "tls.crt",
-                name: clientSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-            privateKey: {
-              secretReference: {
-                keyPath: "tls.key",
-                name: clientSecretName.trim(),
-                namespace: secretsNamespace.trim(),
-              },
-            },
-          },
-        },
-      },
-    };
-  }, [caSecretName, clientSecretName, driver, endpoints, name, secretsNamespace]);
+  const changeDriver = (next: Driver) => {
+    setFields((current) => switchDriverFields(current, driver, next));
+    setDriver(next);
+  };
 
   const handleCreate = async () => {
-    if (!name.trim()) {
-      setError("Datastore name is required");
+    const invalid = validateDataStoreForm(form);
+
+    if (invalid) {
+      setError(invalid);
       return;
     }
 
-    const normalizedEndpoints = endpoints
-      .split(",")
-      .map((endpoint) => endpoint.trim())
-      .filter(Boolean);
-
-    if (!normalizedEndpoints.length) {
-      setError("At least one endpoint is required");
-      return;
-    }
-
-    if (!secretsNamespace.trim() || !caSecretName.trim() || !clientSecretName.trim()) {
-      setError("Secrets namespace and secret names are required");
-      return;
-    }
+    const resource = buildDataStoreResource(form);
 
     setLoading(true);
     setError(null);
 
     try {
-      await store.create({ name: name.trim() }, datastoreResourceFromForm as any);
+      await store.create({ name: resource.metadata.name }, resource);
       onClose?.();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
@@ -125,6 +77,22 @@ export const CreateDatastoreDialog = ({ store, onClose }: CreateDatastoreDialogP
     setError(null);
     setLoading(false);
   };
+
+  const textField = (
+    title: string,
+    key: Exclude<keyof DriverFields, "useTls" | "useBasicAuth">,
+    placeholder: string,
+  ) => (
+    <div className={styles.field}>
+      <SubTitle title={title} />
+      <Input
+        value={fields[key]}
+        onChange={(value) => setField(key, value)}
+        placeholder={placeholder}
+        disabled={loading}
+      />
+    </div>
+  );
 
   return (
     <Dialog isOpen={true} className={styles.createDatastoreDialog} onOpen={reset} close={onClose}>
@@ -156,26 +124,51 @@ export const CreateDatastoreDialog = ({ store, onClose }: CreateDatastoreDialogP
 
           <div className={styles.field}>
             <SubTitle title="Driver" />
-            <Input value={driver} onChange={(value) => setDriver(value)} placeholder="e.g., etcd" disabled={loading} />
+            <Select
+              id="datastore-driver-input"
+              themeName="light"
+              value={driver}
+              options={drivers.map((value) => ({ value, label: value }))}
+              onChange={(option) => option && changeDriver(option.value)}
+              isDisabled={loading}
+            />
           </div>
 
           <div className={styles.field}>
             <SubTitle title="Endpoints (comma separated)" />
             <Input
-              value={endpoints}
-              onChange={(value) => setEndpoints(value)}
+              value={fields.endpoints}
+              onChange={(value) => setField("endpoints", value)}
               placeholder="host1:2379,host2:2379"
               disabled={loading}
             />
-            <span className={styles.help}>Example: etcd-0.etcd.kamaji-system.svc.cluster.local:2379</span>
+            <span className={styles.help}>An IPv6 address in brackets, e.g. [2001:db8::1]:2379</span>
           </div>
 
-          <details
-            className={styles.advanced}
-            open={isAdvancedOpen}
-            onToggle={(event) => setIsAdvancedOpen((event.target as HTMLDetailsElement).open)}
-          >
-            <summary>TLS secrets</summary>
+          <div className={styles.authentication}>
+            <SubTitle title="Authentication" />
+
+            {driver === "etcd" ? (
+              <span className={styles.help}>
+                An etcd DataStore uses TLS, with the certificate authority and its private key, and a client
+                certificate. The proposal is the etcd that the chart of Kamaji deploys.
+              </span>
+            ) : (
+              <div className={styles.field}>
+                <Checkbox
+                  label="Basic auth"
+                  value={fields.useBasicAuth}
+                  onChange={(value) => setField("useBasicAuth", value)}
+                  disabled={loading}
+                />
+                <Checkbox
+                  label="TLS"
+                  value={fields.useTls}
+                  onChange={(value) => setField("useTls", value)}
+                  disabled={loading}
+                />
+              </div>
+            )}
 
             <div className={styles.advancedGrid}>
               <div className={styles.field}>
@@ -188,27 +181,30 @@ export const CreateDatastoreDialog = ({ store, onClose }: CreateDatastoreDialogP
                 />
               </div>
 
-              <div className={styles.field}>
-                <SubTitle title="CA Secret Name" />
-                <Input
-                  value={caSecretName}
-                  onChange={(value) => setCaSecretName(value)}
-                  placeholder="e.g., etcd-certs"
-                  disabled={loading}
-                />
-              </div>
+              {withBasicAuth && (
+                <>
+                  {textField("Username and Password Secret", "authSecretName", `e.g., ${driver.toLowerCase()}-auth`)}
+                  {textField("Key of the Username", "usernameKey", "e.g., username")}
+                  {textField("Key of the Password", "passwordKey", "e.g., password")}
+                </>
+              )}
 
-              <div className={styles.field}>
-                <SubTitle title="Client Secret Name" />
-                <Input
-                  value={clientSecretName}
-                  onChange={(value) => setClientSecretName(value)}
-                  placeholder="e.g., root-client-certs"
-                  disabled={loading}
-                />
-              </div>
+              {withTls && (
+                <>
+                  {textField("CA Secret", "caSecretName", "e.g., kamaji-etcd-ca")}
+                  {textField("Key of the CA Certificate", "caCertificateKey", "e.g., ca.crt")}
+                  {driver === "etcd" && textField("Key of the CA Private Key", "caPrivateKeyKey", "e.g., tls.key")}
+                  {textField(
+                    driver === "etcd" ? "Client Secret" : "Client Secret (optional)",
+                    "clientSecretName",
+                    "e.g., kamaji-etcd-client-certs",
+                  )}
+                  {textField("Key of the Client Certificate", "clientCertificateKey", "e.g., tls.crt")}
+                  {textField("Key of the Client Private Key", "clientPrivateKeyKey", "e.g., tls.key")}
+                </>
+              )}
             </div>
-          </details>
+          </div>
         </WizardStep>
       </Wizard>
     </Dialog>

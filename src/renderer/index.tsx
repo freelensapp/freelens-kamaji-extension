@@ -4,7 +4,12 @@
  */
 
 import { Renderer } from "@freelensapp/extensions";
-import { KamajiMenuItem, type KamajiMenuItemProps } from "./components/kamaji-menu-item";
+import {
+  withDetailsErrorBoundary,
+  withMenuItemErrorBoundary,
+  withPageErrorBoundary,
+} from "./components/error-boundary";
+import { KamajiMenuItem } from "./components/kamaji-menu-item";
 import { DataStoreDetails } from "./details/datastore-details";
 import { TenantDetails } from "./details/tenant-details";
 import { KamajiIcon } from "./icons/kamaji";
@@ -13,8 +18,12 @@ import { TenantControlPlane } from "./k8s/tenant-control-plane-v1alpha1";
 import { DatastoresPage } from "./pages/datastores/datastores-page";
 import { TenantsPage } from "./pages/tenants/tenants-page";
 
+// Every page, details panel and menu item renders inside an error boundary, so that an error it throws stays in its
+// place: the host has none around the details drawer or a menu item, and its boundary around the cluster frame would
+// replace the whole cluster view. Each registration field is mapped through its wrapper, so an entry added to it is
+// wrapped too.
 export default class KamajiRenderer extends Renderer.LensExtension {
-  clusterPages = [
+  clusterPages: Renderer.LensExtension["clusterPages"] = [
     {
       id: "kamaji-tenants-page",
       components: {
@@ -27,7 +36,7 @@ export default class KamajiRenderer extends Renderer.LensExtension {
         Page: () => <DatastoresPage />,
       },
     },
-  ];
+  ].map((registration) => withPageErrorBoundary(this, registration));
 
   clusterPageMenus = [
     {
@@ -54,36 +63,24 @@ export default class KamajiRenderer extends Renderer.LensExtension {
     },
   ];
 
-  kubeObjectMenuItems = [
-    {
-      kind: TenantControlPlane.kind,
-      apiVersions: TenantControlPlane.crd.apiVersions,
-      components: {
-        MenuItem: (props: KamajiMenuItemProps) => <KamajiMenuItem {...props} />,
-      },
-    },
-  ];
+  // The Tenants and Datastores pages list the two kinds, so the Custom Resources tree of the cluster sidebar leaves
+  // them out.
+  customResources = [TenantControlPlane, DataStore];
 
-  kubeObjectDetailItems = [
-    {
-      kind: TenantControlPlane.kind,
-      apiVersions: TenantControlPlane.crd.apiVersions,
+  kubeObjectMenuItems: Renderer.LensExtension["kubeObjectMenuItems"] = [
+    Renderer.K8sApi.menuItemFor(TenantControlPlane, {
+      MenuItem: KamajiMenuItem,
+    }),
+  ].map((registration) => withMenuItemErrorBoundary(this, registration));
+
+  kubeObjectDetailItems: Renderer.LensExtension["kubeObjectDetailItems"] = [
+    Renderer.K8sApi.detailsFor(TenantControlPlane, {
       priority: 10,
-      components: {
-        Details: (props: Renderer.Component.KubeObjectDetailsProps<any>) => (
-          <TenantDetails {...props} extension={this} />
-        ),
-      },
-    },
-    {
-      kind: DataStore.kind,
-      apiVersions: DataStore.crd.apiVersions,
+      Details: TenantDetails,
+    }),
+    Renderer.K8sApi.detailsFor(DataStore, {
       priority: 10,
-      components: {
-        Details: (props: Renderer.Component.KubeObjectDetailsProps<any>) => (
-          <DataStoreDetails {...props} extension={this} />
-        ),
-      },
-    },
-  ];
+      Details: DataStoreDetails,
+    }),
+  ].map((registration) => withDetailsErrorBoundary(this, registration));
 }
