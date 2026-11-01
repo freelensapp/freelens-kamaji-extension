@@ -1090,7 +1090,7 @@ teardown stops collecting the errors, disconnects the cluster, and deletes the
 three namespaces, with what the session created in them, and the CRDs, also
 when a test failed.
 
-The drawer of a custom resource has the host's own details of it under the
+The drawer of a custom resource has the host's own details of it above the
 extension's, `CustomResourceDetails`, with an item per printer column of the
 CRD; the CRD of the Tenant Control Planes has a `Status` column, as the
 extension's panel has a `Status` item. `detailsValue` reads the extension's
