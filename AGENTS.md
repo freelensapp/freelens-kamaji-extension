@@ -188,8 +188,11 @@ source maps. `main` and `renderer` in `package.json` point at the two entries.
 Each page reads its store from its model's `getStore()`, which throws while the
 cluster serves no such kind, with a message that says the API or the store is
 "not registered"; the page then renders the notice that Kamaji was not
-detected, with a link to its documentation. The page is an `observer`, so it
-renders the list once the host registers the API ("CRD KubeObject Pattern").
+detected, with a link to its documentation; any other error of `getStore()`
+goes to the error boundary. The page is an `observer`, so it renders the list
+once the host registers the API ("CRD KubeObject Pattern"). The Tenants page
+takes its columns from the static helpers of `TenantControlPlane`, and shows
+`-` for a value that Kamaji has not reported yet.
 The list has an add button, which opens the create dialog of the page; the
 dialog posts the object with `store.create()`, and the page loads the store
 again when the dialog closes.

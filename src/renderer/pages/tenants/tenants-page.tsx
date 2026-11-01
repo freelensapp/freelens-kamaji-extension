@@ -10,46 +10,20 @@ const {
   Component: { KubeObjectAge, KubeObjectListLayout, NamespaceSelectBadge, WithTooltip },
 } = Renderer;
 
-const KubeObject = TenantControlPlane;
-type KubeObject = TenantControlPlane;
-type KubeObjectApi = TenantControlPlaneApi;
+type TenantControlPlaneStore = Renderer.K8sApi.KubeObjectStore<TenantControlPlane, TenantControlPlaneApi>;
 
-const getStatusText = (object: KubeObject): string =>
-  (object as any).status?.kubernetesResources?.version?.status ?? "Unknown";
-
-const getPodReplicasText = (object: KubeObject): string => {
-  const deployment = (object as any).status?.kubernetesResources?.deployment;
-  const total = deployment?.replicas ?? 0;
-  const ready = deployment?.availableReplicas ?? deployment?.readyReplicas ?? 0;
-
-  return `${ready}/${total}`;
-};
-
-const getEndpoint = (object: KubeObject): string => (object as any).status?.controlPlaneEndpoint ?? "-";
-
-const getKubernetesVersion = (object: KubeObject): string =>
-  (object as any).spec?.kubernetes?.version ?? (object as any).status?.kubernetesResources?.version?.version ?? "-";
-
-const getDatastoreText = (object: KubeObject): string => {
-  const dataStoreName = (object as any).status?.storage?.dataStoreName;
-  const driver = (object as any).status?.storage?.driver;
-
-  if (!dataStoreName && !driver) {
-    return "-";
-  }
-
-  return [dataStoreName, driver].filter(Boolean).join(" ");
-};
+/** A value of a column, or `-` while Kamaji has not reported it. */
+const orDash = (value: string | undefined) => value || "-";
 
 const sortingCallbacks = {
-  name: (object: KubeObject) => object.getName(),
-  namespace: (object: KubeObject) => object.getNs(),
-  status: (object: KubeObject) => getStatusText(object),
-  pods: (object: KubeObject) => getPodReplicasText(object),
-  endpoint: (object: KubeObject) => getEndpoint(object),
-  version: (object: KubeObject) => getKubernetesVersion(object),
-  datastore: (object: KubeObject) => getDatastoreText(object),
-  age: (object: KubeObject) => object.getCreationTimestamp(),
+  name: (object: TenantControlPlane) => object.getName(),
+  namespace: (object: TenantControlPlane) => object.getNs(),
+  status: (object: TenantControlPlane) => TenantControlPlane.getStatus(object),
+  pods: (object: TenantControlPlane) => TenantControlPlane.getReadyReplicas(object),
+  endpoint: (object: TenantControlPlane) => orDash(TenantControlPlane.getEndpoint(object)),
+  version: (object: TenantControlPlane) => orDash(TenantControlPlane.getKubernetesVersion(object)),
+  datastore: (object: TenantControlPlane) => orDash(TenantControlPlane.getDataStore(object)),
+  age: (object: TenantControlPlane) => object.getCreationTimestamp(),
 };
 
 const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks; className?: string }[] = [
@@ -63,25 +37,27 @@ const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks;
   { title: "Age", sortBy: "age", className: "age" },
 ];
 
-export const TenantsPage = observer(() => {
-  let store: Renderer.K8sApi.KubeObjectStore<KubeObject> | null = null;
-  let missingKamaji = false;
-
+/**
+ * The host's store of the Tenant Control Planes, or `undefined` while the cluster serves none: `getStore()` throws then,
+ * with a message that says that the API or the store is not registered.
+ */
+function getTenantControlPlaneStore(): TenantControlPlaneStore | undefined {
   try {
-    store = (KubeObject as any).getStore() as Renderer.K8sApi.KubeObjectStore<KubeObject>;
+    return TenantControlPlane.getStore<TenantControlPlane, TenantControlPlaneStore>();
   } catch (error) {
-    const errorMessage = String(error);
-
-    if (errorMessage.includes("not registered") || errorMessage.includes("getStore")) {
-      missingKamaji = true;
-    } else {
-      throw error;
+    if (String(error).includes("not registered")) {
+      return undefined;
     }
-  }
 
+    throw error;
+  }
+}
+
+export const TenantsPage = observer(() => {
+  const store = getTenantControlPlaneStore();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  if (missingKamaji || !store) {
+  if (!store) {
     return (
       <div className={styles.container}>
         <div className={styles.notInstalledState}>
@@ -106,36 +82,36 @@ export const TenantsPage = observer(() => {
   return (
     <>
       <div className={styles.container}>
-        <KubeObjectListLayout<KubeObject, KubeObjectApi>
+        <KubeObjectListLayout<TenantControlPlane, TenantControlPlaneApi>
           className={styles.kamajiCrds}
-          tableId={`${KubeObject.crd.plural}Table`}
+          tableId={`${TenantControlPlane.crd.plural}Table`}
           store={store}
-          renderHeaderTitle={KubeObject.crd.title}
+          renderHeaderTitle={TenantControlPlane.crd.title}
           addRemoveButtons={{
             onAdd: () => setIsCreateDialogOpen(true),
             addTooltip: "Create new Tenant",
           }}
           sortingCallbacks={sortingCallbacks}
           searchFilters={[
-            (object: KubeObject) => [
+            (object: TenantControlPlane) => [
               object.getName(),
-              object.getNs(),
-              getStatusText(object),
-              getPodReplicasText(object),
-              getEndpoint(object),
-              getKubernetesVersion(object),
-              getDatastoreText(object),
+              object.getNs() ?? "",
+              TenantControlPlane.getStatus(object),
+              TenantControlPlane.getReadyReplicas(object),
+              orDash(TenantControlPlane.getEndpoint(object)),
+              orDash(TenantControlPlane.getKubernetesVersion(object)),
+              orDash(TenantControlPlane.getDataStore(object)),
             ],
           ]}
           renderTableHeader={renderTableHeader}
-          renderTableContents={(object: KubeObject) => [
+          renderTableContents={(object: TenantControlPlane) => [
             <WithTooltip>{object.getName()}</WithTooltip>,
             <NamespaceSelectBadge namespace={object.getNs() ?? ""} />,
-            <WithTooltip>{getStatusText(object)}</WithTooltip>,
-            <WithTooltip>{getPodReplicasText(object)}</WithTooltip>,
-            <WithTooltip>{getEndpoint(object)}</WithTooltip>,
-            <WithTooltip>{getKubernetesVersion(object)}</WithTooltip>,
-            <WithTooltip>{getDatastoreText(object)}</WithTooltip>,
+            <WithTooltip>{TenantControlPlane.getStatus(object)}</WithTooltip>,
+            <WithTooltip>{TenantControlPlane.getReadyReplicas(object)}</WithTooltip>,
+            <WithTooltip>{orDash(TenantControlPlane.getEndpoint(object))}</WithTooltip>,
+            <WithTooltip>{orDash(TenantControlPlane.getKubernetesVersion(object))}</WithTooltip>,
+            <WithTooltip>{orDash(TenantControlPlane.getDataStore(object))}</WithTooltip>,
             <KubeObjectAge object={object} key="age" />,
           ]}
         />
