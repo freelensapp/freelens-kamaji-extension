@@ -4,6 +4,11 @@
  */
 
 import { Renderer } from "@freelensapp/extensions";
+import {
+  withDetailsErrorBoundary,
+  withMenuItemErrorBoundary,
+  withPageErrorBoundary,
+} from "./components/error-boundary";
 import { KamajiMenuItem, type KamajiMenuItemProps } from "./components/kamaji-menu-item";
 import { DataStoreDetails } from "./details/datastore-details";
 import { TenantDetails } from "./details/tenant-details";
@@ -13,8 +18,12 @@ import { TenantControlPlane } from "./k8s/tenant-control-plane-v1alpha1";
 import { DatastoresPage } from "./pages/datastores/datastores-page";
 import { TenantsPage } from "./pages/tenants/tenants-page";
 
+// Every page, details panel and menu item renders inside an error boundary, so that an error it throws stays in its
+// place: the host has none around the details drawer or a menu item, and its boundary around the cluster frame would
+// replace the whole cluster view. Each registration field is mapped through its wrapper, so an entry added to it is
+// wrapped too.
 export default class KamajiRenderer extends Renderer.LensExtension {
-  clusterPages = [
+  clusterPages: Renderer.LensExtension["clusterPages"] = [
     {
       id: "kamaji-tenants-page",
       components: {
@@ -27,7 +36,7 @@ export default class KamajiRenderer extends Renderer.LensExtension {
         Page: () => <DatastoresPage />,
       },
     },
-  ];
+  ].map((registration) => withPageErrorBoundary(this, registration));
 
   clusterPageMenus = [
     {
@@ -54,7 +63,11 @@ export default class KamajiRenderer extends Renderer.LensExtension {
     },
   ];
 
-  kubeObjectMenuItems = [
+  // The Tenants and Datastores pages list the two kinds, so the Custom Resources tree of the cluster sidebar leaves
+  // them out.
+  customResources = [TenantControlPlane, DataStore];
+
+  kubeObjectMenuItems: Renderer.LensExtension["kubeObjectMenuItems"] = [
     {
       kind: TenantControlPlane.kind,
       apiVersions: TenantControlPlane.crd.apiVersions,
@@ -62,9 +75,9 @@ export default class KamajiRenderer extends Renderer.LensExtension {
         MenuItem: (props: KamajiMenuItemProps) => <KamajiMenuItem {...props} />,
       },
     },
-  ];
+  ].map((registration) => withMenuItemErrorBoundary(this, registration));
 
-  kubeObjectDetailItems = [
+  kubeObjectDetailItems: Renderer.LensExtension["kubeObjectDetailItems"] = [
     {
       kind: TenantControlPlane.kind,
       apiVersions: TenantControlPlane.crd.apiVersions,
@@ -85,5 +98,5 @@ export default class KamajiRenderer extends Renderer.LensExtension {
         ),
       },
     },
-  ];
+  ].map((registration) => withDetailsErrorBoundary(this, registration));
 }

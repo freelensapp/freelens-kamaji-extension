@@ -115,3 +115,13 @@
     }
   }
 }
+
+/* The host's tabs of the page and the margin of its main area, only while the page is shown: the sidebar has an
+   entry for each page of the extension. */
+:global(.TabLayout):has(.container) > :global(.Tabs) {
+  display: none;
+}
+
+:global(.TabLayout):has(.container) > main {
+  margin: 0;
+}

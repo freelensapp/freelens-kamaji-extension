@@ -5,16 +5,6 @@ import { CreateTenantDialog } from "../../dialogs/create-tenant-dialog";
 import { KamajiIcon } from "../../icons/kamaji";
 import { TenantControlPlane, type TenantControlPlaneApi } from "../../k8s/tenant-control-plane-v1alpha1";
 import styles from "./tenants-page.module.css";
-import styleInline from "./tenants-page.module.css?inline";
-
-const pageInlineStyles = `${styleInline}
-.TabLayout > .Tabs {
-  display: none;
-}
-
-.TabLayout > main {
-  margin: 0;
-}`;
 
 const {
   Component: { KubeObjectAge, KubeObjectListLayout, NamespaceSelectBadge, WithTooltip },
@@ -94,8 +84,6 @@ export const TenantsPage = observer(() => {
   if (missingKamaji || !store) {
     return (
       <div className={styles.container}>
-        <style>{pageInlineStyles}</style>
-
         <div className={styles.notInstalledState}>
           <div className={styles.notInstalledIcon}>
             <KamajiIcon />
@@ -118,7 +106,6 @@ export const TenantsPage = observer(() => {
   return (
     <>
       <div className={styles.container}>
-        <style>{pageInlineStyles}</style>
         <KubeObjectListLayout<KubeObject, KubeObjectApi>
           className={styles.kamajiCrds}
           tableId={`${KubeObject.crd.plural}Table`}

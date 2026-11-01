@@ -286,7 +286,8 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
 
     try {
       // Use KubeObjectStore's create method to POST the resource
-      await store.create({ namespace: namespace.trim() }, tenantResourceFromForm as any);
+      const metadata = (tenantResourceFromForm.metadata ?? {}) as { name?: string };
+      await store.create({ name: metadata.name ?? "", namespace: namespace.trim() }, tenantResourceFromForm as any);
 
       // Close dialog on success
       onClose?.();

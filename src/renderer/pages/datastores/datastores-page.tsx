@@ -5,16 +5,6 @@ import { CreateDatastoreDialog } from "../../dialogs/create-datastore-dialog";
 import { KamajiIcon } from "../../icons/kamaji";
 import { DataStore, type DataStoreApi } from "../../k8s/datastore-v1alpha1";
 import styles from "./datastores-page.module.css";
-import styleInline from "./datastores-page.module.css?inline";
-
-const pageInlineStyles = `${styleInline}
-.TabLayout > .Tabs {
-  display: none;
-}
-
-.TabLayout > main {
-  margin: 0;
-}`;
 
 const {
   Component: { KubeObjectAge, KubeObjectListLayout, WithTooltip },
@@ -63,8 +53,6 @@ export const DatastoresPage = observer(() => {
   if (missingKamaji || !store) {
     return (
       <div className={styles.container}>
-        <style>{pageInlineStyles}</style>
-
         <div className={styles.notInstalledState}>
           <div className={styles.notInstalledIcon}>
             <KamajiIcon />
@@ -87,7 +75,6 @@ export const DatastoresPage = observer(() => {
   return (
     <>
       <div className={styles.container}>
-        <style>{pageInlineStyles}</style>
         <KubeObjectListLayout<KubeObject, KubeObjectApi>
           className={styles.datastoresCrds}
           tableId={`${KubeObject.crd.plural}Table`}
