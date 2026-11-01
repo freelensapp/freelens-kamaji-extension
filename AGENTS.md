@@ -218,7 +218,11 @@ A model is a subclass of `Renderer.K8sApi.LensExtensionKubeObject`, one file
 per kind and API version in `src/renderer/k8s/`:
 `tenant-control-plane-v1alpha1.ts` exports `TenantControlPlane` and
 `datastore-v1alpha1.ts` exports `DataStore`. Kamaji serves both kinds as
-`kamaji.clastix.io/v1alpha1` only.
+`kamaji.clastix.io/v1alpha1` only. The types of `TenantControlPlane` follow the
+Go types of Kamaji 26.10.5-edge (`api/v1alpha1/tenantcontrolplane_types.go` and
+`tenantcontrolplane_status.go`), with the host's types for the structs of
+Kubernetes itself, such as `Renderer.K8sApi.Toleration`; `types.ts` has the
+type of `crd` that the models share, with the title of the list page.
 
 The host reads the model's metadata from the class, through `static readonly`
 properties. The objects it hands to the extension, in a list, a details panel
@@ -235,44 +239,53 @@ is not, and calling it throws. So:
   each other, and `detailsFor` and `menuItemFor` accept a component written
   for the other version (see "Renderer Components"). `declare` emits nothing,
   so the runtime object is the host's as before.
-- **Per-object logic**: a `static` method of the model that takes the object.
+- **Per-object logic**: a `static` method of the model that takes the object,
+  such as `TenantControlPlane.getStatus(object)`.
 - **Fields**: read `object.spec` and `object.status` through the model's typed
   spec and status, such as `TenantControlPlaneSpec` and `TenantControlPlaneStatus`.
 - **Forbidden**: instance methods on the subclass; a fallback such as
   `typeof (object as any).getSuspended === "function" ? ...`, which always
   takes the fallback; `as any`.
 
-The pattern, as the template's `Example` model of two API versions has it:
+The pattern, as `TenantControlPlane` has it, without its types and with one of
+its helpers:
 
 ```typescript
-export class Example extends Renderer.K8sApi.LensExtensionKubeObject<
+export class TenantControlPlane extends Renderer.K8sApi.LensExtensionKubeObject<
   Renderer.K8sApi.KubeObjectMetadata,
-  ExampleStatus,
-  ExampleSpec
+  TenantControlPlaneStatus,
+  TenantControlPlaneSpec
 > {
-  declare kind: "Example";
-  declare apiVersion: "example.freelens.app/v1alpha2";
+  declare kind: "TenantControlPlane";
+  declare apiVersion: "kamaji.clastix.io/v1alpha1";
 
-  static readonly kind = "Example";
+  static readonly kind = "TenantControlPlane";
   static readonly namespaced = true;
-  static readonly apiBase = "/apis/example.freelens.app/v1alpha2/examples";
+  static readonly apiBase = "/apis/kamaji.clastix.io/v1alpha1/tenantcontrolplanes";
 
-  static readonly crd: ExampleKubeObjectCRD = {
-    apiVersions: ["example.freelens.app/v1alpha2"],
-    plural: "examples",
-    singular: "example",
-    shortNames: ["ex"],
-    title: "Examples",
+  static readonly crd: KamajiKubeObjectCRD = {
+    apiVersions: ["kamaji.clastix.io/v1alpha1"],
+    plural: "tenantcontrolplanes",
+    singular: "tenantcontrolplane",
+    shortNames: ["tcp"],
+    title: "Kamaji Tenant Control Planes",
   };
 
-  static getSuspended(object: Example): boolean {
-    return object.spec.suspended ?? false;
+  static getStatus(object: TenantControlPlane): KubernetesVersionStatus {
+    return object.status?.kubernetesResources?.version?.status ?? "Unknown";
   }
 }
 
-export class ExampleApi extends Renderer.K8sApi.KubeApi<Example> {}
-export class ExampleStore extends Renderer.K8sApi.KubeObjectStore<Example, ExampleApi> {}
+export class TenantControlPlaneApi extends Renderer.K8sApi.KubeApi<TenantControlPlane> {}
+export class TenantControlPlaneStore extends Renderer.K8sApi.KubeObjectStore<
+  TenantControlPlane,
+  TenantControlPlaneApi
+> {}
 ```
+
+The status is optional: a new object has none until Kamaji reconciles it, so
+every helper reads it with `?.` and has a value for its absence, such as
+`Unknown` or `undefined`.
 
 The file also exports a `KubeApi` and a `KubeObjectStore` subclass. The list
 page uses the `KubeApi` type for `KubeObjectListLayout`; neither is

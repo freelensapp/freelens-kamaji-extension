@@ -11,6 +11,43 @@
 // as your tests need more of the host API.
 import { vi } from "vitest";
 
+class LensExtensionKubeObject {
+  apiVersion?: string;
+  kind?: string;
+  metadata?: { name?: string; namespace?: string };
+  spec?: unknown;
+  status?: unknown;
+
+  constructor(data: Record<string, unknown> = {}) {
+    Object.assign(this, data);
+  }
+
+  // As the host's, from the metadata.
+  getName() {
+    return this.metadata?.name ?? "";
+  }
+
+  // An empty namespace is undefined, as the host's.
+  getNs() {
+    return this.metadata?.namespace || undefined;
+  }
+
+  // The host returns the store it registered for one of the class's
+  // `crd.apiVersions`, and throws when there is none. Without a host there is
+  // never one; a test that needs a store spies on `getStore` of its class.
+  static getStore(): never {
+    throw new Error(`Store for ${this.name} is not registered. Extension won't work correctly.`);
+  }
+}
+
+export const Renderer = {
+  K8sApi: {
+    LensExtensionKubeObject,
+    KubeApi: class KubeApi {},
+    KubeObjectStore: class KubeObjectStore {},
+  },
+};
+
 export const Common = {
   logger: {
     debug: vi.fn(),
