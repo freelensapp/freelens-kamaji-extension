@@ -1,0 +1,11 @@
+# The test objects of the integration sessions: the namespaces, the Secrets that
+# the DataStores and the kubeconfig download read, a DataStore per driver and
+# three tenants. The sessions apply the CRDs of Kamaji first, and write the
+# status of the objects afterwards.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- 00-namespaces.yaml
+- 10-secrets.yaml
+- 20-datastores.yaml
+- 30-tenants.yaml

@@ -1,0 +1,90 @@
+# Three tenants: shop with the CIDR lists of Kamaji 26.10, billing with dual-stack, and legacy with the deprecated
+# single CIDR fields, which the details still read. Their status is written by setUpCluster of the integration
+# helpers, since no Kamaji controller runs next to the CRDs.
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: TenantControlPlane
+metadata:
+  name: shop
+  namespace: kamaji-tenants
+  labels:
+    tenant.clastix.io: shop
+spec:
+  dataStore: etcd-test
+  controlPlane:
+    deployment:
+      replicas: 2
+    service:
+      serviceType: LoadBalancer
+  kubernetes:
+    version: v1.36.3
+    kubelet:
+      configurationJSONPatches:
+      - op: add
+        path: /cgroupDriver
+        value: systemd
+  networkProfile:
+    port: 6443
+    podCidrs:
+    - 10.244.0.0/16
+    serviceCidrs:
+    - 10.96.0.0/16
+  addons:
+    coreDNS: {}
+    kubeProxy: {}
+---
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: TenantControlPlane
+metadata:
+  name: billing
+  namespace: kamaji-tenants
+  labels:
+    tenant.clastix.io: billing
+spec:
+  dataStore: postgres-test
+  controlPlane:
+    deployment:
+      replicas: 1
+    service:
+      serviceType: LoadBalancer
+      ipFamilyPolicy: PreferDualStack
+      ipFamilies:
+      - IPv4
+      - IPv6
+  kubernetes:
+    version: v1.37.0
+    kubelet:
+      configurationJSONPatches:
+      - op: add
+        path: /cgroupDriver
+        value: systemd
+  networkProfile:
+    port: 6443
+    podCidrs:
+    - 10.245.0.0/16
+    - fd00:10:245::/56
+    serviceCidrs:
+    - 10.97.0.0/16
+    - fd00:10:97::/112
+---
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: TenantControlPlane
+metadata:
+  name: legacy
+  namespace: kamaji-dev
+  labels:
+    tenant.clastix.io: legacy
+spec:
+  dataStore: mysql-test
+  controlPlane:
+    deployment:
+      replicas: 1
+    service:
+      serviceType: NodePort
+  kubernetes:
+    version: v1.34.6
+    kubelet:
+      cgroupfs: systemd
+  networkProfile:
+    port: 6443
+    podCidr: 10.246.0.0/16
+    serviceCidr: 10.98.0.0/16

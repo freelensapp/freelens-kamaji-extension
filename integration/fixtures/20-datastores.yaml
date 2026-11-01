@@ -1,0 +1,63 @@
+# One DataStore per driver, each with the fields its driver needs in the validation rules of the CRD: TLS with the
+# certificate authority and the client certificate for etcd; basic auth or TLS for the others.
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: DataStore
+metadata:
+  name: etcd-test
+spec:
+  driver: etcd
+  endpoints:
+  - etcd-0.etcd.kamaji-system.svc.cluster.local:2379
+  tlsConfig:
+    certificateAuthority:
+      certificate:
+        secretReference: {name: etcd-test-certs, namespace: kamaji-system, keyPath: ca.crt}
+      privateKey:
+        secretReference: {name: etcd-test-certs, namespace: kamaji-system, keyPath: ca.key}
+    clientCertificate:
+      certificate:
+        secretReference: {name: etcd-test-certs, namespace: kamaji-system, keyPath: tls.crt}
+      privateKey:
+        secretReference: {name: etcd-test-certs, namespace: kamaji-system, keyPath: tls.key}
+---
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: DataStore
+metadata:
+  name: postgres-test
+spec:
+  driver: PostgreSQL
+  endpoints:
+  - postgres.kamaji-system.svc.cluster.local:5432
+  basicAuth:
+    username:
+      secretReference: {name: postgres-test-auth, namespace: kamaji-system, keyPath: username}
+    password:
+      secretReference: {name: postgres-test-auth, namespace: kamaji-system, keyPath: password}
+---
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: DataStore
+metadata:
+  name: mysql-test
+spec:
+  driver: MySQL
+  endpoints:
+  - mysql.kamaji-system.svc.cluster.local:3306
+  basicAuth:
+    username:
+      content: cm9vdA==
+    password:
+      content: dGVzdC1wYXNzd29yZA==
+---
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: DataStore
+metadata:
+  name: nats-test
+spec:
+  driver: NATS
+  endpoints:
+  - nats.kamaji-system.svc.cluster.local:4222
+  basicAuth:
+    username:
+      content: a2FtYWpp
+    password:
+      content: dGVzdC1wYXNzd29yZA==

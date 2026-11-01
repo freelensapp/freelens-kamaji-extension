@@ -203,14 +203,21 @@ pnpm trunk:check
 ### Integration tests
 
 The integration tests drive Freelens dev, started from a
-[freelensapp/freelens](https://github.com/freelensapp/freelens) checkout. In
-the Freelens checkout:
+[freelensapp/freelens](https://github.com/freelensapp/freelens) checkout,
+against a [kind](https://kind.sigs.k8s.io/) cluster. In the Freelens checkout:
 
 ```sh
 pnpm dev
 ```
 
-Then, in the extension repository:
+Freelens dev lists no cluster until a kubeconfig is added in Preferences >
+Kubernetes > Kubeconfig Syncs. Add one with the kind cluster, for example:
+
+```sh
+kubectl config view --minify --flatten --context kind-kind > ~/kind-kind.kubeconfig
+```
+
+Then, with the kind cluster running, in the extension repository:
 
 ```sh
 pnpm build
@@ -218,12 +225,16 @@ pnpm test:integration
 ```
 
 The tests install the checkout in place, replacing any other installation of
-the extension in Freelens dev. Without Freelens dev the tests are skipped.
+the extension in Freelens dev. They install the CRDs of Kamaji 26.10.5-edge
+and test objects, and delete them afterwards, with every Tenant Control Plane
+and DataStore on the cluster and the namespaces `kamaji-tenants`, `kamaji-dev`
+and `kamaji-system`: use a kind cluster with nothing worth keeping, without
+Kamaji itself. Without Freelens dev or the cluster the tests are skipped.
 
 Optional variables:
 
-- `TEST_KIND_CLUSTER_NAME`: the kind cluster of a test that needs one,
-  `kind` by default, used through the context `kind-<name>`.
+- `TEST_KIND_CLUSTER_NAME`: the kind cluster, `kind` by default, used
+  through the context `kind-<name>`.
 - `FREELENS_CDP_URL`: the CDP endpoint of Freelens dev,
   `http://127.0.0.1:9223` by default.
 - `FREELENS_MAIN_LOG`: a log of the main process to check for errors, such

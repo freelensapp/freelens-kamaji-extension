@@ -33,6 +33,39 @@ const mainLogFile = process.env.FREELENS_MAIN_LOG;
 // The kind cluster the sessions run against.
 export const kindClusterName = process.env.TEST_KIND_CLUSTER_NAME || "kind";
 
+// The release of Kamaji whose CRDs the sessions install, from `charts/kamaji/crds` at its tag. The `kamaji-crds` chart
+// follows the main branch of Kamaji rather than a release, so the sessions take the files of the tag.
+export const kamajiRelease = "26.10.5-edge";
+
+// The plurals of the CRDs of Kamaji, all in the group kamaji.clastix.io.
+const kamajiCrdPlurals = ["datastores", "kubeconfiggenerators", "tenantcontrolplanes"];
+
+const kamajiCrdNames = kamajiCrdPlurals.map((plural) => `${plural}.kamaji.clastix.io`);
+
+const kamajiCrdUrl = (plural: string) =>
+  `https://raw.githubusercontent.com/clastix/kamaji/${kamajiRelease}/charts/kamaji/crds/kamaji.clastix.io_${plural}.yaml`;
+
+// The test objects, with the namespaces they create: two for the tenants, and kamaji-system for the Secrets of the
+// DataStores.
+const fixturesDir = path.join(extensionDir, "integration", "fixtures");
+
+export const tenantNamespaces = ["kamaji-tenants", "kamaji-dev"];
+
+const fixtureNamespaces = [...tenantNamespaces, "kamaji-system"];
+
+// The package name with `@` dropped and `/` turned into `--`
+// (`sanitizeExtensionName` in Freelens's `lens-extension.ts`).
+const sanitizedExtensionId = extensionName.replace("@", "").replace("/", "--");
+
+// The links inside the sidebar items of the extension: the `clusterPageMenus` id, after the sanitized package name.
+// Only the link navigates.
+const sidebarLinkTestId = (menuId: string) => `link-for-sidebar-item-${sanitizedExtensionId}-${menuId}`;
+
+const pageMenuIds = {
+  tenants: "kamaji-tenants-menu",
+  datastores: "kamaji-datastores-menu",
+};
+
 const viewTimeout = { timeout: 60 * 1000 };
 
 const ansiEscapePattern = /\u001b\[[0-9;]*m/g;
@@ -573,4 +606,320 @@ export async function openKindCluster(session: AppSession): Promise<Frame> {
   }
 
   return frame;
+}
+
+/**
+ * Runs kubectl against the kind cluster, never the current context, and fails
+ * with its stderr when it exits non-zero.
+ */
+function kubectl(...args: string[]): string {
+  const argv = ["--context", `kind-${kindClusterName}`, ...args];
+  const command = `kubectl ${argv.join(" ")}`;
+
+  console.log(command);
+
+  const { error, status, signal, stdout, stderr } = spawnSync("kubectl", argv, {
+    encoding: "utf8",
+    timeout: 5 * 60 * 1000,
+  });
+
+  if (error) {
+    throw new Error(`${command} failed: ${error.message}`);
+  }
+
+  if (status !== 0) {
+    throw new Error(`${command} exited with ${status ?? signal}: ${stderr.trim()}`);
+  }
+
+  if (stdout.trim()) {
+    console.log(stdout.trim());
+  }
+
+  return stdout;
+}
+
+/** Writes a status through the status subresource, as Kamaji would: no controller runs next to the CRDs. */
+function patchStatus(resource: string, namespace: string | undefined, name: string, status: object) {
+  kubectl(
+    ...(namespace ? ["--namespace", namespace] : []),
+    "patch",
+    resource,
+    name,
+    "--subresource=status",
+    "--type=merge",
+    "--patch",
+    JSON.stringify({ status }),
+  );
+}
+
+function tenantStatus(
+  namespace: string,
+  name: string,
+  phase: string,
+  version: string,
+  ready: number,
+  replicas: number,
+  endpoint: string,
+  dataStoreName: string,
+  driver: string,
+) {
+  patchStatus("tenantcontrolplane", namespace, name, {
+    kubernetesResources: {
+      version: { status: phase, version },
+      deployment: {
+        name,
+        namespace,
+        selector: `kamaji.clastix.io/name=${name}`,
+        replicas,
+        readyReplicas: ready,
+        availableReplicas: ready,
+      },
+    },
+    controlPlaneEndpoint: endpoint,
+    kubeconfig: { admin: { secretName: `${name}-admin-kubeconfig` } },
+    storage: { dataStoreName, driver },
+  });
+}
+
+/**
+ * Removes what an earlier run left, then applies the CRDs of Kamaji and, once
+ * they are established, the test objects, and writes their status.
+ */
+export function setUpCluster() {
+  kubectl("delete", "namespace", ...fixtureNamespaces, "--ignore-not-found", "--wait");
+  kubectl("delete", "crd", ...kamajiCrdNames, "--ignore-not-found", "--wait");
+
+  // The CRD of the Tenant Control Planes is larger than the annotation that a client-side apply writes.
+  for (const plural of kamajiCrdPlurals) {
+    kubectl("apply", "--server-side", "--filename", kamajiCrdUrl(plural));
+  }
+
+  kubectl("wait", "--for=condition=Established", ...kamajiCrdNames.map((name) => `crd/${name}`), "--timeout=120s");
+  kubectl("apply", "--kustomize", fixturesDir);
+
+  tenantStatus("kamaji-tenants", "shop", "Ready", "v1.36.3", 2, 2, "172.18.255.200:6443", "etcd-test", "etcd");
+  tenantStatus("kamaji-tenants", "billing", "Provisioning", "v1.37.0", 0, 1, "", "postgres-test", "PostgreSQL");
+  tenantStatus("kamaji-dev", "legacy", "NotReady", "v1.34.6", 0, 1, "172.18.0.2:31443", "mysql-test", "MySQL");
+
+  patchStatus("datastore", undefined, "etcd-test", { ready: true, usedBy: ["kamaji-tenants/shop"] });
+  patchStatus("datastore", undefined, "postgres-test", { ready: true, usedBy: ["kamaji-tenants/billing"] });
+  patchStatus("datastore", undefined, "mysql-test", { ready: true, usedBy: ["kamaji-dev/legacy"] });
+  patchStatus("datastore", undefined, "nats-test", { ready: false, usedBy: [] });
+}
+
+/**
+ * Deletes the test objects, with what a session created in their namespaces,
+ * and the CRDs of Kamaji.
+ */
+export function tearDownCluster() {
+  try {
+    kubectl("delete", "namespace", ...fixtureNamespaces, "--ignore-not-found", "--wait");
+  } finally {
+    kubectl("delete", "crd", ...kamajiCrdNames, "--ignore-not-found", "--wait");
+  }
+}
+
+/**
+ * Selects the namespaces of the test tenants through the host's namespace
+ * store, in the cluster frame, unless they are selected already. The app keeps
+ * the selection for every namespaced list of the cluster.
+ */
+export async function selectTenantNamespaces(frame: Frame) {
+  const wanted = [...tenantNamespaces].sort();
+  const selected = () =>
+    frame.evaluate(() =>
+      [...(globalThis.FreelensExtensionApi.Renderer?.K8sApi.namespaceStore.contextNamespaces ?? [])].sort(),
+    );
+
+  if ((await selected()).join() === wanted.join()) {
+    return;
+  }
+
+  console.log(`select namespaces ${wanted.join(", ")}`);
+  await frame.evaluate(
+    (names) => globalThis.FreelensExtensionApi.Renderer?.K8sApi.namespaceStore.selectNamespaces(names),
+    wanted,
+  );
+
+  const deadline = Date.now() + viewTimeout.timeout;
+
+  while ((await selected()).join() !== wanted.join()) {
+    if (Date.now() > deadline) {
+      throw new Error(`The namespaces ${wanted.join(", ")} were not selected`);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+}
+
+/**
+ * Clicks a sidebar item of the cluster frame. The entries navigate in their
+ * `onClick`, and a dispatched click reaches it even while the cluster overview
+ * re-lays out over the click point (`clickSidebarItem` in Freelens's
+ * integration helpers).
+ */
+async function clickSidebarItem(frame: Frame, testId: string) {
+  await frame.dispatchEvent(`[data-testid="${testId}"]`, "click");
+}
+
+/**
+ * Closes the details drawer if it is open: a click on a row toggles it.
+ */
+async function closeDetails(frame: Frame) {
+  const details = frame.locator(".KubeObjectDetails");
+
+  if (await details.isVisible()) {
+    await frame.locator("body").press("Escape");
+    await details.waitFor({ state: "hidden", ...viewTimeout });
+  }
+}
+
+/**
+ * Opens a page of the extension from its entry under "Kamaji" in the sidebar.
+ * A click on the "Kamaji" entry shows the entries under it when they are not
+ * on the page.
+ */
+export async function openPage(frame: Frame, page: keyof typeof pageMenuIds) {
+  const pageLink = frame.locator(`[data-testid="${sidebarLinkTestId(pageMenuIds[page])}"]`);
+
+  await frame.waitForSelector(`[data-testid="${sidebarLinkTestId("kamaji-icon")}"]`, viewTimeout);
+
+  if ((await pageLink.count()) === 0) {
+    await clickSidebarItem(frame, sidebarLinkTestId("kamaji-icon"));
+  }
+
+  await pageLink.waitFor(viewTimeout);
+  await clickSidebarItem(frame, sidebarLinkTestId(pageMenuIds[page]));
+  await closeDetails(frame);
+}
+
+/**
+ * The table row of the object with the name, once the list shows it.
+ */
+export async function findRow(frame: Frame, name: string): Promise<Locator> {
+  const row = frame.locator(".TableRow").filter({ has: frame.locator(".TableCell").getByText(name, { exact: true }) });
+
+  await row.waitFor(viewTimeout);
+
+  return row;
+}
+
+/**
+ * The texts of the cells of a row.
+ */
+export async function rowCells(row: Locator): Promise<string[]> {
+  return (await row.locator(".TableCell").allTextContents()).map((text) => text.trim());
+}
+
+/**
+ * Opens the details of the row's object and returns the drawer, after checking
+ * that the extension's error boundary rendered no error page in it.
+ */
+export async function openDetails(frame: Frame, row: Locator, name: string): Promise<Locator> {
+  await row.getByText(name, { exact: true }).click();
+
+  const details = frame.locator(".KubeObjectDetails");
+
+  await details.locator(".DrawerItem .name").getByText("API Version", { exact: true }).waitFor(viewTimeout);
+
+  // The class of `ErrorPage`, as CSS modules name it in the bundle.
+  const errorPages = await details.locator('[class*="_errorPage_"]').count();
+
+  if (errorPages > 0) {
+    throw new Error(`The details drawer shows ${errorPages} error page(s) of the extension`);
+  }
+
+  return details;
+}
+
+/**
+ * The value of the item with the name in the extension's details panel. The
+ * drawer of a custom resource also has the host's own details of it,
+ * `CustomResourceDetails`, with an item per printer column of the CRD, such as
+ * `Status`, which this leaves out. The locator of a `has` filter is relative to
+ * the element it filters, so it comes from the frame, not from the drawer.
+ */
+export async function detailsValue(frame: Frame, details: Locator, name: string): Promise<string | null> {
+  return (
+    details
+      .locator(".DrawerItem:not(.CustomResourceDetails .DrawerItem)")
+      .filter({ has: frame.locator(".name").getByText(name, { exact: true }) })
+      // The value of the item itself: a badge in it has a `.value` of its own.
+      .locator(":scope > .value")
+      .textContent(viewTimeout)
+  );
+}
+
+/**
+ * Opens the context menu of the row and returns the menu, which the host
+ * renders outside the row.
+ */
+export async function openRowMenu(frame: Frame, row: Locator): Promise<Locator> {
+  const trigger = row.locator('.TableCell.menu [data-testid^="icon-for-menu-actions-for-kube-object-menu-for-"]');
+  const triggerTestId = await trigger.getAttribute("data-testid", viewTimeout);
+
+  if (!triggerTestId) {
+    throw new Error("The row has no menu");
+  }
+
+  await trigger.click();
+
+  const menu = frame.getByTestId(triggerTestId.replace(/^icon-for-/, ""));
+
+  await menu.waitFor(viewTimeout);
+
+  return menu;
+}
+
+/**
+ * The item of the menu with the title, once the menu shows it.
+ */
+export async function findMenuItem(frame: Frame, menu: Locator, title: string): Promise<Locator> {
+  const item = menu.locator(".MenuItem").filter({ has: frame.locator(".title").getByText(title, { exact: true }) });
+
+  await item.waitFor(viewTimeout);
+
+  return item;
+}
+
+/**
+ * Keeps the files that the cluster frame saves through an object URL and an
+ * `<a download>`, rather than saving them: the session reads them with
+ * `savedFiles`. Electron would otherwise show the save dialog of the system,
+ * which the session cannot reach.
+ */
+export async function keepSavedFiles(frame: Frame) {
+  await frame.evaluate(() => {
+    const scope = globalThis as unknown as { kamajiSavedFiles?: { name: string; blob?: Blob }[] };
+    const blobs = new Map<string, Blob>();
+    const createObjectURL = URL.createObjectURL.bind(URL);
+
+    scope.kamajiSavedFiles = [];
+    URL.createObjectURL = (object: Blob | MediaSource) => {
+      const url = createObjectURL(object);
+
+      if (object instanceof Blob) {
+        blobs.set(url, object);
+      }
+
+      return url;
+    };
+    HTMLAnchorElement.prototype.click = function (this: HTMLAnchorElement) {
+      scope.kamajiSavedFiles?.push({ name: this.download, blob: blobs.get(this.href) });
+    };
+  });
+}
+
+/**
+ * The files that the cluster frame saved since `keepSavedFiles`, with their
+ * text.
+ */
+export async function savedFiles(frame: Frame): Promise<{ name: string; text: string }[]> {
+  return frame.evaluate(async () => {
+    const scope = globalThis as unknown as { kamajiSavedFiles?: { name: string; blob?: Blob }[] };
+
+    return Promise.all(
+      (scope.kamajiSavedFiles ?? []).map(async ({ name, blob }) => ({ name, text: (await blob?.text()) ?? "" })),
+    );
+  });
 }

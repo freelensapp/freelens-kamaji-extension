@@ -967,6 +967,14 @@ either process:
 - `extensions.tests.ts` uninstalls whatever installation of the extension the
   app has, installs this checkout in place from the Extensions page, and fails
   on any error that either process logs meanwhile. It needs no cluster.
+- `tenants.tests.ts` opens the kind cluster with the CRDs of Kamaji and the
+  test objects, and clicks through the Tenants page: the list shows the three
+  test tenants of the two test namespaces with their status, pods, endpoint,
+  version and datastore; the details of the dual-stack tenant show its CIDR
+  lists and IP families, and those of the tenant with the deprecated single
+  CIDRs show them; the dialog creates a tenant, which the list shows with no
+  status; and the "Download kubeconfig" item of a tenant's menu saves its
+  kubeconfig. Each view is an `it` that opens the page from the sidebar itself.
 
 The tests are deterministic, so nothing retries them: the config sets no
 `retry`, and the workflow runs the step once, under `timeout 600`. A retry
@@ -1021,9 +1029,37 @@ The workflow sets `TURBO_LOG_ORDER=stream` for `pnpm dev`: in GitHub Actions
 turbo otherwise groups the output of a task until it ends, and the persistent
 `dev` task never ends, so the log would stay empty.
 
+A session with a cluster needs the CRDs of Kamaji, and runs with no controller
+of Kamaji: it is fast and gives the same result every time. The session
+disconnects the kind cluster first, so that the app reads the CRDs anew when it
+connects again. `setUpCluster` then removes the leftovers of an earlier run (the namespaces `kamaji-tenants`, `kamaji-dev` and
+`kamaji-system`, and the CRDs), applies the three CRDs of Kamaji from
+`charts/kamaji/crds` at the tag of `kamajiRelease`, 26.10.5-edge, with
+`kubectl apply --server-side`, because the CRD of the Tenant Control Planes is
+larger than the annotation of a client-side apply, waits until they are
+established, applies `integration/fixtures/` (the namespaces, the Secrets that
+the DataStores and the kubeconfig download read, a DataStore per driver and
+three tenants), and writes the status of the objects through the status
+subresource, as Kamaji would. The `kamaji-crds` chart is not used: it follows
+the main branch of Kamaji, not a release. The session then selects the two
+test namespaces through the host's namespace store, in the cluster frame. Its
+teardown stops collecting the errors, disconnects the cluster, and deletes the
+three namespaces, with what the session created in them, and the CRDs, also
+when a test failed.
+
+The drawer of a custom resource has the host's own details of it under the
+extension's, `CustomResourceDetails`, with an item per printer column of the
+CRD; the CRD of the Tenant Control Planes has a `Status` column, as the
+extension's panel has a `Status` item. `detailsValue` reads the extension's
+panel only. A file that the extension saves through an object URL and an
+`<a download>` would open the save dialog of the system, out of reach of CDP:
+`keepSavedFiles` keeps the files in the cluster frame instead, and
+`savedFiles` reads them.
+
 The code the sessions share is in `integration/__tests__/extension-helpers.ts`:
 connecting to the app with the error collector, installing the extension,
-and connecting and disconnecting the kind cluster. Its
+connecting and disconnecting the kind cluster, kubectl, the setup of the CRDs
+and the test objects, and the selectors. Its
 name does not match `*.tests.ts`, so Vitest does not collect it.
 `integration/tsconfig.json` compiles the directory with Node and the DOM,
 because the callbacks of `page.evaluate` run in the page, and with the types
@@ -1035,15 +1071,23 @@ endpoint (`http://127.0.0.1:9223` by default), `FREELENS_MAIN_LOG` the main
 log, and `TEST_KIND_CLUSTER_NAME` names the kind cluster (`kind` by default,
 `freelens` in the workflow); every kubectl call names its context,
 `kind-<name>`, so a run never acts on the current context. The checkout to
-install is found from the location of the helpers. Outside
+install, and the fixtures, are found from the location of the helpers. Outside
 CI a session skips with a warning when Freelens dev does not answer or the
 cluster is not reachable; in CI (`CI` set) the run fails instead, so that a
 mistake in the workflow does not turn into a silent skip.
 
 Run locally, the tests act on the profile of Freelens dev, `FreelensDev`,
-which is apart from that of an installed Freelens: they navigate its window and
+which is apart from that of an installed Freelens: they navigate its window,
 leave this checkout installed in place, uninstalling another installation of
-the extension. They touch no cluster of the catalog.
+the extension, and leave the kind cluster disconnected, with the two test
+namespaces selected. They touch no other cluster of the catalog. The profile
+lists the kind cluster only once its kubeconfig is in "Kubeconfig Syncs" (see
+"Checking the Extension in Freelens Dev"); without it the cluster sessions fail
+on the timeout of finding the cluster. A run deletes the CRDs of Kamaji, and
+with them every Tenant Control Plane, DataStore and KubeconfigGenerator on the
+cluster, and the namespaces `kamaji-tenants`, `kamaji-dev` and
+`kamaji-system`: run it only against a kind cluster with nothing worth keeping,
+never one with Kamaji itself.
 
 ## Checking the Extension in Freelens Dev
 
