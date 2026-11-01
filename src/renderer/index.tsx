@@ -78,15 +78,9 @@ export default class KamajiRenderer extends Renderer.LensExtension {
       priority: 10,
       Details: TenantDetails,
     }),
-    {
-      kind: DataStore.kind,
-      apiVersions: DataStore.crd.apiVersions,
+    Renderer.K8sApi.detailsFor(DataStore, {
       priority: 10,
-      components: {
-        Details: (props: Renderer.Component.KubeObjectDetailsProps<any>) => (
-          <DataStoreDetails {...props} extension={this} />
-        ),
-      },
-    },
+      Details: DataStoreDetails,
+    }),
   ].map((registration) => withDetailsErrorBoundary(this, registration));
 }

@@ -182,8 +182,9 @@ source maps. `main` and `renderer` in `package.json` point at the two entries.
   ("Tenants") and `kamaji-datastores-menu` ("Datastores");
 - `customResources`: `TenantControlPlane` and `DataStore`, which the two pages
   list, so the Custom Resources tree of the cluster sidebar leaves them out;
-- the details panel of each kind, the tenant's with
-  `Renderer.K8sApi.detailsFor(TenantControlPlane, ...)`, and the "Download
+- the details panel of each kind, with
+  `Renderer.K8sApi.detailsFor(TenantControlPlane, ...)` and
+  `Renderer.K8sApi.detailsFor(DataStore, ...)`, and the "Download
   kubeconfig" menu item of a tenant, with
   `Renderer.K8sApi.menuItemFor(TenantControlPlane, ...)`.
 
@@ -195,6 +196,13 @@ deprecated single CIDR of an older tenant without them; the CRD defaults the
 single CIDRs, so a tenant with the lists has those too. The conditions are
 those of the Deployment of the control plane, the only ones that Kamaji reports,
 as badges with their message as title.
+
+The details panel of a DataStore shows its driver and endpoints, whether Kamaji
+validated it, with its conditions, how Kamaji authenticates to it, and where
+each value of its TLS configuration and basic auth comes from: inline content,
+which takes precedence in Kamaji, or a key of a Secret. It never shows the
+values themselves. The tenants that use the DataStore are listed as Kamaji
+reports them, as `<namespace>/<name>`.
 
 Each page reads its store from its model's `getStore()`, which throws while the
 cluster serves no such kind, with a message that says the API or the store is
