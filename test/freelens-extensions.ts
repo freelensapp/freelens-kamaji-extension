@@ -76,19 +76,38 @@ const DrawerItem = ({
 }) => (hidden ? null : React.createElement("div", { role: "row" }, React.createElement("span", null, name), children));
 const Badge = ({ label }: { label?: React.ReactNode }) => React.createElement("span", null, label);
 
+// A menu item: a list item that takes the click; an icon renders nothing.
+const MenuItem = ({ onClick, children }: { onClick?: () => void; children?: React.ReactNode }) =>
+  React.createElement("li", { role: "menuitem", onClick }, children);
+const Icon = () => null;
+
+// The notifications of the host, which a test reads.
+const Notifications = {
+  ok: vi.fn(),
+  error: vi.fn(),
+  info: vi.fn(),
+};
+
 export const Renderer = {
   Component: {
     Badge,
     DrawerItem,
+    Icon,
     KubeObjectAge,
     KubeObjectListLayout,
+    MenuItem,
     NamespaceSelectBadge,
+    Notifications,
     WithTooltip,
   },
   K8sApi: {
     LensExtensionKubeObject,
     KubeApi: class KubeApi {},
     KubeObjectStore: class KubeObjectStore {},
+    // The host's API of the Secrets; a test sets what `get` returns.
+    secretsApi: {
+      get: vi.fn(),
+    },
   },
 };
 

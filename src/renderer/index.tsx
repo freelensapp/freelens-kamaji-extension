@@ -9,7 +9,7 @@ import {
   withMenuItemErrorBoundary,
   withPageErrorBoundary,
 } from "./components/error-boundary";
-import { KamajiMenuItem, type KamajiMenuItemProps } from "./components/kamaji-menu-item";
+import { KamajiMenuItem } from "./components/kamaji-menu-item";
 import { DataStoreDetails } from "./details/datastore-details";
 import { TenantDetails } from "./details/tenant-details";
 import { KamajiIcon } from "./icons/kamaji";
@@ -68,13 +68,9 @@ export default class KamajiRenderer extends Renderer.LensExtension {
   customResources = [TenantControlPlane, DataStore];
 
   kubeObjectMenuItems: Renderer.LensExtension["kubeObjectMenuItems"] = [
-    {
-      kind: TenantControlPlane.kind,
-      apiVersions: TenantControlPlane.crd.apiVersions,
-      components: {
-        MenuItem: (props: KamajiMenuItemProps) => <KamajiMenuItem {...props} />,
-      },
-    },
+    Renderer.K8sApi.menuItemFor(TenantControlPlane, {
+      MenuItem: KamajiMenuItem,
+    }),
   ].map((registration) => withMenuItemErrorBoundary(this, registration));
 
   kubeObjectDetailItems: Renderer.LensExtension["kubeObjectDetailItems"] = [

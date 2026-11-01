@@ -493,6 +493,14 @@ export class TenantControlPlane extends Renderer.K8sApi.LensExtensionKubeObject<
     return object.spec?.kubernetes?.version || object.status?.kubernetesResources?.version?.version || undefined;
   }
 
+  /**
+   * The Secret with the kubeconfigs of the tenant cluster, in the namespace of the tenant: the one that Kamaji records,
+   * else the `<tenant>-admin-kubeconfig` that it creates.
+   */
+  static getAdminKubeconfigSecretName(object: TenantControlPlane): string {
+    return object.status?.kubeconfig?.admin?.secretName || `${object.getName()}-admin-kubeconfig`;
+  }
+
   /** The DataStore that holds the state of the control plane, and its driver, as Kamaji reports them. */
   static getDataStore(object: TenantControlPlane): string | undefined {
     const storage = object.status?.storage;

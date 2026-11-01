@@ -184,7 +184,8 @@ source maps. `main` and `renderer` in `package.json` point at the two entries.
   list, so the Custom Resources tree of the cluster sidebar leaves them out;
 - the details panel of each kind, the tenant's with
   `Renderer.K8sApi.detailsFor(TenantControlPlane, ...)`, and the "Download
-  kubeconfig" menu item of a tenant.
+  kubeconfig" menu item of a tenant, with
+  `Renderer.K8sApi.menuItemFor(TenantControlPlane, ...)`.
 
 The details panel of a tenant shows its spec and what Kamaji reports, partly
 through the model's helpers. A row of the status is hidden until Kamaji reports
@@ -215,11 +216,15 @@ store posts the resource with no cast, and its tests cover what the form and
 the YAML editor produce. The DataStore dialog
 builds a `DataStore` with its driver, endpoints and TLS Secrets.
 
-The menu item reads the Secret `<tenant>-admin-kubeconfig` in the namespace of
-the tenant, through the host's API for Secrets, decodes its `admin.conf` key and
-saves it as `kamaji-<tenant>-kubeconfig.yaml` through a `Blob` URL and a
-temporary `<a download>`. A failed download goes to the console, as
-`Failed to download kubeconfig:` with the error.
+The menu item reads the Secret that Kamaji records in
+`status.kubeconfig.admin.secretName`, else the `<tenant>-admin-kubeconfig` that
+it creates, in the namespace of the tenant, through `Renderer.K8sApi.secretsApi`.
+It decodes the `admin.conf` key, the kubeconfig of the admin user, as UTF-8,
+and saves it as `kamaji-<tenant>-kubeconfig.yaml` through a `Blob` URL and a
+temporary `<a download>`; the Secret also has `super-admin.conf`, which the
+menu item leaves alone. A failed download goes to the console, as
+`Failed to download kubeconfig:` with the error, and to the user as an error
+notification of the host.
 
 The host renders an extension's cluster page in its `TabLayout`, with a tab per
 entry under the same parent in the sidebar. The CSS module of each page hides

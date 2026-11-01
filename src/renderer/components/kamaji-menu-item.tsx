@@ -1,75 +1,60 @@
-import { Renderer } from "@freelensapp/extensions";
+import { type Common, Renderer } from "@freelensapp/extensions";
 import { TenantControlPlane } from "../k8s/tenant-control-plane-v1alpha1";
 
 const {
   Component: { Icon, MenuItem },
 } = Renderer;
 
-export interface KamajiMenuItemProps {
-  object?: TenantControlPlane;
-  toolbar?: boolean;
+/** The key of the kubeconfig of the admin user of the tenant cluster, in the Secret that Kamaji writes. */
+export const adminKubeconfigKey = "admin.conf";
+
+/** The text of a base64 value of a Secret, read as UTF-8. */
+export function decodeSecretValue(value: string): string {
+  return new TextDecoder().decode(Uint8Array.from(atob(value), (char) => char.charCodeAt(0)));
 }
 
-export const KamajiMenuItem = ({ object, toolbar }: KamajiMenuItemProps) => {
-  if (!object) {
-    return <></>;
+function saveTextFile(fileName: string, contents: string, type: string) {
+  const url = URL.createObjectURL(new Blob([contents], { type }));
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+/** Saves the admin kubeconfig of a tenant cluster as `kamaji-<tenant>-kubeconfig.yaml`. */
+export async function downloadAdminKubeconfig(object: TenantControlPlane) {
+  const name = TenantControlPlane.getAdminKubeconfigSecretName(object);
+  const namespace = object.getNs();
+
+  if (!namespace) {
+    throw new Error(`The tenant ${object.getName()} has no namespace`);
   }
 
-  const downloadTextFile = (filename: string, contents: string, type: string) => {
-    const data = new Blob([contents], { type });
-    const url = URL.createObjectURL(data);
-    const link = document.createElement("a");
+  const secret = await Renderer.K8sApi.secretsApi.get({ name, namespace });
+  const value = secret?.data[adminKubeconfigKey];
 
-    link.href = url;
-    link.download = filename;
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
+  if (!value) {
+    throw new Error(`The Secret ${namespace}/${name} has no ${adminKubeconfigKey}`);
+  }
 
-  const downloadKubeConfig = async () => {
-    const name = object.getName();
-    const namespace = object.getNs();
+  saveTextFile(`kamaji-${object.getName()}-kubeconfig.yaml`, decodeSecretValue(value), "text/yaml");
+}
 
-    if (!namespace) {
-      return;
+export const KamajiMenuItem = ({ object, toolbar }: Common.Types.KubeObjectMenuItemProps<TenantControlPlane>) => (
+  <MenuItem
+    onClick={() =>
+      downloadAdminKubeconfig(object).catch((error: unknown) => {
+        console.error("Failed to download kubeconfig:", error);
+        Renderer.Component.Notifications.error(`Failed to download the kubeconfig of ${object.getName()}: ${error}`);
+      })
     }
-
-    try {
-      const secretApi = Renderer.K8sApi.apiManager.getApiByKind("Secret", "v1") as
-        | Renderer.K8sApi.KubeApi<any>
-        | undefined;
-
-      if (!secretApi) {
-        throw new Error("Secret API is not available");
-      }
-
-      const secret = (await secretApi.get({
-        namespace,
-        name: `${name}-admin-kubeconfig`,
-      })) as { data?: Record<string, string> } | null;
-
-      const encoded = secret?.data?.["admin.conf"];
-
-      if (!encoded) {
-        throw new Error("Secret data key admin.conf not found");
-      }
-
-      const decoded = atob(encoded);
-
-      downloadTextFile(`kamaji-${name}-kubeconfig.yaml`, decoded, "text/yaml");
-      console.info(`Kubeconfig downloaded for ${namespace}/${name}`);
-    } catch (error) {
-      console.error("Failed to download kubeconfig:", error);
-    }
-  };
-
-  return (
-    <MenuItem onClick={() => void downloadKubeConfig()}>
-      <Icon material="download" interactive={toolbar} title="Download kubeconfig" />
-      <span className="title">Download kubeconfig</span>
-    </MenuItem>
-  );
-};
+  >
+    <Icon material="download" interactive={toolbar} title="Download kubeconfig" />
+    <span className="title">Download kubeconfig</span>
+  </MenuItem>
+);
