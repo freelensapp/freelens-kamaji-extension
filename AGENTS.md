@@ -202,7 +202,9 @@ builds a `DataStore` with its driver, endpoints and TLS Secrets.
 
 The menu item reads the Secret `<tenant>-admin-kubeconfig` in the namespace of
 the tenant, through the host's API for Secrets, decodes its `admin.conf` key and
-saves it as a file through a `Blob` URL and a temporary `<a download>`.
+saves it as `kamaji-<tenant>-kubeconfig.yaml` through a `Blob` URL and a
+temporary `<a download>`. A failed download goes to the console, as
+`Failed to download kubeconfig:` with the error.
 
 The host renders an extension's cluster page in its `TabLayout`, with a tab per
 entry under the same parent in the sidebar. The CSS module of each page hides
@@ -1131,7 +1133,9 @@ entry is empty, and all its code runs in the renderer.
 3. Look for stack traces with file:line numbers
 4. Verify all CRD objects have proper `static readonly` properties (kind, apiBase, crd)
 5. Look for the extension's own lines, which carry `[@freelensapp/kamaji-extension]:`; the error boundary logs what
-   a page, a details panel or the menu item throws
+   a page, a details panel or the menu item throws. The menu item logs a failed download as
+   `Failed to download kubeconfig:`, and the dialogs log a failed create as `Create tenant error:` and
+   `Create datastore error:`
 6. Validate both with `pnpm type:check` **and** `pnpm build`: runtime failures can appear only in bundled `dist/` code
 
 ## Best Practices
