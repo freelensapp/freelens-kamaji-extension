@@ -49,7 +49,17 @@ describe("DatastoresPage", () => {
 
     render(<DatastoresPage />);
 
-    for (const text of ["etcd-test", "etcd", "Yes", "2", "nats-test", "NATS", "No", "0"]) {
+    for (const text of [
+      "etcd-test",
+      "etcd",
+      "etcd-test.kamaji-system.svc.cluster.local:2379",
+      "Yes",
+      "2",
+      "nats-test",
+      "NATS",
+      "No",
+      "0",
+    ]) {
       expect(screen.getByText(text)).toBeDefined();
     }
   });

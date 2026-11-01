@@ -10,22 +10,13 @@ export interface DataStoreResource {
 
 export const drivers: Driver[] = ["etcd", "MySQL", "PostgreSQL", "NATS"];
 
-/** The endpoints that the dialog proposes for each driver: the Services of a datastore in `kamaji-system`. */
+/** The endpoints that the dialog proposes for each driver: for etcd, those of the etcd that the chart of Kamaji
+ * deploys; for the others, the Service of a datastore in `kamaji-system`. */
 export const defaultEndpoints: Record<Driver, string> = {
-  etcd: [0, 1, 2].map((index) => `etcd-${index}.etcd.kamaji-system.svc.cluster.local:2379`).join(","),
+  etcd: [0, 1, 2].map((index) => `kamaji-etcd-${index}.kamaji-etcd.kamaji-system.svc.cluster.local:2379`).join(","),
   MySQL: "mysql.kamaji-system.svc.cluster.local:3306",
   PostgreSQL: "postgres.kamaji-system.svc.cluster.local:5432",
   NATS: "nats.kamaji-system.svc.cluster.local:4222",
-};
-
-/** The keys of the Secrets that the dialog reads each value from. */
-export const secretKeys = {
-  caCertificate: "ca.crt",
-  caPrivateKey: "ca.key",
-  clientCertificate: "tls.crt",
-  clientPrivateKey: "tls.key",
-  username: "username",
-  password: "password",
 };
 
 /** The fields of the dialog, as the user typed them. */
@@ -42,10 +33,61 @@ export interface DataStoreForm {
   useBasicAuth: boolean;
   /** The Secret of the certificate authority: its certificate, and for etcd its private key too. */
   caSecretName: string;
+  caCertificateKey: string;
+  caPrivateKeyKey: string;
   /** The Secret of the client certificate and its private key: required for etcd, optional for the others. */
   clientSecretName: string;
+  clientCertificateKey: string;
+  clientPrivateKeyKey: string;
   /** The Secret of the username and the password. */
   authSecretName: string;
+  usernameKey: string;
+  passwordKey: string;
+}
+
+/** The fields of the form that depend on the driver. */
+export type DriverFields = Omit<DataStoreForm, "name" | "driver" | "secretsNamespace">;
+
+/**
+ * The fields that the dialog proposes for each driver. For etcd they are the ones of the etcd that the chart of Kamaji
+ * deploys, whose certificates cert-manager writes as TLS Secrets, with the certificate in `tls.crt` and the private key
+ * in `tls.key`, the certificate authority's too; Kamaji's own DataStore `default` reads them so.
+ */
+export function driverFields(driver: Driver): DriverFields {
+  const etcd = driver === "etcd";
+
+  return {
+    endpoints: defaultEndpoints[driver],
+    useTls: false,
+    useBasicAuth: true,
+    caSecretName: etcd ? "kamaji-etcd-ca" : "",
+    caCertificateKey: etcd ? "tls.crt" : "ca.crt",
+    caPrivateKeyKey: "tls.key",
+    clientSecretName: etcd ? "kamaji-etcd-client-certs" : "",
+    clientCertificateKey: "tls.crt",
+    clientPrivateKeyKey: "tls.key",
+    authSecretName: "",
+    usernameKey: "username",
+    passwordKey: "password",
+  };
+}
+
+/**
+ * The fields of the next driver: its proposal for each field that still has the proposal of the previous driver, and
+ * what the user typed for the others.
+ */
+export function switchDriverFields(fields: DriverFields, previous: Driver, next: Driver): DriverFields {
+  const before = driverFields(previous);
+  const after = driverFields(next);
+  const result: DriverFields = { ...fields };
+
+  for (const key of Object.keys(after) as (keyof DriverFields)[]) {
+    if (fields[key] === before[key]) {
+      Object.assign(result, { [key]: after[key] });
+    }
+  }
+
+  return result;
 }
 
 const parseCsvList = (value: string): string[] =>
@@ -112,13 +154,26 @@ export function validateDataStoreForm(form: DataStoreForm): string | undefined {
     return "The Secret of the username and the password is required";
   }
 
+  const keys = [
+    [usesTls(form), form.caCertificateKey],
+    [form.driver === "etcd", form.caPrivateKeyKey],
+    [usesTls(form) && form.clientSecretName.trim(), form.clientCertificateKey],
+    [usesTls(form) && form.clientSecretName.trim(), form.clientPrivateKeyKey],
+    [usesBasicAuth(form), form.usernameKey],
+    [usesBasicAuth(form), form.passwordKey],
+  ] as const;
+
+  if (keys.some(([used, key]) => used && !key.trim())) {
+    return "Every Secret needs the key of each of its values";
+  }
+
   return undefined;
 }
 
 /** The DataStore that the fields of the form describe. */
 export function buildDataStoreResource(form: DataStoreForm): DataStoreResource {
   const secret = (name: string, keyPath: string) => ({
-    secretReference: { name: name.trim(), namespace: form.secretsNamespace.trim(), keyPath },
+    secretReference: { name: name.trim(), namespace: form.secretsNamespace.trim(), keyPath: keyPath.trim() },
   });
   const clientSecretName = form.clientSecretName.trim();
 
@@ -133,15 +188,15 @@ export function buildDataStoreResource(form: DataStoreForm): DataStoreResource {
         ? {
             tlsConfig: {
               certificateAuthority: {
-                certificate: secret(form.caSecretName, secretKeys.caCertificate),
+                certificate: secret(form.caSecretName, form.caCertificateKey),
                 // Kamaji signs the client certificates of the tenants with the certificate authority of etcd.
-                ...(form.driver === "etcd" ? { privateKey: secret(form.caSecretName, secretKeys.caPrivateKey) } : {}),
+                ...(form.driver === "etcd" ? { privateKey: secret(form.caSecretName, form.caPrivateKeyKey) } : {}),
               },
               ...(clientSecretName
                 ? {
                     clientCertificate: {
-                      certificate: secret(clientSecretName, secretKeys.clientCertificate),
-                      privateKey: secret(clientSecretName, secretKeys.clientPrivateKey),
+                      certificate: secret(clientSecretName, form.clientCertificateKey),
+                      privateKey: secret(clientSecretName, form.clientPrivateKeyKey),
                     },
                   }
                 : {}),
@@ -151,8 +206,8 @@ export function buildDataStoreResource(form: DataStoreForm): DataStoreResource {
       ...(usesBasicAuth(form)
         ? {
             basicAuth: {
-              username: secret(form.authSecretName, secretKeys.username),
-              password: secret(form.authSecretName, secretKeys.password),
+              username: secret(form.authSecretName, form.usernameKey),
+              password: secret(form.authSecretName, form.passwordKey),
             },
           }
         : {}),

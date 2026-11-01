@@ -129,8 +129,7 @@ describe.skipIf(!(await appReady({ cluster: true })))("DataStores", () => {
     await create("postgres-new", "PostgreSQL", async (dialog) => {
       await dialog.locator(".Checkbox").filter({ hasText: "Basic auth" }).click();
       await dialog.locator(".Checkbox").filter({ hasText: "TLS" }).click();
-      await dialog.getByPlaceholder("e.g., etcd-certs").fill("postgres-ca");
-      await dialog.getByPlaceholder("e.g., root-client-certs").fill("");
+      await dialog.getByPlaceholder("e.g., kamaji-etcd-ca").fill("postgres-ca");
     });
     await create("nats-new", "NATS", async (dialog) => {
       await dialog.getByPlaceholder("e.g., nats-auth").fill("nats-auth");

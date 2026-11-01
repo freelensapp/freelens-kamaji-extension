@@ -22,6 +22,7 @@ const readyText = (object: DataStore) => {
 const sortingCallbacks = {
   name: (object: DataStore) => object.getName(),
   driver: (object: DataStore) => object.spec.driver,
+  endpoints: (object: DataStore) => object.spec.endpoints.join(", "),
   ready: (object: DataStore) => readyText(object),
   usedBy: (object: DataStore) => DataStore.getUsedBy(object).length,
   age: (object: DataStore) => object.getCreationTimestamp(),
@@ -30,6 +31,7 @@ const sortingCallbacks = {
 const renderTableHeader: { title: string; sortBy: keyof typeof sortingCallbacks; className?: string }[] = [
   { title: "Name", sortBy: "name", className: "name" },
   { title: "Driver", sortBy: "driver", className: "driver" },
+  { title: "Endpoints", sortBy: "endpoints", className: "endpoints" },
   { title: "Ready", sortBy: "ready", className: "ready" },
   { title: "Used By", sortBy: "usedBy", className: "usedBy" },
   { title: "Age", sortBy: "age", className: "age" },
@@ -91,12 +93,18 @@ export const DatastoresPage = observer(() => {
           }}
           sortingCallbacks={sortingCallbacks}
           searchFilters={[
-            (object: DataStore) => [object.getName(), object.spec.driver, ...DataStore.getUsedBy(object)],
+            (object: DataStore) => [
+              object.getName(),
+              object.spec.driver,
+              ...object.spec.endpoints,
+              ...DataStore.getUsedBy(object),
+            ],
           ]}
           renderTableHeader={renderTableHeader}
           renderTableContents={(object: DataStore) => [
             <WithTooltip>{object.getName()}</WithTooltip>,
             <WithTooltip>{object.spec.driver}</WithTooltip>,
+            <WithTooltip>{object.spec.endpoints.join(", ")}</WithTooltip>,
             <WithTooltip>{readyText(object)}</WithTooltip>,
             <WithTooltip>{String(DataStore.getUsedBy(object).length)}</WithTooltip>,
             <KubeObjectAge object={object} key="age" />,

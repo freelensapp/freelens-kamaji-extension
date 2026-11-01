@@ -261,14 +261,22 @@ The DataStore dialog follows the CRD the same way:
 - MySQL, PostgreSQL and NATS take basic auth, TLS or both, at least one: TLS
   with the certificate of the certificate authority and an optional client
   certificate, basic auth with a username and a password;
-- every value comes from a key of a Secret in one namespace, with fixed keys
-  (`secretKeys`: `ca.crt`, `ca.key`, `tls.crt`, `tls.key`, `username` and
-  `password`); a DataStore with other keys or inline content is created as YAML
-  from the host;
+- every value comes from a key of a Secret, the Secrets in one namespace, and
+  the user gives each key: the samples of Kamaji name them differently from one
+  datastore to another (`ca.crt`, `server.crt`, `MYSQL_ROOT_PASSWORD`). A
+  DataStore with inline content is created as YAML from the host;
 - the endpoints, at most 64 of at most 256 characters, with an IPv6 address
-  in brackets; the dialog proposes the Service of a datastore of the driver in
-  `kamaji-system`, and changes the proposal with the driver while the user has
-  not edited it.
+  in brackets.
+
+`driverFields` gives the proposal of each driver. For etcd it is the etcd that
+the chart of Kamaji deploys, which Kamaji's own DataStore `default` reads: the
+endpoints of `kamaji-etcd` in `kamaji-system`, and the TLS Secrets that
+cert-manager writes for it, `kamaji-etcd-ca` and `kamaji-etcd-client-certs`,
+with the certificate in `tls.crt` and the private key in `tls.key`, the
+certificate authority's too. For the others it is the Service of a datastore of
+the driver in `kamaji-system`, with no Secret named. `switchDriverFields` moves
+to the proposal of the next driver only the fields that still have the
+proposal of the previous one.
 
 The rules are those of the `x-kubernetes-validations` of the CRDs. A check that
 posts what the forms build with `kubectl apply --dry-run=server` to a cluster
