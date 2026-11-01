@@ -229,7 +229,8 @@ an error with a message for the user, and `parseTenantResourceYaml` reads the
 YAML editor, with the namespace of the YAML or else the one of the form. The
 store posts the resource with no cast, and its tests cover what the form and
 the YAML editor produce. The DataStore dialog works the same way, with
-`dialogs/datastore-resource.ts`.
+`dialogs/datastore-resource.ts`, and builds a `DataStore` of one of the four
+drivers of Kamaji, with its endpoints and how Kamaji authenticates to it.
 
 The form follows the CRD of Kamaji 26.10.5-edge, and refuses before the request
 what Kamaji refuses:
@@ -252,10 +253,26 @@ what Kamaji refuses:
 - the DNS Service IPs only when the user gives them; otherwise Kamaji computes
   them from the Service CIDRs, one per family.
 
-The rules are those of the `x-kubernetes-validations` of the CRD. A check that
-posts what the form builds with `kubectl apply --dry-run=server` to a cluster
-with the CRD of the same release shows whether they still match. The DataStore dialog
-builds a `DataStore` with its driver, endpoints and TLS Secrets.
+The DataStore dialog follows the CRD the same way:
+
+- etcd always uses TLS, with the certificate authority and its private key,
+  with which Kamaji signs the client certificates of the tenants, and a client
+  certificate;
+- MySQL, PostgreSQL and NATS take basic auth, TLS or both, at least one: TLS
+  with the certificate of the certificate authority and an optional client
+  certificate, basic auth with a username and a password;
+- every value comes from a key of a Secret in one namespace, with fixed keys
+  (`secretKeys`: `ca.crt`, `ca.key`, `tls.crt`, `tls.key`, `username` and
+  `password`); a DataStore with other keys or inline content is created as YAML
+  from the host;
+- the endpoints, at most 64 of at most 256 characters, with an IPv6 address
+  in brackets; the dialog proposes the Service of a datastore of the driver in
+  `kamaji-system`, and changes the proposal with the driver while the user has
+  not edited it.
+
+The rules are those of the `x-kubernetes-validations` of the CRDs. A check that
+posts what the forms build with `kubectl apply --dry-run=server` to a cluster
+with the CRDs of the same release shows whether they still match.
 
 The menu item reads the Secret that Kamaji records in
 `status.kubeconfig.admin.secretName`, else the `<tenant>-admin-kubeconfig` that

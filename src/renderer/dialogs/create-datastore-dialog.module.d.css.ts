@@ -4,7 +4,7 @@ declare const classNames: {
   readonly error: "error";
   readonly formContent: "formContent";
   readonly help: "help";
-  readonly advanced: "advanced";
+  readonly authentication: "authentication";
   readonly advancedGrid: "advancedGrid";
 };
 export = classNames;
