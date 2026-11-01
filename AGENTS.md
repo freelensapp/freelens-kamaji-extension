@@ -157,7 +157,7 @@ src/
   renderer/k8s/                  # The models of TenantControlPlane and DataStore (kamaji.clastix.io/v1alpha1)
   renderer/pages/tenants/        # The Tenants page, and its CSS module
   renderer/pages/datastores/     # The Datastores page, and its CSS module
-  renderer/dialogs/              # The create dialogs of a tenant and of a DataStore, and their CSS modules
+  renderer/dialogs/              # The create dialogs, their CSS modules, and the tenant they build, with its tests
   renderer/details/              # The details panels of a tenant and of a DataStore
   renderer/components/           # The "Download kubeconfig" menu item, ErrorBoundary and its wrappers, ErrorPage
   renderer/icons/                # The Kamaji icon of the sidebar, a PNG, and its CSS module
@@ -200,7 +200,14 @@ again when the dialog closes.
 The tenant dialog builds a `TenantControlPlane` from a form, with a preset per
 provider for the annotations of the control plane's Service (generic, kind, AWS
 NLB, an internal Azure load balancer) and an advanced section, or takes the
-object as YAML, written and read with the `yaml` library. The DataStore dialog
+object as YAML, written and read with the `yaml` library. The dialog keeps the
+fields as the user typed them, and `dialogs/tenant-resource.ts`, a module
+without React, turns them into the resource: `validateTenantForm` says what is
+wrong with a field, `buildTenantResource` returns the typed resource or throws
+an error with a message for the user, and `parseTenantResourceYaml` reads the
+YAML editor, with the namespace of the YAML or else the one of the form. The
+store posts the resource with no cast, and its tests cover what the form and
+the YAML editor produce. The DataStore dialog
 builds a `DataStore` with its driver, endpoints and TLS Secrets.
 
 The menu item reads the Secret `<tenant>-admin-kubeconfig` in the namespace of

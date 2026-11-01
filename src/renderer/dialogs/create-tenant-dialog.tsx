@@ -5,66 +5,30 @@
 
 import { Renderer } from "@freelensapp/extensions";
 import React, { useEffect, useState } from "react";
-import { parse as yamlParse, stringify as yamlStringify } from "yaml";
-import { TenantControlPlane, type TenantControlPlaneApi } from "../k8s/tenant-control-plane-v1alpha1";
 import styles from "./create-tenant-dialog.module.css";
+import {
+  buildTenantResource,
+  type ProviderProfile,
+  parseTenantResourceYaml,
+  profileAnnotations,
+  providerProfiles,
+  serviceTypes,
+  type TenantControlPlaneResource,
+  type TenantForm,
+  tenantResourceToYaml,
+  validateTenantForm,
+} from "./tenant-resource";
+
+import type { ServiceType, TenantControlPlane, TenantControlPlaneApi } from "../k8s/tenant-control-plane-v1alpha1";
 
 const {
-  Component: { Dialog, Input, Icon, NamespaceSelect, SubTitle, Wizard, WizardStep },
+  Component: { Dialog, Input, Icon, NamespaceSelect, Select, SubTitle, Wizard, WizardStep },
 } = Renderer;
 
 export interface CreateTenantDialogProps {
   store: Renderer.K8sApi.KubeObjectStore<TenantControlPlane, TenantControlPlaneApi>;
   onClose?: () => void;
 }
-
-type ProviderProfile = "generic" | "kind" | "aws" | "azure";
-
-const PROFILE_ANNOTATIONS: Record<ProviderProfile, string> = {
-  generic: "",
-  kind: "",
-  aws: [
-    "service.beta.kubernetes.io/aws-load-balancer-backend-protocol=tcp",
-    "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing",
-    "service.beta.kubernetes.io/aws-load-balancer-type=nlb",
-  ].join("\n"),
-  azure: "service.beta.kubernetes.io/azure-load-balancer-internal=true",
-};
-
-const parseCsvList = (value: string): string[] =>
-  value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-
-const parseKeyValueLines = (value: string): Record<string, string> => {
-  const parsed: Record<string, string> = {};
-
-  for (const rawLine of value.split("\n")) {
-    const line = rawLine.trim();
-
-    if (!line || line.startsWith("#")) {
-      continue;
-    }
-
-    const equalsIndex = line.indexOf("=");
-
-    if (equalsIndex === -1) {
-      throw new Error(`Invalid key/value entry: \"${line}\". Use key=value format.`);
-    }
-
-    const key = line.slice(0, equalsIndex).trim();
-    const entryValue = line.slice(equalsIndex + 1).trim();
-
-    if (!key) {
-      throw new Error(`Invalid key/value entry: \"${line}\". Key cannot be empty.`);
-    }
-
-    parsed[key] = entryValue;
-  }
-
-  return parsed;
-};
 
 const generateDefaultTenantName = () => `tenant-${Math.floor(Math.random() * 9999) + 1}`;
 
@@ -104,7 +68,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   const [dataStore, setDataStore] = useState("default");
   const [kubernetesVersion, setKubernetesVersion] = useState("1.33.0");
   const [replicas, setReplicas] = useState("1");
-  const [serviceType, setServiceType] = useState("LoadBalancer");
+  const [serviceType, setServiceType] = useState<ServiceType>("LoadBalancer");
   const [apiPort, setApiPort] = useState("6443");
   const [konnectivityPort, setKonnectivityPort] = useState("8132");
   const [apiAddress, setApiAddress] = useState("");
@@ -125,7 +89,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setServiceAnnotations(PROFILE_ANNOTATIONS[providerProfile]);
+    setServiceAnnotations(profileAnnotations[providerProfile]);
 
     if (providerProfile === "kind") {
       setReplicas("1");
@@ -136,147 +100,50 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
     }
   }, [providerProfile]);
 
-  const buildTenantResourceFromForm = () => {
-    const normalizedVersion = kubernetesVersion.trim().startsWith("v")
-      ? kubernetesVersion.trim()
-      : `v${kubernetesVersion.trim()}`;
-    const parsedReplicas = Number.parseInt(replicas.trim(), 10);
-    const safeReplicas = Number.isInteger(parsedReplicas) && parsedReplicas > 0 ? parsedReplicas : 1;
-    const parsedApiPort = Number.parseInt(apiPort.trim(), 10);
-    const parsedKonnectivityPort = Number.parseInt(konnectivityPort.trim(), 10);
-    const normalizedApiPort = Number.isInteger(parsedApiPort) && parsedApiPort > 0 ? parsedApiPort : 6443;
-    const normalizedKonnectivityPort =
-      Number.isInteger(parsedKonnectivityPort) && parsedKonnectivityPort > 0 ? parsedKonnectivityPort : 8132;
-
-    const normalizedServiceType = serviceType.trim() || "LoadBalancer";
-    const normalizedDnsIps = parseCsvList(dnsServiceIp);
-    const normalizedAdmissionControllers = parseCsvList(admissionControllers);
-    const normalizedCertSans = parseCsvList(certSans);
-    const parsedServiceAnnotations = parseKeyValueLines(serviceAnnotations);
-    const parsedServiceLabels = parseKeyValueLines(serviceLabels);
-    const parsedNodeSelector = parseKeyValueLines(nodeSelector);
-
-    const networkProfile: Record<string, unknown> = {
-      port: normalizedApiPort,
-      serviceCidr: serviceCidr.trim(),
-      podCidr: podCidr.trim(),
-      dnsServiceIPs: normalizedDnsIps.length ? normalizedDnsIps : ["10.96.0.10"],
-    };
-
-    if (apiAddress.trim()) {
-      networkProfile.address = apiAddress.trim();
-    }
-
-    if (advertiseAddress.trim()) {
-      networkProfile.advertiseAddress = advertiseAddress.trim();
-    }
-
-    if (normalizedCertSans.length) {
-      networkProfile.certSANs = normalizedCertSans;
-    }
-
-    const service: Record<string, unknown> = {
-      serviceType: normalizedServiceType,
-    };
-
-    if (Object.keys(parsedServiceAnnotations).length || Object.keys(parsedServiceLabels).length) {
-      service.additionalMetadata = {
-        ...(Object.keys(parsedServiceAnnotations).length ? { annotations: parsedServiceAnnotations } : {}),
-        ...(Object.keys(parsedServiceLabels).length ? { labels: parsedServiceLabels } : {}),
-      };
-    }
-
-    const deployment: Record<string, unknown> = {
-      replicas: safeReplicas,
-    };
-
-    if (Object.keys(parsedNodeSelector).length) {
-      deployment.nodeSelector = parsedNodeSelector;
-    }
-
-    return {
-      apiVersion: "kamaji.clastix.io/v1alpha1",
-      kind: "TenantControlPlane",
-      metadata: {
-        name: name.trim(),
-        namespace: namespace.trim(),
-      },
-      spec: {
-        dataStore: dataStore.trim() || "default",
-        networkProfile,
-        kubernetes: {
-          version: normalizedVersion,
-          kubelet: {
-            cgroupfs: "systemd",
-          },
-          ...(normalizedAdmissionControllers.length ? { admissionControllers: normalizedAdmissionControllers } : {}),
-        },
-        controlPlane: {
-          deployment,
-          service,
-        },
-        addons: {
-          coreDNS: {},
-          kubeProxy: {},
-          konnectivity: {
-            server: {
-              port: normalizedKonnectivityPort,
-              resources: {},
-            },
-            agent: {},
-          },
-        },
-      },
-    };
+  const form: TenantForm = {
+    name,
+    namespace,
+    dataStore,
+    kubernetesVersion,
+    replicas,
+    serviceType,
+    apiPort,
+    konnectivityPort,
+    apiAddress,
+    advertiseAddress,
+    certSans,
+    admissionControllers,
+    serviceAnnotations,
+    serviceLabels,
+    nodeSelector,
+    serviceCidr,
+    podCidr,
+    dnsServiceIp,
   };
 
   const handleCreate = async () => {
-    if (!name.trim()) {
-      setError("Tenant name is required");
-      return;
-    }
-
-    const parsedReplicas = Number.parseInt(replicas.trim(), 10);
-
-    if (!Number.isInteger(parsedReplicas) || parsedReplicas < 1) {
-      setError("Replicas must be a positive integer");
-      return;
-    }
-
-    const parsedPort = Number.parseInt(apiPort.trim(), 10);
-
-    if (!Number.isInteger(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
-      setError("API port must be an integer between 1 and 65535");
-      return;
-    }
-
-    const parsedKonnectivity = Number.parseInt(konnectivityPort.trim(), 10);
-
-    if (!Number.isInteger(parsedKonnectivity) || parsedKonnectivity < 1 || parsedKonnectivity > 65535) {
-      setError("Konnectivity port must be an integer between 1 and 65535");
-      return;
-    }
-
-    let tenantResourceFromForm: Record<string, unknown>;
+    let resource: TenantControlPlaneResource;
 
     if (showYaml) {
       try {
-        tenantResourceFromForm = yamlParse(yamlContent) as Record<string, unknown>;
-        if (!tenantResourceFromForm || typeof tenantResourceFromForm !== "object") {
-          setError("YAML non valido: il contenuto non è un oggetto.");
-          return;
-        }
+        resource = parseTenantResourceYaml(yamlContent, namespace);
       } catch (parseError) {
         setYamlParseError(parseError instanceof Error ? parseError.message : String(parseError));
-        setError("YAML non valido — correggi gli errori prima di procedere.");
+        setError("Invalid YAML: fix the errors before creating the tenant.");
         return;
       }
     } else {
+      const invalid = validateTenantForm(form);
+
+      if (invalid) {
+        setError(invalid);
+        return;
+      }
+
       try {
-        tenantResourceFromForm = buildTenantResourceFromForm();
-      } catch (parseError) {
-        const parseErrorMsg = parseError instanceof Error ? parseError.message : String(parseError);
-        setError(parseErrorMsg);
+        resource = buildTenantResource(form);
+      } catch (buildError) {
+        setError(buildError instanceof Error ? buildError.message : String(buildError));
         return;
       }
     }
@@ -285,11 +152,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
     setError(null);
 
     try {
-      // Use KubeObjectStore's create method to POST the resource
-      const metadata = (tenantResourceFromForm.metadata ?? {}) as { name?: string };
-      await store.create({ name: metadata.name ?? "", namespace: namespace.trim() }, tenantResourceFromForm as any);
-
-      // Close dialog on success
+      await store.create({ name: resource.metadata.name, namespace: resource.metadata.namespace }, resource);
       onClose?.();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
@@ -311,8 +174,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   const handleToggleYaml = () => {
     if (!showYaml) {
       try {
-        const resource = buildTenantResourceFromForm();
-        setYamlContent(yamlStringify(resource, { indent: 2 }));
+        setYamlContent(tenantResourceToYaml(buildTenantResource(form)));
         setYamlParseError(null);
       } catch (err) {
         setYamlContent("");
@@ -363,7 +225,7 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
           <div className={styles.field}>
             <SubTitle title="Profile" />
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {(["generic", "kind", "aws", "azure"] as ProviderProfile[]).map((profile) => (
+              {providerProfiles.map((profile) => (
                 <div
                   key={profile}
                   role="button"
@@ -424,11 +286,13 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
 
           <div className={styles.field}>
             <SubTitle title="Service Type" />
-            <Input
+            <Select
+              id="tenant-service-type-input"
+              themeName="light"
               value={serviceType}
-              onChange={(value) => setServiceType(value)}
-              placeholder="LoadBalancer | ClusterIP | NodePort"
-              disabled={loading}
+              options={serviceTypes.map((type) => ({ value: type, label: type }))}
+              onChange={(option) => option && setServiceType(option.value)}
+              isDisabled={loading}
             />
           </div>
 
