@@ -1004,6 +1004,12 @@ either process:
   CIDRs show them; the dialog creates a tenant, which the list shows with no
   status; and the "Download kubeconfig" item of a tenant's menu saves its
   kubeconfig. Each view is an `it` that opens the page from the sidebar itself.
+- `datastores.tests.ts` does the same on the Datastores page: the list shows
+  the four test DataStores with their driver, whether Kamaji validated them
+  and their tenants; the details of the etcd DataStore show its TLS
+  configuration and its tenant, and those of the MySQL one its inline basic
+  auth; and the dialog creates a DataStore of each driver, which the list
+  shows as not validated yet.
 
 The tests are deterministic, so nothing retries them: the config sets no
 `retry`, and the workflow runs the step once, under `timeout 600`. A retry
