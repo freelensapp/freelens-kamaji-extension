@@ -26,5 +26,4 @@ describe.skipIf(!(await appReady({ cluster: false })))("extensions page tests", 
   it("installs the extension", () => {
     expect(session?.errors()).toEqual([]);
   });
-
 });

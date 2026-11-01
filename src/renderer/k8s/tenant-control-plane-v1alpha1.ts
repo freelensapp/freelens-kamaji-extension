@@ -87,8 +87,6 @@ export class TenantControlPlane extends Renderer.K8sApi.LensExtensionKubeObject<
     title: "Kamaji Tenant Control Planes",
   };
 
-
-
   getStatusText(): string {
     const status = (this as any).status as TenantControlPlaneStatus | undefined;
 

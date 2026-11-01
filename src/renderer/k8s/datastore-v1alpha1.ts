@@ -68,7 +68,6 @@ export class DataStore extends Renderer.K8sApi.LensExtensionKubeObject<
     title: "Kamaji Datastores",
   };
 
-
   getDriver(): string {
     const spec = (this as any).spec as DataStoreSpec | undefined;
 

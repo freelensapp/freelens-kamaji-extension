@@ -5,7 +5,7 @@
 
 import { Renderer } from "@freelensapp/extensions";
 import React, { useEffect, useState } from "react";
-import { stringify as yamlStringify, parse as yamlParse } from "yaml";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import { TenantControlPlane, type TenantControlPlaneApi } from "../k8s/tenant-control-plane-v1alpha1";
 import styles from "./create-tenant-dialog.module.css";
 
@@ -376,13 +376,12 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
                   }}
                   style={{
                     display: "inline-block",
-                    border: providerProfile === profile
-                      ? "1px solid var(--colorInfo, #2196f3)"
-                      : "1px solid var(--color-border, #555)",
+                    border:
+                      providerProfile === profile
+                        ? "1px solid var(--colorInfo, #2196f3)"
+                        : "1px solid var(--color-border, #555)",
                     borderRadius: 4,
-                    background: providerProfile === profile
-                      ? "rgba(33, 150, 243, 0.15)"
-                      : "transparent",
+                    background: providerProfile === profile ? "rgba(33, 150, 243, 0.15)" : "transparent",
                     color: "var(--textColorPrimary)",
                     fontSize: 12,
                     fontWeight: 600,
@@ -438,7 +437,9 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
               role="button"
               tabIndex={0}
               onClick={() => setIsAdvancedOpen((prev) => !prev)}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setIsAdvancedOpen((prev) => !prev); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setIsAdvancedOpen((prev) => !prev);
+              }}
               style={toggleButtonStyle}
             >
               <Icon material={isAdvancedOpen ? "expand_less" : "expand_more"} />
@@ -581,7 +582,9 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
               role="button"
               tabIndex={0}
               onClick={handleToggleYaml}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleToggleYaml(); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") handleToggleYaml();
+              }}
               style={toggleButtonStyle}
             >
               <Icon material={showYaml ? "expand_less" : "expand_more"} />
@@ -611,7 +614,12 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
                 </div>
               )}
               <textarea
-                style={{ ...textAreaStyle, minHeight: 320, fontFamily: "var(--font-monospace, monospace)", fontSize: 12 }}
+                style={{
+                  ...textAreaStyle,
+                  minHeight: 320,
+                  fontFamily: "var(--font-monospace, monospace)",
+                  fontSize: 12,
+                }}
                 value={yamlContent}
                 onChange={(e) => {
                   setYamlContent(e.target.value);
