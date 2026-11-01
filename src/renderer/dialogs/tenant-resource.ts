@@ -118,6 +118,18 @@ export interface TenantForm {
   headless: boolean;
 }
 
+/**
+ * The fields that a provider preset sets: the annotations of the control plane's Service for each, one replica on kind,
+ * where the tenant runs on a single node, and a LoadBalancer Service for the internal load balancer of Azure.
+ */
+export function providerProfileFields(profile: ProviderProfile): Partial<TenantForm> {
+  return {
+    serviceAnnotations: profileAnnotations[profile],
+    ...(profile === "kind" ? { replicas: "1" } : {}),
+    ...(profile === "azure" ? { serviceType: "LoadBalancer" as const } : {}),
+  };
+}
+
 const parseCsvList = (value: string): string[] =>
   value
     .split(",")

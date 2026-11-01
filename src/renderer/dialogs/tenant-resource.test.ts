@@ -4,6 +4,7 @@ import {
   cidrFamily,
   parseTenantResourceYaml,
   profileAnnotations,
+  providerProfileFields,
   type TenantForm,
   tenantResourceToYaml,
   validateTenantForm,
@@ -118,6 +119,35 @@ describe("buildTenantResource", () => {
     expect(service({ serviceType: "ClusterIP", headless: true, apiAddress: "10.0.0.5" }).headless).toBe(true);
     expect(service({ serviceType: "LoadBalancer", headless: true })).not.toHaveProperty("headless");
     expect(service({ serviceType: "ClusterIP", headless: false })).not.toHaveProperty("headless");
+  });
+
+  it("builds the tenant of each provider preset", () => {
+    const tenantOf = (profile: Parameters<typeof providerProfileFields>[0]) =>
+      buildTenantResource({ ...defaults, replicas: "3", serviceType: "NodePort", ...providerProfileFields(profile) })
+        .spec.controlPlane;
+
+    expect(tenantOf("generic")).toEqual({ deployment: { replicas: 3 }, service: { serviceType: "NodePort" } });
+    expect(tenantOf("kind")).toEqual({ deployment: { replicas: 1 }, service: { serviceType: "NodePort" } });
+    expect(tenantOf("aws")).toEqual({
+      deployment: { replicas: 3 },
+      service: {
+        serviceType: "NodePort",
+        additionalMetadata: {
+          annotations: {
+            "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "tcp",
+            "service.beta.kubernetes.io/aws-load-balancer-scheme": "internet-facing",
+            "service.beta.kubernetes.io/aws-load-balancer-type": "nlb",
+          },
+        },
+      },
+    });
+    expect(tenantOf("azure")).toEqual({
+      deployment: { replicas: 3 },
+      service: {
+        serviceType: "LoadBalancer",
+        additionalMetadata: { annotations: { "service.beta.kubernetes.io/azure-load-balancer-internal": "true" } },
+      },
+    });
   });
 
   it("puts the annotations of the AWS and Azure presets on the Service, and none for the others", () => {

@@ -11,7 +11,7 @@ import {
   ipFamilyPolicies,
   type ProviderProfile,
   parseTenantResourceYaml,
-  profileAnnotations,
+  providerProfileFields,
   providerProfiles,
   serviceTypes,
   type TenantControlPlaneResource,
@@ -99,14 +99,16 @@ export const CreateTenantDialog = ({ store, onClose }: CreateTenantDialogProps) 
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setServiceAnnotations(profileAnnotations[providerProfile]);
+    const fields = providerProfileFields(providerProfile);
 
-    if (providerProfile === "kind") {
-      setReplicas("1");
+    setServiceAnnotations(fields.serviceAnnotations ?? "");
+
+    if (fields.replicas) {
+      setReplicas(fields.replicas);
     }
 
-    if (providerProfile === "azure") {
-      setServiceType("LoadBalancer");
+    if (fields.serviceType) {
+      setServiceType(fields.serviceType);
     }
   }, [providerProfile]);
 
