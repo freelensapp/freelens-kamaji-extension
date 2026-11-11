@@ -69,7 +69,9 @@ For each Tenant Control Plane of the selected namespaces:
 
 ![The details of a dual-stack tenant: its status, the conditions of its Deployment, its CIDR lists and its datastore, dark theme](assets/screenshots/tenant-details-dark.png)
 
-- status, Kubernetes version, endpoint, replicas and ready pods
+- status, Kubernetes version and endpoint, which Freelens shows from the CRD
+  above the panel; for a user who may not list CRDs, the panel shows them
+- replicas and ready pods
 - the conditions of the Deployment of the control plane
 - the type of the Service of the control plane, and its IP family policy and
   families when the tenant sets them
@@ -112,8 +114,10 @@ For each DataStore:
 
 ![The details of an etcd DataStore: its endpoints, the source of each value of its TLS configuration, and its two tenants, dark theme](assets/screenshots/datastore-details-dark.png)
 
-- driver and endpoints
-- whether Kamaji validated it, with its conditions
+- driver, whether Kamaji validated it and its conditions, which Freelens shows
+  from the CRD above the panel; for a user who may not list CRDs, the panel
+  shows the driver and whether Kamaji validated it
+- endpoints
 - how Kamaji authenticates to it, and where each value of its TLS
   configuration and basic auth comes from: inline, or a key of a Secret. The
   values themselves are never shown.

@@ -13,10 +13,12 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   appReady,
   connectApp,
+  detailsItemCount,
   detailsValue,
   disconnectKindCluster,
   findMenuItem,
   findRow,
+  hostDetailsValue,
   installExtension,
   keepSavedFiles,
   openDetails,
@@ -98,7 +100,11 @@ describe.skipIf(!(await appReady({ cluster: true })))("Tenant Control Planes", (
 
     const billing = await openDetails(frame, await findRow(frame, "billing"), "billing");
 
-    expect(await detailsValue(frame, billing, "Status")).toBe("Provisioning");
+    // The session's user lists the CRDs, so the host shows the printer columns above the panel, which leaves them out.
+    expect(await hostDetailsValue(frame, billing, "Status")).toBe("Provisioning");
+    for (const name of ["Status", "Kubernetes Version", "Data Store Name (Status)"]) {
+      expect(await detailsItemCount(frame, billing, name)).toBe(0);
+    }
     expect(await detailsValue(frame, billing, "Pod CIDRs")).toBe("10.245.0.0/16, fd00:10:245::/56");
     expect(await detailsValue(frame, billing, "IP Families")).toBe("IPv4, IPv6");
 

@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
+import { Renderer } from "@freelensapp/extensions";
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataStore } from "../k8s/datastore-v1alpha1";
 import { DataStoreDetails, describeContent } from "./datastore-details";
 
@@ -23,6 +24,7 @@ const rowValue = (name: string) => screen.getByText(name).parentElement?.textCon
 
 afterEach(() => {
   cleanup();
+  vi.mocked(Renderer.K8sApi.crdStore.getByObject).mockReset();
 });
 
 describe("describeContent", () => {
@@ -80,5 +82,33 @@ describe("DataStoreDetails", () => {
     expect(rowValue("Used By")).toBe("-");
     expect(screen.queryByText("Ready")).toBeNull();
     expect(screen.queryByText("CA Certificate")).toBeNull();
+  });
+
+  it("leaves Driver and Ready to the drawer of the host when it has the CRD, and the conditions always", () => {
+    const dataStore = buildDataStore(
+      { driver: "etcd", endpoints: ["etcd-0:2379"] },
+      {
+        ready: true,
+        usedBy: [],
+        conditions: [{ type: "Ready", status: "True", reason: "DataStoreReady", message: "", lastTransitionTime: "" }],
+      },
+    );
+
+    // A user who may not list CRDs: the host has no printer columns to show, so the panel keeps them.
+    const { unmount } = render(<DataStoreDetails object={dataStore} />);
+
+    expect(rowValue("Driver")).toBe("etcd");
+    expect(rowValue("Ready")).toBe("Yes");
+    expect(screen.queryByText("Conditions")).toBeNull();
+    unmount();
+
+    vi.mocked(Renderer.K8sApi.crdStore.getByObject).mockReturnValue({} as never);
+    render(<DataStoreDetails object={dataStore} />);
+
+    expect(Renderer.K8sApi.crdStore.getByObject).toHaveBeenCalledWith(dataStore);
+    expect(screen.queryByText("Driver")).toBeNull();
+    expect(screen.queryByText("Ready")).toBeNull();
+    expect(screen.queryByText("Conditions")).toBeNull();
+    expect(rowValue("Endpoints")).toBe("etcd-0:2379");
   });
 });

@@ -109,6 +109,11 @@ export const Renderer = {
     secretsApi: {
       get: vi.fn(),
     },
+    // The host's store of CRDs, which has no CRD until a test says so: then the drawer of the host shows the printer
+    // columns of the object's CRD.
+    crdStore: {
+      getByObject: vi.fn(() => undefined),
+    },
   },
 };
 

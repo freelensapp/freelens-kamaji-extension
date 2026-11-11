@@ -11,9 +11,11 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   appReady,
   connectApp,
+  detailsItemCount,
   detailsValue,
   disconnectKindCluster,
   findRow,
+  hostDetailsValue,
   installExtension,
   openDetails,
   openKindCluster,
@@ -88,6 +90,11 @@ describe.skipIf(!(await appReady({ cluster: true })))("DataStores", () => {
     expect(await detailsValue(frame, etcd, "Authentication")).toBe("TLS");
     expect(await detailsValue(frame, etcd, "CA Private Key")).toBe("kamaji-system/etcd-test-certs, key ca.key");
     expect(await detailsValue(frame, etcd, "Used By")).toBe("kamaji-tenants/shop");
+    // The session's user lists the CRDs, so the host shows Driver and Ready above the panel, which leaves them out.
+    expect(await hostDetailsValue(frame, etcd, "Driver")).toBe("etcd");
+    for (const name of ["Driver", "Ready", "Conditions"]) {
+      expect(await detailsItemCount(frame, etcd, name)).toBe(0);
+    }
 
     await openPage(frame, "datastores");
 

@@ -198,11 +198,24 @@ those of the Deployment of the control plane, the only ones that Kamaji reports,
 as badges with their message as title.
 
 The details panel of a DataStore shows its driver and endpoints, whether Kamaji
-validated it, with its conditions, how Kamaji authenticates to it, and where
-each value of its TLS configuration and basic auth comes from: inline content,
-which takes precedence in Kamaji, or a key of a Secret. It never shows the
-values themselves. The tenants that use the DataStore are listed as Kamaji
-reports them, as `<namespace>/<name>`.
+validated it, how Kamaji authenticates to it, and where each value of its TLS
+configuration and basic auth comes from: inline content, which takes
+precedence in Kamaji, or a key of a Secret. It never shows the values
+themselves. The tenants that use the DataStore are listed as Kamaji reports
+them, as `<namespace>/<name>`.
+
+Above both panels the drawer of the host shows its own details of a custom
+resource: an item per printer column of the CRD, when it has the CRD, and the
+conditions under `status.conditions`. The panels leave out what it shows
+(freelensapp/freelens#2916). `hostShowsPrinterColumns` in
+`details/host-details.ts` asks the host's store of CRDs,
+`Renderer.K8sApi.crdStore`, the way the host does, and the panels hide the
+rows of the printer columns when it has the CRD: Status, Kubernetes Version,
+Control Plane Endpoint and Data Store Name (Status) of a tenant, Driver and
+Ready of a DataStore. A user who may not list CRDs gets no printer columns from
+the host, and the panels keep those rows. The DataStore panel has no
+Conditions row, since the host always shows them; the Conditions of a tenant
+stay, as they are those of its Deployment, which the host does not show.
 
 Each page reads its store from its model's `getStore()`, which throws while the
 cluster serves no such kind, with a message that says the API or the store is
