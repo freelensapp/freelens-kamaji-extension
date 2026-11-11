@@ -850,6 +850,26 @@ export async function detailsValue(frame: Frame, details: Locator, name: string)
   );
 }
 
+/** How many items with the name the extension's details panel shows, without waiting for one. */
+export async function detailsItemCount(frame: Frame, details: Locator, name: string): Promise<number> {
+  return details
+    .locator(".DrawerItem:not(.CustomResourceDetails .DrawerItem)")
+    .filter({ has: frame.locator(".name").getByText(name, { exact: true }) })
+    .count();
+}
+
+/**
+ * The value of the item with the name in the host's own details of the custom resource, `CustomResourceDetails`, which
+ * has an item per printer column of the CRD, named as `startCase` names the column, when the host has the CRD.
+ */
+export async function hostDetailsValue(frame: Frame, details: Locator, name: string): Promise<string | null> {
+  return details
+    .locator(".CustomResourceDetails .DrawerItem")
+    .filter({ has: frame.locator(".name").getByText(name, { exact: true }) })
+    .locator(":scope > .value")
+    .textContent(viewTimeout);
+}
+
 /**
  * Opens the context menu of the row and returns the menu, which the host
  * renders outside the row.

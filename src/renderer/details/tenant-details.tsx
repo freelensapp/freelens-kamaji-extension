@@ -6,6 +6,7 @@
 import { Renderer } from "@freelensapp/extensions";
 import { observer } from "mobx-react";
 import { TenantControlPlane } from "../k8s/tenant-control-plane-v1alpha1";
+import { hostShowsPrinterColumns } from "./host-details";
 
 const {
   Component: { Badge, DrawerItem },
@@ -23,12 +24,16 @@ export const TenantDetails = observer(({ object }: TenantDetailsProps) => {
   const endpoint = TenantControlPlane.getEndpoint(object);
   const blockedWrites = TenantControlPlane.getBlockedWrites(object);
   const conditions = TenantControlPlane.getConditions(object);
+  // The drawer of the host shows the printer columns of the CRD above this panel when it has the CRD: Version and
+  // Installed Version, Status, Control-Plane endpoint, Kubeconfig and Datastore. The conditions of the Deployment of the
+  // control plane are not under `status.conditions`, so the host does not show them.
+  const printerColumnsShown = hostShowsPrinterColumns(object);
 
   return (
     <>
       <DrawerItem name="API Version">{object.apiVersion}</DrawerItem>
       <DrawerItem name="Kind">{object.kind}</DrawerItem>
-      <DrawerItem name="Status">
+      <DrawerItem name="Status" hidden={printerColumnsShown}>
         <Badge label={TenantControlPlane.getStatus(object)} />
       </DrawerItem>
       <DrawerItem name="Conditions" hidden={!conditions.length}>
@@ -40,8 +45,10 @@ export const TenantDetails = observer(({ object }: TenantDetailsProps) => {
           />
         ))}
       </DrawerItem>
-      <DrawerItem name="Kubernetes Version">{TenantControlPlane.getKubernetesVersion(object) ?? "-"}</DrawerItem>
-      <DrawerItem name="Control Plane Endpoint" hidden={!endpoint}>
+      <DrawerItem name="Kubernetes Version" hidden={printerColumnsShown}>
+        {TenantControlPlane.getKubernetesVersion(object) ?? "-"}
+      </DrawerItem>
+      <DrawerItem name="Control Plane Endpoint" hidden={printerColumnsShown || !endpoint}>
         <code>{endpoint}</code>
       </DrawerItem>
       <DrawerItem name="Control Plane Replicas">{spec.controlPlane.deployment?.replicas ?? "-"}</DrawerItem>
@@ -68,7 +75,7 @@ export const TenantDetails = observer(({ object }: TenantDetailsProps) => {
       <DrawerItem name="Storage Driver" hidden={!status?.storage?.driver}>
         {status?.storage?.driver}
       </DrawerItem>
-      <DrawerItem name="Data Store Name (Status)" hidden={!status?.storage?.dataStoreName}>
+      <DrawerItem name="Data Store Name (Status)" hidden={printerColumnsShown || !status?.storage?.dataStoreName}>
         {status?.storage?.dataStoreName}
       </DrawerItem>
       <DrawerItem name="Data Store Schema" hidden={!TenantControlPlane.getDataStoreSchema(object)}>

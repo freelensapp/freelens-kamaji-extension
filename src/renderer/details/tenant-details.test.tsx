@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
+import { Renderer } from "@freelensapp/extensions";
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { TenantControlPlane } from "../k8s/tenant-control-plane-v1alpha1";
 import { TenantDetails } from "./tenant-details";
 
@@ -29,6 +30,7 @@ const rowValue = (name: string) => screen.getByText(name).parentElement?.textCon
 
 afterEach(() => {
   cleanup();
+  vi.mocked(Renderer.K8sApi.crdStore.getByObject).mockReset();
 });
 
 describe("TenantDetails", () => {
@@ -133,6 +135,48 @@ describe("TenantDetails", () => {
     expect(rowValue("Service CIDRs")).toBe("10.96.0.0/16");
     expect(rowValue("Headless Service")).toBe("Yes");
     expect(rowValue("Write Permissions")).toBe("All allowed");
+  });
+
+  it("leaves the values of the printer columns to the drawer of the host when it has the CRD", () => {
+    const tenant = buildTenant(
+      { dataStore: "etcd-test" },
+      {
+        controlPlaneEndpoint: "172.19.255.200:6443",
+        storage: { driver: "etcd", dataStoreName: "etcd-test" },
+        kubernetesResources: {
+          version: { version: "v1.36.3", status: "Ready" },
+          deployment: {
+            name: "shop",
+            namespace: "kamaji-tenants",
+            selector: "app=shop",
+            replicas: 1,
+            readyReplicas: 1,
+            conditions: [
+              {
+                type: "Available",
+                status: "True",
+                lastTransitionTime: "",
+                lastUpdateTime: "",
+                reason: "MinimumReplicasAvailable",
+                message: "",
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    vi.mocked(Renderer.K8sApi.crdStore.getByObject).mockReturnValue({} as never);
+    render(<TenantDetails object={tenant} />);
+
+    expect(Renderer.K8sApi.crdStore.getByObject).toHaveBeenCalledWith(tenant);
+    for (const hidden of ["Status", "Kubernetes Version", "Control Plane Endpoint", "Data Store Name (Status)"]) {
+      expect(screen.queryByText(hidden)).toBeNull();
+    }
+    // The conditions of the Deployment of the control plane, which the host does not show, and the rest of the panel.
+    expect(rowValue("Conditions")).toBe("Available");
+    expect(rowValue("Data Store")).toBe("etcd-test");
+    expect(rowValue("Storage Driver")).toBe("etcd");
   });
 
   it("says that Konnectivity is disabled when Kamaji reports so", () => {

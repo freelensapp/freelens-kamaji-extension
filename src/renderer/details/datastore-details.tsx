@@ -6,11 +6,12 @@
 import { Renderer } from "@freelensapp/extensions";
 import { observer } from "mobx-react";
 import { DataStore } from "../k8s/datastore-v1alpha1";
+import { hostShowsPrinterColumns } from "./host-details";
 
 import type { ContentRef } from "../k8s/datastore-v1alpha1";
 
 const {
-  Component: { Badge, DrawerItem },
+  Component: { DrawerItem },
 } = Renderer;
 
 export type DataStoreDetailsProps = Renderer.Component.KubeObjectDetailsProps<DataStore>;
@@ -34,7 +35,9 @@ export const DataStoreDetails = observer(({ object }: DataStoreDetailsProps) => 
   const { tlsConfig, basicAuth } = object.spec;
   const ready = DataStore.isReady(object);
   const usedBy = DataStore.getUsedBy(object);
-  const conditions = DataStore.getConditions(object);
+  // The drawer of the host shows the printer columns of the CRD, Driver and Ready, when it has the CRD, and always the
+  // conditions under `status.conditions`, above this panel.
+  const printerColumnsShown = hostShowsPrinterColumns(object);
   const contentRow = (name: string, ref: ContentRef | undefined) => (
     <DrawerItem name={name} hidden={!describeContent(ref)}>
       {describeContent(ref)}
@@ -45,19 +48,12 @@ export const DataStoreDetails = observer(({ object }: DataStoreDetailsProps) => 
     <>
       <DrawerItem name="API Version">{object.apiVersion}</DrawerItem>
       <DrawerItem name="Kind">{object.kind}</DrawerItem>
-      <DrawerItem name="Driver">{object.spec.driver}</DrawerItem>
-      <DrawerItem name="Endpoints">{object.spec.endpoints.join(", ") || "-"}</DrawerItem>
-      <DrawerItem name="Ready" hidden={ready === undefined}>
-        {ready ? "Yes" : "No"}
+      <DrawerItem name="Driver" hidden={printerColumnsShown}>
+        {object.spec.driver}
       </DrawerItem>
-      <DrawerItem name="Conditions" hidden={!conditions.length}>
-        {conditions.map((condition) => (
-          <Badge
-            key={condition.type}
-            label={condition.status === "True" ? condition.type : `${condition.type}: ${condition.status}`}
-            title={condition.message || condition.reason}
-          />
-        ))}
+      <DrawerItem name="Endpoints">{object.spec.endpoints.join(", ") || "-"}</DrawerItem>
+      <DrawerItem name="Ready" hidden={printerColumnsShown || ready === undefined}>
+        {ready ? "Yes" : "No"}
       </DrawerItem>
       <DrawerItem name="Authentication">{DataStore.getAuthentication(object) ?? "-"}</DrawerItem>
       {contentRow("CA Certificate", tlsConfig?.certificateAuthority.certificate)}
